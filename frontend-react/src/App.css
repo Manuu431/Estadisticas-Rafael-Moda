@@ -1,0 +1,26 @@
+:root {
+    --orange: #DD6C10;
+    --gray: #aaaaaa;
+    --darkOrange: #b15f01;
+    --darkGray: #858383;
+}
+
+.bg-orange {
+    background-color: var(--orange) !important;
+}
+
+.bg-gray {
+    background-color: var(--gray) !important;
+}
+
+.nav-link.bg-gray:hover {
+  background-color: var(--darkGray) !important;
+}
+
+.nav-link.bg-orange:hover {
+  background-color: var(--darkOrange) !important;
+}
+
+.active {
+  background-color: var(--darkOrange) !important;
+}
