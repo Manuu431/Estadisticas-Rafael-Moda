@@ -1,8 +1,10 @@
 :root {
     --orange: #DD6C10;
-    --gray: #aaaaaa;
     --darkOrange: #b15f01;
+    --gray: #aaaaaa;
     --darkGray: #858383;
+    --lightGray: #ebebeb;
+	--hoverGray: #d0d0d0;
 }
 
 .bg-orange {
@@ -11,6 +13,15 @@
 
 .bg-gray {
     background-color: var(--gray) !important;
+}
+
+.bg-light-gray {
+    background-color: var(--lightGray) !important;
+}
+
+.bg-gray:hover,
+.bg-light-gray:hover {
+    background-color: var(--hoverGray) !important;
 }
 
 .nav-link.bg-gray:hover {
@@ -24,3 +35,8 @@
 .active {
   background-color: var(--darkOrange) !important;
 }
+
+/**
+ * TABLE STYLES
+*/
+

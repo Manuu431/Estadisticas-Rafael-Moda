@@ -5,6 +5,21 @@ const mysql = require('mysql2');
 const app = express();
 const PORT = 8000;
 
+const makeGet = (endpoint) => {
+    app.get(`/api/${endpoint}`, (req, res) => {
+        const query = `SELECT * FROM ${endpoint}`;
+
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error(`Error obtaining ${endpoint} data: ${err}`);
+                return res.status(500).json({ error: 'Server error' });
+            }
+
+            res.json(results);
+        });
+    });
+}
+
 app.use(cors());
 app.use(express.json());
 
@@ -17,25 +32,15 @@ const db = mysql.createConnection({
 
 db.connect(err => {
     if (err) {
-        console.error('Error al conectar con MySQL:', err);
+        console.error(`Error connecting to MySQL: ${err}`);
         return;
     }
-    console.log('Conectado a la base de datos MySQL');
+    console.log('Connecting to the MySQL database...');
 });
 
-app.get('/api/sales', (req, res) => {
-    const query = 'SELECT * FROM sales';
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error al obtener las ventas:', err);
-            return res.status(500).json({ error: 'Error en el servidor' });
-        }
-
-        res.json(results);
-    });
-});
+makeGet('sales');
+makeGet('clients');
 
 app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+    console.log(`Server running on port http://localhost:${PORT}`);
 });

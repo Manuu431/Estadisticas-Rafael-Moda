@@ -3,5 +3,10 @@ export const CONFIG = {
         endpoint: "http://localhost:8000/api/sales",
         columns: ["ID", "Modelo", "Familia", "Color", "Talla", "PVD", "PVP", "Unidades", "Descuento", "Beneficio"],
         values: ["id", "model", "family", "color", "size", "pvd", "pvp", "units", "discount", "profit"]
+    },
+    clients: {
+        endpoint: "http://localhost:8000/api/clients",
+        columns: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
+        values: ["id", "name", "cp", "province", "city"]
     }
 };
