@@ -20,10 +20,10 @@ function Table({ type }) {
         <>
             <div className="col-12 mt-4">
                 <table className="table table-bordered border-dark table-striped table-hover w-100 text-center">
-                    <thead className="bg-light-gray text-white">
+                    <thead className='bg-orange'>
                         <tr>
                             {config.columns.map((columnName, index) => (
-                                <th className="px-2 py-1" key={index}>{columnName}</th>
+                                <th className="py-1" key={index}>{columnName}</th>
                             ))}
                         </tr>
                     </thead>
@@ -31,13 +31,22 @@ function Table({ type }) {
                         {data.map((item, index) => (
                             <tr
                                 key={index}
-                                className={index % 2 === 0 ? 'bg-gray' : 'bg-light-gray'}
                             >
-                                {config.values.map((columnName, colIndex) => (
-                                    <td className="px-1 py-1" key={colIndex}>
-                                        {item[columnName]}
-                                    </td>
-                                ))}
+                                {config.values.map((columnName, colIndex) => {
+                                    const value = item[columnName.toLowerCase().replace(/\s/g, '_')];
+
+                                    let formattedValue = value;
+
+                                    if (columnName.toLowerCase().includes("date") && value) {
+                                        formattedValue = new Date(value).toLocaleDateString('es-ES');
+                                    }
+
+                                    return (
+                                        <td className="py-1" key={colIndex}>
+                                            {formattedValue}
+                                        </td>
+                                    );
+                                })}
                             </tr>
                         ))}
                     </tbody>

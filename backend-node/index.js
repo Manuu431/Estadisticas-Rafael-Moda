@@ -40,6 +40,8 @@ db.connect(err => {
 
 makeGet('sales');
 makeGet('clients');
+makeGet('campaigns');
+makeGet('seasons');
 
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`);
