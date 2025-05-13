@@ -2,12 +2,12 @@ export const FILTERS_CONFIG = {
     sales: {
         label: ["ID", "Modelo", "Familia", "Color", "Talla", "PVD", "PVP", "Unidades", "Descuento", "Beneficio"],
         inputId: ["id", "model", "family", "color", "size", "pvd", "pvp", "units", "discount", "profit"],
-        inputType: ["text", "text", "text", "text", "text", "text", "text", "text", "text", "text"]
+        inputType: ["text", "text", "select", "select", "select", "text", "text", "text", "text", "text"]
     },
     clients: {
         label: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
         inputId: ["id", "name", "cp", "province", "city"],
-        inputType: ["text", "text", "text", "text", "text"]
+        inputType: ["text", "text", "text", "select", "select"]
     },
     campaigns: {
         label: ["ID", "Nombre", "Fecha de Inicio", "Fecha de Fin", "Gastos", "Beneficios"],
