@@ -19,19 +19,10 @@
     background-color: var(--lightGray) !important;
 }
 
-.bg-gray:hover,
-.bg-light-gray:hover {
-    background-color: var(--hoverGray) !important;
-}
-
 .nav-link.bg-gray:hover {
   background-color: var(--darkGray) !important;
 }
 
 .nav-link.bg-orange:hover {
-  background-color: var(--darkOrange) !important;
-}
-
-.active {
   background-color: var(--darkOrange) !important;
 }

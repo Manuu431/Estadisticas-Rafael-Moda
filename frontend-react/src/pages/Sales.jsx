@@ -6,7 +6,7 @@ function Sales(props) {
     return (
         <>
             <Title title={props.title} />
-            <Filters />
+            <Filters type="sales" />
             <Table type="sales" />
         </>
     );
