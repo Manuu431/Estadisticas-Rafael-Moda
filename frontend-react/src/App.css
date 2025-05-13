@@ -26,3 +26,18 @@
 .nav-link.bg-orange:hover {
   background-color: var(--darkOrange) !important;
 }
+
+
+
+
+.react-select__control {
+  height: 3.75em !important;
+  padding-left: 0.2em !important; 
+  border: 1px solid #ced4da !important;
+  border-radius: 0.5em !important;
+}
+
+.react-select__multi-value {
+  background-color: var(--gray) !important;
+  border-radius: 0.25rem !important;
+}

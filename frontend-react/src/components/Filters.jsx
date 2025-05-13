@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { CMultiSelect } from '@coreui/react-pro'
+import { useEffect, useState } from 'react'
+import Select from 'react-select';
 import { FILTERS_CONFIG } from "../../filtersConfig.js"
 import { CONFIG } from "../../config.js"
 import axios from "axios"
@@ -39,32 +39,37 @@ function Filters({ type }) {
         {filtersConfig.label.map((label, index) => (
           <div className={`${classCols} col-xl-4`} key={index}>
                 <div className="form-floating mb-3 gap-3">
-                    <div className="form-floating m-3 gap-3">
-                        {filtersConfig.inputType[index] === "select" ? (
-                            <select
-                            id={filtersConfig.inputId[index]}
-                            name={filtersConfig.inputId[index]}
-                            className="form-select"
-                            defaultValue=""
+                    {filtersConfig.inputType[index] === "select" ? (
+                        <div className="position-relative m-3">
+                            <label 
+                                className="position-absolute top-0 start-0 ms-3 mt-1 text-secondary small" 
+                                htmlFor={filtersConfig.inputId[index]}
+                                style={{ zIndex: 2 }}
                             >
-                            <option value="">Selecciona una opción</option>
-                                {(optionsData[filtersConfig.inputId[index]] || []).map((option, i) => (
-                                    <option key={i} value={option.value}>
-                                    {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                        ) : (
-                            <input
-                            type={filtersConfig.inputType[index]}
-                            id={filtersConfig.inputId[index]}
-                            name={filtersConfig.inputId[index]}
-                            className="form-control"
-                            placeholder={label}
+                                {label}
+                            </label>
+                            <Select
+                                isMulti
+                                inputId={filtersConfig.inputId[index]}
+                                name={filtersConfig.inputId[index]}
+                                options={optionsData[filtersConfig.inputId[index]] || []}
+                                classNamePrefix="react-select"
+                                className="react-select-container z-2"
+                                placeholder="Selecciona una opción"
                             />
-                        )}
-                        <label htmlFor={filtersConfig.inputId[index]}>{label}</label>
-                    </div>
+                        </div>
+                    ) : (
+                        <div className="form-floating m-3">
+                            <input
+                                type={filtersConfig.inputType[index]}
+                                id={filtersConfig.inputId[index]}
+                                name={filtersConfig.inputId[index]}
+                                className="form-control"
+                                placeholder={label}
+                            />
+                            <label className='z-0' htmlFor={filtersConfig.inputId[index]}>{label}</label>
+                        </div>
+                    )}
               </div>
           </div>
         ))}
