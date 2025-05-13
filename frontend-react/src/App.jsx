@@ -19,22 +19,20 @@ function App() {
           <Sidebar />
           <div className="col-12 col-xl-10 p-0">
             <div className="container-fluid">
-                <div className="row">
-                    <Routes>
-                        <Route path="/" element={<ControlPanel title="Panel de control" />} />
-                        <Route path="/ventas" element={<Sales title="Ventas" />} />
-                        <Route path="/clientes" element={<Clients title="Clientes" />} />
-                        <Route path="/comparativa" element={<Comparison title="Comparativa" />} />
-                        <Route path="/calendario" element={<Calendar title="Calendario" />} />
-                        <Route path="/campañas" element={<Campaigns title="Campañas" />} />
-                        <Route path="/gastos" element={<Expenses title="Gastos" />} />
-                        <Route path="/temporadas" element={<Seasons title="Temporadas" />} />
+                <Routes>
+                    <Route path="/" element={<ControlPanel title="Panel de control" />} />
+                    <Route path="/ventas" element={<Sales title="Ventas" />} />
+                    <Route path="/clientes" element={<Clients title="Clientes" />} />
+                    <Route path="/comparativa" element={<Comparison title="Comparativa" />} />
+                    <Route path="/calendario" element={<Calendar title="Calendario" />} />
+                    <Route path="/campañas" element={<Campaigns title="Campañas" />} />
+                    <Route path="/gastos" element={<Expenses title="Gastos" />} />
+                    <Route path="/temporadas" element={<Seasons title="Temporadas" />} />
 
-						{/* {MENU_ITEMS.map((item, index) => (
-							<Route key={index} path={item.path} element={item.element} />
-						))} */}
-                    </Routes>
-                </div>
+                    {/* {MENU_ITEMS.map((item, index) => (
+                        <Route key={index} path={item.path} element={item.element} />
+                    ))} */}
+                </Routes>
             </div>
           </div>
         </div>

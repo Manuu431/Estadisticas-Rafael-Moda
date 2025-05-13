@@ -3,8 +3,10 @@ import Title from '../components/Title';
 function Calendar(props) {
   return (
     <>
-      <Title title={props.title} />
-	  </> 
+        <div className="row">
+            <Title title={props.title} />
+        </div>
+    </>
   );
 }
 

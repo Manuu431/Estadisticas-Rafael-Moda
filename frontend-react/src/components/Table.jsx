@@ -18,39 +18,41 @@ function Table({ type }) {
 
     return (
         <>
-            <div className="col-12 mt-4">
-                <table className="table table-bordered border-dark table-striped table-hover w-100 text-center">
-                    <thead className='bg-orange'>
-                        <tr>
-                            {config.columns.map((columnName, index) => (
-                                <th className="py-1" key={index}>{columnName}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item, index) => (
-                            <tr
-                                key={index}
-                            >
-                                {config.values.map((columnName, colIndex) => {
-                                    const value = item[columnName.toLowerCase().replace(/\s/g, '_')];
-
-                                    let formattedValue = value;
-
-                                    if (columnName.toLowerCase().includes("date") && value) {
-                                        formattedValue = new Date(value).toLocaleDateString('es-ES');
-                                    }
-
-                                    return (
-                                        <td className="py-1" key={colIndex}>
-                                            {formattedValue}
-                                        </td>
-                                    );
-                                })}
+            <div className="row">
+                <div className="col-12 mt-4">
+                    <table className="table table-bordered border-dark table-striped table-hover w-100 text-center">
+                        <thead>
+                            <tr>
+                                {config.columns.map((columnName, index) => (
+                                    <th className="py-1" key={index}>{columnName}</th>
+                                ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {data.map((item, index) => (
+                                <tr
+                                    key={index}
+                                >
+                                    {config.values.map((columnName, colIndex) => {
+                                        const value = item[columnName.toLowerCase().replace(/\s/g, '_')];
+
+                                        let formattedValue = value;
+
+                                        if (columnName.toLowerCase().includes("date") && value) {
+                                            formattedValue = new Date(value).toLocaleDateString('es-ES');
+                                        }
+
+                                        return (
+                                            <td className="py-1" key={colIndex}>
+                                                {formattedValue}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </>
     );

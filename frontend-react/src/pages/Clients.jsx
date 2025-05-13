@@ -4,8 +4,8 @@ import Table from "../components/Table.jsx";
 function Clients(props) {
   return (
     <>
-      <Title title={props.title} />
-      <Table type="clients" />
+        <Title title={props.title} />
+        <Table type="clients" />
 	</> 
   );
 }

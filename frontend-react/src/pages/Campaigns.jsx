@@ -6,7 +6,7 @@ function Campaigns(props) {
     <>
         <Title title={props.title} />
         <Table type="campaigns" />
-	  </> 
+    </>
   );
 }
 

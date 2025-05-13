@@ -6,7 +6,7 @@ function Seasons(props) {
     <>
       <Title title={props.title} />
       <Table type="seasons" />
-	  </> 
+    </>
   );
 }
 
