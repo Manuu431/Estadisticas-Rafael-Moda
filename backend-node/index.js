@@ -29,12 +29,17 @@ const makeGet = (endpoint) => {
                 conditions.push(`${key} IN (${placeholders})`);
                 values.push(...value);
             } else {
-                if (isNaN(value)) {
-                    conditions.push(`${key} LIKE ?`);
-                    values.push(`%${value}%`);
-                } else {
+                if (!isNaN(value)) {
                     conditions.push(`${key} = ?`);
                     values.push(parseFloat(value));
+                } else {
+                    if (key === 'size') {
+                        conditions.push(`${key} LIKE ?`);
+                        values.push(`${value}`);
+                    } else {
+                        conditions.push(`${key} LIKE ?`);
+                        values.push(`%${value}%`);
+                    }
                 }
             }
         }
