@@ -65,11 +65,25 @@ function Filters({ type, onFilterChange }) {
     };
 
     const handleFilter = () => {
-    onFilterChange({ 
-        ...selectedValues, 
-        ...textInputs,
-        ...rangeInputs 
-    });
+        const flattenedRangeInputs = {};
+        for (const key in rangeInputs) {
+            const range = rangeInputs[key];
+            if (range.min !== "" && range.max !== "") {
+                flattenedRangeInputs[`${key}_min`] = range.min;
+                flattenedRangeInputs[`${key}_max`] = range.max;
+            } else if (range.min !== "") {
+                flattenedRangeInputs[`${key}_min`] = range.min;
+            } else if (range.max !== "") {
+                flattenedRangeInputs[`${key}_max`] = range.max;
+            }
+        }
+        
+
+        onFilterChange({
+            ...selectedValues,
+            ...textInputs,
+            ...flattenedRangeInputs,
+        });
 };
     
     return (

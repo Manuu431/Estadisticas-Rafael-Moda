@@ -16,7 +16,15 @@ const makeGet = (endpoint) => {
         for (const key in filters) {
             const value = filters[key];
 
-            if (Array.isArray(value)) {
+            if (key.endsWith('_min')) {
+                const column = key.replace('_min', '');
+                conditions.push(`${column} >= ?`);
+                values.push(value);
+            } else if (key.endsWith('_max')) {
+                const column = key.replace('_max', '');
+                conditions.push(`${column} <= ?`);
+                values.push(value);
+            } else if (Array.isArray(value)) {
                 const placeholders = value.map(() => '?').join(', ');
                 conditions.push(`${key} IN (${placeholders})`);
                 values.push(...value);
@@ -25,17 +33,8 @@ const makeGet = (endpoint) => {
                     conditions.push(`${key} LIKE ?`);
                     values.push(`%${value}%`);
                 } else {
-                    const numberValue = parseFloat(value);
-                    if (key.includes('min') || key.includes('max')) {
-                        if (filters.min && filters.max) {
-                            conditions.push(`${key} BETWEEN ? AND ?`);
-                            values.push(filters.min);
-                            values.push(filters.max);
-                        }
-                    } else {
-                        conditions.push(`${key} = ?`);
-                        values.push(numberValue);
-                    }
+                    conditions.push(`${key} = ?`);
+                    values.push(parseFloat(value));
                 }
             }
         }
