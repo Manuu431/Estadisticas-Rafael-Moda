@@ -7,9 +7,30 @@ const PORT = 8000;
 
 const makeGet = (endpoint) => {
     app.get(`/api/${endpoint}`, (req, res) => {
-        const query = `SELECT * FROM ${endpoint}`;
+        const filters = req.query;
 
-        db.query(query, (err, results) => {
+        let query = `SELECT * FROM ${endpoint}`;
+        const conditions = [];
+        const values = [];
+
+        for (const key in filters) {
+            const value = filters[key];
+
+            if (Array.isArray(value)) {
+                const placeholders = value.map(() => '?').join(', ');
+                conditions.push(`${key} IN (${placeholders})`);
+                values.push(...value);
+            } else {
+                conditions.push(`${key} = ?`);
+                values.push(value);
+            }
+        }
+
+        if (conditions.length > 0) {
+            query += ` WHERE ${conditions.join(' AND ')}`;
+        }
+
+        db.query(query, values, (err, results) => {
             if (err) {
                 console.error(`Error obtaining ${endpoint} data: ${err}`);
                 return res.status(500).json({ error: 'Server error' });
@@ -18,7 +39,7 @@ const makeGet = (endpoint) => {
             res.json(results);
         });
     });
-}
+};
 
 app.use(cors());
 app.use(express.json());

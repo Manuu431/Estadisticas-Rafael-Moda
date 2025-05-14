@@ -1,13 +1,16 @@
+import { useState } from 'react';
 import Title from '../components/Title';
 import Filters from "../components/Filters.jsx";
 import Table from "../components/Table.jsx";
 
 function Sales(props) {
+    const [filters, setFilters] = useState({});
+    
     return (
         <>
             <Title title={props.title} />
-            <Filters type="sales" />
-            <Table type="sales" />
+            <Filters type="sales" onFilterChange={setFilters} />
+            <Table type="sales" filters={filters} />
         </>
     );
 }
