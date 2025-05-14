@@ -28,10 +28,6 @@ function App() {
                     <Route path="/campañas" element={<Campaigns title="Campañas" />} />
                     <Route path="/gastos" element={<Expenses title="Gastos" />} />
                     <Route path="/temporadas" element={<Seasons title="Temporadas" />} />
-
-                    {/* {MENU_ITEMS.map((item, index) => (
-                        <Route key={index} path={item.path} element={item.element} />
-                    ))} */}
                 </Routes>
             </div>
           </div>

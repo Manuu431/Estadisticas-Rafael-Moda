@@ -21,8 +21,22 @@ const makeGet = (endpoint) => {
                 conditions.push(`${key} IN (${placeholders})`);
                 values.push(...value);
             } else {
-                conditions.push(`${key} = ?`);
-                values.push(value);
+                if (isNaN(value)) {
+                    conditions.push(`${key} LIKE ?`);
+                    values.push(`%${value}%`);
+                } else {
+                    const numberValue = parseFloat(value);
+                    if (key.includes('min') || key.includes('max')) {
+                        if (filters.min && filters.max) {
+                            conditions.push(`${key} BETWEEN ? AND ?`);
+                            values.push(filters.min);
+                            values.push(filters.max);
+                        }
+                    } else {
+                        conditions.push(`${key} = ?`);
+                        values.push(numberValue);
+                    }
+                }
             }
         }
 

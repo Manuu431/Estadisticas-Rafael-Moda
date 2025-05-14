@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
+import Slider from 'react-slider';
 import { FILTERS_CONFIG } from "../../filtersConfig.js";
 import { CONFIG } from "../../config.js";
 import axios from "axios";
@@ -11,6 +12,7 @@ function Filters({ type, onFilterChange }) {
     const config = CONFIG[type];
     const [optionsData, setOptionsData] = useState({});
     const [selectedValues, setSelectedValues] = useState({});
+    const [rangeInputs, setRangeInputs] = useState({});
     const [textInputs, setTextInputs] = useState({});
 
     useEffect(() => {
@@ -40,6 +42,16 @@ function Filters({ type, onFilterChange }) {
         }));
     };
 
+    const handleRangeInputChange = (inputId, values) => {
+        setRangeInputs(prev => ({
+            ...prev,
+            [inputId]: {
+                min: values[0],
+                max: values[1],
+            }
+        }));
+    };
+
     const handleTextInputChange = (e) => {
         const { id, value } = e.target;
         setTextInputs(prev => ({ ...prev, [id]: value }));
@@ -48,12 +60,17 @@ function Filters({ type, onFilterChange }) {
     const handleClear = () => {
         setSelectedValues({});
         setTextInputs({});
+        setRangeInputs({});
         onFilterChange({});
     };
 
     const handleFilter = () => {
-        onFilterChange({ ...selectedValues, ...textInputs });
-    };
+    onFilterChange({ 
+        ...selectedValues, 
+        ...textInputs,
+        ...rangeInputs 
+    });
+};
     
     return (
         <>
@@ -64,43 +81,32 @@ function Filters({ type, onFilterChange }) {
 
                     return (
                         <div className={`${classCols} col-xl-4`} key={index}>
-                            <div className="form-floating mb-3 gap-3">
+                            <div className="mb-3 gap-3">
                                 {inputType === "select" ? (
-                                    <div className="position-relative m-3">
-                                        <label
-                                            className="position-absolute top-0 start-0 ms-3 mt-1 text-secondary small"
-                                            htmlFor={inputId}
-                                            style={{ zIndex: 2 }}
-                                        >
-                                            {label}
-                                        </label>
-                                        <Select
-                                            isMulti
-                                            inputId={inputId}
-                                            name={inputId}
-                                            options={optionsData[inputId] || []}
-                                            classNamePrefix="react-select"
-                                            className="react-select-container z-2"
-                                            placeholder="Selecciona una opción"
-                                            value={(optionsData[inputId] || []).filter(option =>
-                                                selectedValues[inputId]?.includes(option.value)
-                                            )}
-                                            onChange={(selectedOptions) => handleSelectChange(inputId, selectedOptions)}
-                                        />
-                                    </div>
+                                    <SelectFilter
+                                        inputId={inputId}
+                                        label={label}
+                                        optionsData={optionsData}
+                                        selectedValues={selectedValues}
+                                        handleSelectChange={handleSelectChange}
+                                    />
+                                ) : inputType === "range" ? (
+                                    <RangeFilter
+                                        inputId={inputId}
+                                        label={label}
+                                        rangeInputs={rangeInputs}
+                                        handleRangeInputChange={handleRangeInputChange}
+                                        minPrice={config.minPrice}
+                                        maxPrice={config.maxPrice}
+                                    />
                                 ) : (
-                                    <div className="form-floating m-3">
-                                        <input
-                                            type={inputType}
-                                            id={inputId}
-                                            name={inputId}
-                                            className="form-control"
-                                            placeholder={label}
-                                            value={textInputs[inputId] || ""}
-                                            onChange={handleTextInputChange}
-                                        />
-                                        <label className='z-0' htmlFor={inputId}>{label}</label>
-                                    </div>
+                                    <TextInputFilter 
+                                        inputId={inputId}
+                                        label={label}
+                                        inputType={inputType}
+                                        textInputs={textInputs}
+                                        handleTextInputChange={handleTextInputChange} 
+                                    />
                                 )}
                             </div>
                         </div>
@@ -111,22 +117,22 @@ function Filters({ type, onFilterChange }) {
             <div className='row bg-gray py-2'>
                 <div className="col-xl-4"></div>
                 <div className="col-xl-4"></div>
-                {createButton("justify-content-lg-start", "btn-secondary", handleClear, "bi bi-trash", "Netejar")}
-                {createButton("justify-content-lg-end", "bg-orange", handleFilter, "bi bi-funnel", "Filtrar")}
+                <FilterButton divClasses="justify-content-lg-start" buttonClasses="btn-secondary" onClickFunction={handleClear} iconClasses="bi bi-trash" text="Netejar" />
+                <FilterButton divClasses="justify-content-lg-end" buttonClasses="bg-orange" onClickFunction={handleFilter} iconClasses="bi bi-funnel" text="Filtrar" />
             </div>
         </>
     );
 }
 
-const createButton = (divClasses, buttonClasses, onClickFunction, iconClasses, text) => {
+function FilterButton(props) {
     return (
         <div className={`${classCols} col-xl-2`}>
-            <div className={`d-flex justify-content-center m-3 justify-content-xl-end ${divClasses}`}>
+            <div className={`d-flex justify-content-center m-3 justify-content-xl-end ${props.divClasses}`}>
                 <button
-                    className={`btn ${buttonClasses} ps-2 text-white w-100 w-lg-auto py-3 py-xl-2`}
-                    onClick={onClickFunction}
+                    className={`btn ${props.buttonClasses} ps-2 text-white w-100 w-lg-auto py-3 py-xl-2`}
+                    onClick={props.onClickFunction}
                 >
-                    <i className={`${iconClasses} px-1 text-white`}></i>{text}
+                    <i className={`${props.iconClasses} px-1 text-white`}></i>{props.text}
                 </button>
             </div>
         </div>
@@ -146,5 +152,94 @@ const filterOptions = (response, inputId) => {
 
     return sortedOptions;
 };
+
+function SelectFilter(props) {
+    return (
+        <div className="position-relative m-3">
+            <label
+                className="position-absolute top-0 start-0 ms-3 mt-1 text-secondary small"
+                htmlFor={props.inputId}
+                style={{ zIndex: 2 }}
+            >
+                {props.label}
+            </label>
+            <Select
+                isMulti
+                inputId={props.inputId}
+                name={props.inputId}
+                options={props.optionsData[props.inputId] || []}
+                classNamePrefix="react-select"
+                className="react-select-container z-2"
+                placeholder={`Seleccionar ${props.label.toLowerCase()}`}
+                value={(props.optionsData[props.inputId] || []).filter(option =>
+                    props.selectedValues[props.inputId]?.includes(option.value)
+                )}
+                onChange={(selectedOptions) => props.handleSelectChange(props.inputId, selectedOptions)}
+            />
+        </div>
+    );
+}
+
+function TextInputFilter(props) {
+    return (
+        <div className="form-floating m-3">
+            <input
+                type={props.inputType}
+                id={props.inputId}
+                name={props.inputId}
+                className="form-control"
+                placeholder={props.label}
+                value={props.textInputs[props.inputId] || ""}
+                onChange={props.handleTextInputChange}
+            />
+            <label className="z-0" htmlFor={props.inputId}>{props.label}</label>
+        </div>
+    );
+}
+
+function RangeFilter(props) {
+    const minValue = props.minPrice || 0;
+    const maxValue = props.maxPrice || 200;
+
+    const currentMin = props.rangeInputs[props.inputId]?.min ?? "";
+    const currentMax = props.rangeInputs[props.inputId]?.max ?? "";
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        const updatedValues = {
+            min: name === "min" ? value : props.rangeInputs[props.inputId]?.min ?? "",
+            max: name === "max" ? value : props.rangeInputs[props.inputId]?.max ?? "",
+        };
+        props.handleRangeInputChange(props.inputId, [updatedValues.min, updatedValues.max]);
+    };
+
+    const createRangeForm = (props) =>{
+        return (
+            <div className="form-floating w-100">
+                <input
+                    type="number"
+                    name={props.name}
+                    id={`${props.inputId}-${props.name}`}
+                    className="form-control"
+                    placeholder={`${props.label} ${props.label2}`}
+                    value={props.value}
+                    onChange={handleChange}
+                    min={minValue}
+                    max={maxValue}
+                />
+                <label className="z-0" htmlFor={`${props.inputId}-${props.name}`}>{props.label}</label>
+            </div>
+        );
+    }
+
+    return (
+        <div className="m-3">
+            <div className="d-flex gap-2">
+                {createRangeForm({name: "min", value: currentMin, label: `Mín ${props.label.toLowerCase()}`})}
+                {createRangeForm({name: "max", value: currentMax, label: `Máx ${props.label.toLowerCase()}`})}
+            </div>
+        </div>
+    );
+}
 
 export default Filters;
