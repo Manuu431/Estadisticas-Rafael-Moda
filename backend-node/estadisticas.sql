@@ -28,7 +28,7 @@ CREATE TABLE `campaigns` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `expenses` decimal(10,2) DEFAULT NULL,
-  `benefits` decimal(10,2) DEFAULT NULL,
+  `profits` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -115,7 +115,7 @@ CREATE TABLE `seasons` (
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
   `expenses` decimal(10,2) NOT NULL,
-  `benefits` decimal(10,2) NOT NULL,
+  `profits` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

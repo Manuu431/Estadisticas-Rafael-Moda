@@ -6,17 +6,17 @@ export const FILTERS_CONFIG = {
     },
     clients: {
         label: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
-        inputId: ["id", "name", "cp", "province", "city"],
+        inputId: ["id", "name", "postal_code", "province", "city"],
         inputType: ["text", "text", "text", "select", "select"]
     },
     campaigns: {
         label: ["ID", "Nombre", "Fecha de Inicio", "Fecha de Fin", "Gastos", "Beneficios"],
-        inputId: ["id", "name", "start_date", "end_date", "expenses", "benefits"],
+        inputId: ["id", "name", "start_date", "end_date", "expenses", "profits"],
         inputType: ["text", "text", "date", "date", "range", "range"]
     },
     seasons: {
         label: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Gastos", "Beneficios"],
-        inputId: ["id", "name", "start_date", "end_date", "expenses", "benefits"],
+        inputId: ["id", "name", "start_date", "end_date", "expenses", "profits"],
         inputType: ["text", "text", "date", "date", "range", "range"]
     }
 };

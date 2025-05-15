@@ -7,16 +7,16 @@ export const CONFIG = {
     clients: {
         endpoint: "http://localhost:8000/api/clients",
         columns: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
-        values: ["id", "name", "cp", "province", "city"]
+        values: ["id", "name", "postal_code", "province", "city"]
     },
     campaigns: {
         endpoint: "http://localhost:8000/api/campaigns",
         columns: ["ID", "Nombre", "Fecha de Inicio", "Fecha de Fin", "Gastos", "Beneficios"],
-        values: ["id", "name", "start_date", "end_date", "expenses", "benefits"]
+        values: ["id", "name", "start_date", "end_date", "expenses", "profits"]
     },
     seasons: {
         endpoint: "http://localhost:8000/api/seasons",
         columns: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Gastos", "Beneficios"],
-        values: ["id", "name", "start_date", "end_date", "expenses", "benefits"]
+        values: ["id", "name", "start_date", "end_date", "expenses", "profits"]
     }
 };
