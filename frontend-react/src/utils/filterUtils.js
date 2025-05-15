@@ -1,3 +1,6 @@
+import axios from "axios";
+import qs from "qs";
+
 export const filterOptions = (response, inputId) => {
     const uniqueOptions = [...new Set(response.data.map(item => item[inputId]))];
 
@@ -34,14 +37,31 @@ export const handleTextInputChange = (e, setTextInputs) => {
     setTextInputs(prev => ({ ...prev, [id]: value }));
 };
 
-export const handleClear = (setSelectedValues, setTextInputs, setRangeInputs, onFilterChange) => {
+export const handleManualClear = async (
+    setSelectedValues,
+    setTextInputs,
+    setRangeInputs,
+    onFilterChange,
+    config,
+    filtersConfig,
+    setOptionsData
+) => {
     setSelectedValues({});
     setTextInputs({});
     setRangeInputs({});
     onFilterChange({});
+    await updateSelectOptions(config, filtersConfig, {}, setOptionsData);
 };
 
-export const handleFilter = (selectedValues, textInputs, rangeInputs, onFilterChange) => {
+export const handleManualFilter = async (
+    selectedValues,
+    textInputs,
+    rangeInputs,
+    onFilterChange,
+    config,
+    filtersConfig,
+    setOptionsData
+) => {
     const flattenedRangeInputs = {};
     for (const key in rangeInputs) {
         const range = rangeInputs[key];
@@ -55,9 +75,44 @@ export const handleFilter = (selectedValues, textInputs, rangeInputs, onFilterCh
         }
     }
 
-    onFilterChange({
+    const filters = {
         ...selectedValues,
         ...textInputs,
         ...flattenedRangeInputs,
-    });
+    };
+
+    onFilterChange(filters);
+    await updateSelectOptions(config, filtersConfig, filters, setOptionsData);
+};
+
+export const updateSelectOptions = async (
+    config,
+    filtersConfig,
+    filters,
+    setOptionsData
+) => {
+    try {
+        const queryParams = Object.fromEntries(
+            Object.entries(filters).filter(([_, value]) => value)
+        );
+        
+        const response = await axios.get(config.endpoint, {
+            params: queryParams,
+            paramsSerializer: params => qs.stringify(params, { arrayFormat: "repeat" })
+        });
+
+        filtersConfig.inputId.forEach((inputId, index) => {
+            const inputType = filtersConfig.inputType[index];
+            if (inputType === "select") {
+                const uniqueOptions = filterOptions(response, inputId);
+                const options = uniqueOptions.map(value => ({
+                    value,
+                    label: value,
+                }));
+                setOptionsData(prev => ({ ...prev, [inputId]: options }));
+            }
+        });
+    } catch (error) {
+        console.error("Error loading options:", error.response ? error.response.data : error);
+    }
 };

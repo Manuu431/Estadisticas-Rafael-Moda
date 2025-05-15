@@ -15,12 +15,14 @@ const makeGet = (endpoint) => {
 
         for (const key in filters) {
             const value = filters[key];
+            
+            if (value === undefined || value === null || value === '') continue;
 
-            if (key.endsWith('_min')) {
+            if (key.endsWith('_min') || key.startsWith('start')) {
                 const column = key.replace('_min', '');
                 conditions.push(`${column} >= ?`);
                 values.push(value);
-            } else if (key.endsWith('_max')) {
+            } else if (key.endsWith('_max') || key.startsWith('end')) {
                 const column = key.replace('_max', '');
                 conditions.push(`${column} <= ?`);
                 values.push(value);

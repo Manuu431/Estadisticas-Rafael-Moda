@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-import axios from "axios";
 import { FILTERS_CONFIG } from "../../filtersConfig.js";
 import { CONFIG } from "../../config.js";
 import { SelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 import {
-    filterOptions,
     handleSelectChange,
     handleRangeInputChange,
     handleTextInputChange,
-    handleClear,
-    handleFilter
+    handleManualClear,
+    handleManualFilter,
+    updateSelectOptions
 } from "../utils/filterUtils.js";
 
 const classCols = "col-12 col-md-6";
@@ -23,24 +22,8 @@ function Filters({ type, onFilterChange }) {
     const [textInputs, setTextInputs] = useState({});
 
     useEffect(() => {
-        filtersConfig.inputType.forEach((inputType, index) => {
-            if (inputType === "select") {
-                const inputId = filtersConfig.inputId[index];
-                axios.get(config.endpoint)
-                    .then(response => {
-                        const uniqueOptions = filterOptions(response, inputId);
-                        const options = uniqueOptions.map(value => ({
-                            value,
-                            label: value,
-                        }));
-                        setOptionsData(prev => ({ ...prev, [inputId]: options }));
-                    })
-                    .catch(error => {
-                        console.error(`Error loading options for ${inputId}:`, error.response ? error.response.data : error);
-                    });
-            }
-        });
-    }, [config.endpoint, filtersConfig.inputType, filtersConfig.inputId]);
+        updateSelectOptions(config, filtersConfig, {}, setOptionsData);
+    }, [config.endpoint]);
 
     return (
         <>
@@ -97,7 +80,17 @@ function Filters({ type, onFilterChange }) {
                     classCols={classCols}
                     divClasses="justify-content-lg-start"
                     buttonClasses="btn-secondary"
-                    onClickFunction={() => handleClear(setSelectedValues, setTextInputs, setRangeInputs, onFilterChange)}
+                    onClickFunction={() =>
+                        handleManualClear(
+                            setSelectedValues,
+                            setTextInputs,
+                            setRangeInputs,
+                            onFilterChange,
+                            config,
+                            filtersConfig,
+                            setOptionsData
+                        )
+                    }
                     iconClasses="bi bi-trash"
                     text="Netejar"
                 />
@@ -105,7 +98,17 @@ function Filters({ type, onFilterChange }) {
                     classCols={classCols}
                     divClasses="justify-content-lg-end"
                     buttonClasses="bg-orange"
-                    onClickFunction={() => handleFilter(selectedValues, textInputs, rangeInputs, onFilterChange)}
+                    onClickFunction={() =>
+                        handleManualFilter(
+                            selectedValues,
+                            textInputs,
+                            rangeInputs,
+                            onFilterChange,
+                            config,
+                            filtersConfig,
+                            setOptionsData
+                        )
+                    }
                     iconClasses="bi bi-funnel"
                     text="Filtrar"
                 />
