@@ -27,8 +27,9 @@
   background-color: var(--darkOrange) !important;
 }
 
-
-
+/**
+ * FILTERS
+ */
 
 .react-select__control {
   height: 3.75em !important;
@@ -42,24 +43,43 @@
   border-radius: 0.25rem !important;
 }
 
-
-
-.react-slider-container {
-    width: 100%;
-    height: 10px;
-    background: #ddd;
+/**
+ * PAGINATION
+ */
+.pagination {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 1rem !important;
 }
 
-.react-slider-track {
-    background: #4CAF50;
-    height: 10px;
+.pagination .page-item .page-link {
+  background-color: var(--lightGray) !important;
+  border: 1px solid var(--gray) !important;
+  color: var(--darkGray) !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
 }
 
-.react-slider-thumb {
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #fff;
+.pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+  background-color: var(--hoverGray) !important;
+  color: var(--orange) !important;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--orange) !important;
+  border-color: var(--darkOrange) !important;
+  color: white !important;
+  cursor: default !important;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: var(--lightGray) !important;
+  border: 1px solid var(--gray) !important;
+  color: var(--gray) !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+.pagination .page-item:not(.disabled) .page-link {
+  cursor: pointer !important;
 }

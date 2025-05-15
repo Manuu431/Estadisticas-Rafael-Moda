@@ -7,16 +7,40 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         }
     };
 
+    let startPage, endPage;
+
+    if (totalPages <= 3) {
+        startPage = 1;
+        endPage = totalPages;
+    } else {
+        if (currentPage === 1) {
+            startPage = 1;
+            endPage = 3;
+        } else if (currentPage === totalPages) {
+            startPage = totalPages - 2;
+            endPage = totalPages;
+        } else {
+            startPage = currentPage - 1;
+            endPage = currentPage + 1;
+        }
+    }
+
     const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = startPage; i <= endPage; i++) {
         pageNumbers.push(i);
     }
 
     return (
-        <div className="d-flex justify-content-center mt-3">
+        <div>
             <BootstrapPagination>
-                <BootstrapPagination.First onClick={() => handleClick(1)} disabled={currentPage === 1} />
-                <BootstrapPagination.Prev onClick={() => handleClick(currentPage - 1)} disabled={currentPage === 1} />
+                <BootstrapPagination.First
+                    onClick={() => handleClick(1)}
+                    disabled={currentPage === 1}
+                />
+                <BootstrapPagination.Prev
+                    onClick={() => handleClick(currentPage - 1)}
+                    disabled={currentPage === 1}
+                />
 
                 {pageNumbers.map((number) => (
                     <BootstrapPagination.Item
@@ -28,8 +52,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                     </BootstrapPagination.Item>
                 ))}
 
-                <BootstrapPagination.Next onClick={() => handleClick(currentPage + 1)} disabled={currentPage === totalPages} />
-                <BootstrapPagination.Last onClick={() => handleClick(totalPages)} disabled={currentPage === totalPages} />
+                <BootstrapPagination.Next
+                    onClick={() => handleClick(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                />
+                <BootstrapPagination.Last
+                    onClick={() => handleClick(totalPages)}
+                    disabled={currentPage === totalPages}
+                />
             </BootstrapPagination>
         </div>
     );

@@ -37,7 +37,6 @@ function Table({ type, filters = {} }) {
         fetchData();
     }, [config.endpoint, filters]);
 
-    // Slice data for current page
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
