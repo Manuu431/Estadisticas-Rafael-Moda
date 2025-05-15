@@ -1,4 +1,5 @@
 import Select from 'react-select';
+import { Button } from '../utils/smallComponents';
 
 export function SelectFilter(props) {
     return (
@@ -90,13 +91,13 @@ export function TextInputFilter(props) {
 export function FilterButton(props) {
     return (
         <div className={`${props.classCols} col-xl-2`}>
-            <div className={`d-flex justify-content-center m-3 justify-content-xl-end ${props.divClasses}`}>
-                <button
-                    className={`btn ${props.buttonClasses} ps-2 text-white w-100 w-lg-auto py-3 py-xl-2`}
-                    onClick={props.onClickFunction}
-                >
-                    <i className={`${props.iconClasses} px-1 text-white`}></i>{props.text}
-                </button>
+            <div className={`d-flex justify-content-center m-3 ${props.divClasses}`}>
+                <Button
+                     buttonClasses={props.buttonClasses}
+                     onClickFunction={props.onClickFunction}
+                     iconClasses={props.iconClasses}
+                     text={props.text}
+                />
             </div>
         </div>
     );

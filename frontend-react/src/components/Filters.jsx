@@ -11,9 +11,7 @@ import {
     updateSelectOptions
 } from "../utils/filterUtils.js";
 
-const classCols = "col-12 col-md-6";
-
-function Filters({ type, onFilterChange }) {
+function Filters({ type, onFilterChange, classCols }) {
     const filtersConfig = FILTERS_CONFIG[type];
     const config = CONFIG[type];
     const [optionsData, setOptionsData] = useState({});

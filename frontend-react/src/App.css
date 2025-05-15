@@ -15,6 +15,10 @@
     background-color: var(--gray) !important;
 }
 
+.bg-dark-gray {
+    background-color: var(--darkGray) !important;
+}
+
 .bg-light-gray {
     background-color: var(--lightGray) !important;
 }
@@ -41,6 +45,25 @@
 .react-select__multi-value {
   background-color: var(--gray) !important;
   border-radius: 0.25rem !important;
+}
+
+/**
+ * TABLE
+ */
+.table {
+  table-layout: fixed !important;
+}
+
+.table td {
+  height: 1.5rem !important;
+  padding: 0.35rem !important;
+}
+
+.table thead th {
+  background-color: var(--orange) !important;
+  font-weight: 600 !important;
+  font-size: 1em !important;
+  padding: 0.75rem !important;
 }
 
 /**
