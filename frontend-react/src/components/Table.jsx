@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CONFIG } from '../../config.js';
+import Pagination from './Pagination.jsx';
 
 function Table({ type, filters = {} }) {
     const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const itemsPerPage = 10;
     const config = CONFIG[type];
 
     useEffect(() => {
@@ -23,6 +27,8 @@ function Table({ type, filters = {} }) {
                 });
 
                 setData(response.data);
+                setCurrentPage(1);
+                setTotalPages(Math.ceil(response.data.length / itemsPerPage));
             } catch (error) {
                 console.error(`Error obtaining ${type} data:`, error.response ? error.response.data : error);
             }
@@ -30,6 +36,11 @@ function Table({ type, filters = {} }) {
 
         fetchData();
     }, [config.endpoint, filters]);
+
+    // Slice data for current page
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
         <div className="row">
@@ -43,7 +54,7 @@ function Table({ type, filters = {} }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((item, index) => (
+                        {currentData.map((item, index) => (
                             <tr key={index}>
                                 {config.values.map((columnName, colIndex) => {
                                     let formattedValue = item[columnName];
@@ -62,6 +73,11 @@ function Table({ type, filters = {} }) {
                         ))}
                     </tbody>
                 </table>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
             </div>
         </div>
     );
