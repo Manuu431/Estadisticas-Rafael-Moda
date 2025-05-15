@@ -11,7 +11,7 @@ function HeaderTable({ classCols }) {
                         <div className={`${classCols} col-xl-2`}>
                             <div className={`d-flex justify-content-center mx-3 my-3 my-md-2`}>
                                 <Button
-                                    buttonClasses={"btn-primary"}
+                                    buttonClasses={"btn-info"}
                                     onClickFunction={() => {console.log("crear")}}
                                     iconClasses={"bi-plus-circle"}
                                     text={"Crear"}

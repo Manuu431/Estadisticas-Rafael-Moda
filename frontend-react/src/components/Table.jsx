@@ -3,29 +3,34 @@ import axios from 'axios';
 import { CONFIG } from '../../config.js';
 import HeaderTable from './HeaderTable.jsx';
 import Pagination from './Pagination.jsx';
+import {
+    handleSort,
+    getSortedData,
+    formatDate,
+    serializeParams,
+    getSortIconClass
+} from '../utils/tableUtils.js';
 
 function Table({ type, filters = {}, classCols }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const itemsPerPage = 10;
     const config = CONFIG[type];
     const haveHeader = type === "campaigns" || type === "seasons";
+
+    const sortedData = getSortedData(data, sortConfig);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(config.endpoint, {
                     params: filters,
-                    paramsSerializer: params => {
-                        return Object.entries(params)
-                            .map(([key, val]) => {
-                                if (Array.isArray(val)) {
-                                    return val.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
-                                }
-                                return `${encodeURIComponent(key)}=${encodeURIComponent(val)}`;
-                            }).join('&');
-                    }
+                    paramsSerializer: serializeParams
                 });
 
                 setData(response.data);
@@ -39,10 +44,6 @@ function Table({ type, filters = {}, classCols }) {
         fetchData();
     }, [config.endpoint, filters]);
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
-
     return (
         <>
             {haveHeader ? <HeaderTable classCols={classCols} /> : null}
@@ -52,9 +53,24 @@ function Table({ type, filters = {}, classCols }) {
                         <table className="table table-bordered border-dark table-striped table-hover w-100 text-center">
                             <thead>
                                 <tr>
-                                    {config.columns.map((columnName, index) => (
-                                        <th className='text-white' key={index}>{columnName}</th>
-                                    ))}
+                                    {config.columns.map((columnName, index) => {
+                                        const columnKey = config.values[index];
+                                        const iconClass = getSortIconClass(columnKey, sortConfig);
+
+                                        return (
+                                            <th className="text-white" key={index}>
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                    <span className='fs-5'>{columnName}</span>
+                                                     <i
+                                                        className={`${iconClass} cursor-pointer fs-4`}
+                                                        onClick={() => handleSort(sortConfig, setSortConfig, columnKey)}
+                                                        title={`Ordenar por ${columnName.toLowerCase()}`}
+                                                        style={{ cursor: 'pointer' }}
+                                                    ></i>
+                                                </div>
+                                            </th>
+                                        );
+                                    })}
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,11 +80,11 @@ function Table({ type, filters = {}, classCols }) {
                                             let formattedValue = item[columnName];
 
                                             if (columnName.toLowerCase().includes("date") && item[columnName]) {
-                                                formattedValue = new Date(item[columnName]).toLocaleDateString('es-ES');
+                                                formattedValue = formatDate(item[columnName]);
                                             }
 
                                             return (
-                                                <td className="py-1" key={colIndex}>
+                                                <td className="py-1 align-middle" key={colIndex}>
                                                     {formattedValue}
                                                 </td>
                                             );
