@@ -1,15 +1,17 @@
-export const handleSort = (sortConfig, setSortConfig, key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-        direction = 'desc';
+export function handleSort(sortConfig, setSortConfig, key) {
+    if (sortConfig.key !== key) {
+        setSortConfig({ key, direction: 'asc' });
+    } else if (sortConfig.direction === 'asc') {
+        setSortConfig({ key, direction: 'desc' });
+    } else if (sortConfig.direction === 'desc') {
+        setSortConfig({ key: null, direction: 'asc' }); // reset sort
     }
-    setSortConfig({ key, direction });
-};
+}
 
-export const getSortedData = (data, sortConfig) => {
+export function getSortedData(data, sortConfig) {
+    if (!sortConfig.key) return data;
+
     return [...data].sort((a, b) => {
-        if (!sortConfig.key) return 0;
-
         const valA = a[sortConfig.key];
         const valB = b[sortConfig.key];
 
@@ -23,7 +25,7 @@ export const getSortedData = (data, sortConfig) => {
         if (aLower > bLower) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
     });
-};
+}
 
 export const formatDate = (value) => {
     return new Date(value).toLocaleDateString('es-ES');
@@ -39,9 +41,18 @@ export const serializeParams = (params) => {
         }).join('&');
 };
 
-export const getSortIconClass = (columnKey, sortConfig) => {
-    if (sortConfig.key === columnKey) {
-        return sortConfig.direction === 'asc' ? 'bi bi-sort-up' : 'bi bi-sort-down';
+export function getSortIconClass(columnKey, sortConfig) {
+    if (sortConfig.key !== columnKey) {
+        return 'bi bi-filter'; // No orden aplicado
     }
+
+    if (sortConfig.direction === 'asc') {
+        return 'bi bi-sort-up';
+    }
+
+    if (sortConfig.direction === 'desc') {
+        return 'bi bi-sort-down';
+    }
+
     return 'bi bi-filter';
-};
+}
