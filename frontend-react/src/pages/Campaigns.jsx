@@ -9,8 +9,8 @@ function Campaigns(props) {
     return (
         <>
             <Title title={props.title} />
-            <Filters type="campaigns" onFilterChange={setFilters} />
-            <Table type="campaigns" filters={filters} />
+            <Filters type="campaigns" onFilterChange={setFilters} classCols={props.classCols} />
+            <Table type="campaigns" filters={filters} classCols={props.classCols} />
         </>
     );
 }

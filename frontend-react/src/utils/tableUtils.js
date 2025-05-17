@@ -4,7 +4,7 @@ export function handleSort(sortConfig, setSortConfig, key) {
     } else if (sortConfig.direction === 'asc') {
         setSortConfig({ key, direction: 'desc' });
     } else if (sortConfig.direction === 'desc') {
-        setSortConfig({ key: null, direction: 'asc' }); // reset sort
+        setSortConfig({ key: null, direction: 'asc' });
     }
 }
 
@@ -43,7 +43,7 @@ export const serializeParams = (params) => {
 
 export function getSortIconClass(columnKey, sortConfig) {
     if (sortConfig.key !== columnKey) {
-        return 'bi bi-filter'; // No orden aplicado
+        return 'bi bi-filter';
     }
 
     if (sortConfig.direction === 'asc') {

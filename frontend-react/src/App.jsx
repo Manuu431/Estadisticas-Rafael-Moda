@@ -11,6 +11,8 @@ import Campaigns from './pages/Campaigns';
 import Expenses from './pages/Expenses';
 import Seasons from './pages/Seasons';
 
+const classFilterCols = "col-12 col-md-6";
+
 function App() {
   return (
     <Router>
@@ -21,13 +23,13 @@ function App() {
             <div className="container-fluid">
                 <Routes>
                     <Route path="/" element={<ControlPanel title="Panel de control" />} />
-                    <Route path="/ventas" element={<Sales title="Ventas" />} />
-                    <Route path="/clientes" element={<Clients title="Clientes" />} />
+                    <Route path="/ventas" element={<Sales title="Ventas" classCols={classFilterCols} />} />
+                    <Route path="/clientes" element={<Clients title="Clientes" classCols={classFilterCols} />} />
                     <Route path="/comparativa" element={<Comparison title="Comparativa" />} />
                     <Route path="/calendario" element={<Calendar title="Calendario" />} />
-                    <Route path="/campañas" element={<Campaigns title="Campañas" />} />
+                    <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />
                     <Route path="/gastos" element={<Expenses title="Gastos" />} />
-                    <Route path="/temporadas" element={<Seasons title="Temporadas" />} />
+                    <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
                 </Routes>
             </div>
           </div>

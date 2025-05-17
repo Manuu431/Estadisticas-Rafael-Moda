@@ -9,8 +9,8 @@ function Clients(props) {
     return (
         <>
             <Title title={props.title} />
-            <Filters type="clients" onFilterChange={setFilters} />
-            <Table type="clients" filters={filters} />
+            <Filters type="clients" onFilterChange={setFilters} classCols={props.classCols} />
+            <Table type="clients" filters={filters} classCols={props.classCols} />
         </> 
     );
 }

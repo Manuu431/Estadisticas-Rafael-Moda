@@ -9,8 +9,8 @@ function Seasons(props) {
     return (
         <>
             <Title title={props.title} />
-            <Filters type="seasons" onFilterChange={setFilters} />
-            <Table type="seasons" filters={filters} />
+            <Filters type="seasons" onFilterChange={setFilters} classCols={props.classCols} />
+            <Table type="seasons" filters={filters} classCols={props.classCols} />
         </>
     );
 }
