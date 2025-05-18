@@ -19,7 +19,7 @@ function ControlPanel(props) {
     const [salesData, setSalesData] = useState([]);
     const [salesByMonthAndBrand, setSalesByMonthAndBrand] = useState([]);
     const [brandList, setBrandList] = useState([]);
-    const [groupBy, setGroupBy] = useState("brand");
+    const [groupBy, setGroupBy] = useState("family");
     const [campaignsData, setCampaignsData] = useState([]);
     const today = new Date();
     today.setHours(0, 0, 0, 0);

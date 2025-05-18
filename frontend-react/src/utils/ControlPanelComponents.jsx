@@ -109,8 +109,8 @@ export function GroupBySelector({ groupBy, setGroupBy }) {
       value={groupBy}
       onChange={e => setGroupBy(e.target.value)}
     >
-      <option value="brand">Marca</option>
       <option value="family">Familia</option>
+      <option value="brand">Marca</option>
       <option value="color">Color</option>
       <option value="size">Talla</option>
     </select>
