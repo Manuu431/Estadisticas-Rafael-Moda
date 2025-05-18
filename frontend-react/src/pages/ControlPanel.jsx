@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Title from '../components/Title';
 import Card from '../components/Card';
-import { StackedBarChart, PieChart, Select } from '../utils/ControlPanelComponents.jsx';
-import { getUniqueBrands, groupSalesByMonthAndBrand, groupSalesByBrandForMonth } from '../utils/statisticsData';
+import { StackedBarChart, PieChart, Select, GroupBySelector } from '../utils/ControlPanelComponents.jsx';
+import { getUniqueBrands, groupSalesByMonthAndBrand, groupSalesByFieldForMonth } from '../utils/statisticsData';
 import { CONFIG } from '../../config.js';
 import { subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 function ControlPanel(props) {
     const [salesData, setSalesData] = useState([]);
-    const [salesByMonth, setSalesByMonth] = useState([]);
+    const [salesByMonthAndBrand, setSalesByMonthAndBrand] = useState([]);
     const [brandList, setBrandList] = useState([]);
-    const [salesByBrand, setSalesByBrand] = useState([]);
+    const [groupBy, setGroupBy] = useState("brand");
 
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
@@ -35,15 +35,11 @@ function ControlPanel(props) {
     useEffect(() => {
         if (salesData.length > 0) {
             const grouped = groupSalesByMonthAndBrand(salesData);
-            setSalesByMonth(grouped);
-
+            setSalesByMonthAndBrand(grouped);
             const brands = getUniqueBrands(salesData);
             setBrandList(brands);
-
-            const filteredBrands = groupSalesByBrandForMonth(salesData, selectedMonth);
-            setSalesByBrand(filteredBrands);
         }
-    }, [selectedMonth, salesData]);
+    }, [salesData]);
 
     return (
         <>
@@ -51,7 +47,7 @@ function ControlPanel(props) {
             <div className='row my-3'>
                 <div className='col-lg-7'>
                     <Card 
-                        element={<StackedBarChart data={salesByMonth} brands={brandList} />} 
+                        element={<StackedBarChart data={salesByMonthAndBrand} brands={brandList} />} 
                         title="Ventas por marca últimos 12 meses"
                     />
                 </div>
@@ -60,9 +56,16 @@ function ControlPanel(props) {
                 </div>
                 <div className='col-lg-7 mt-3'>
                     <Card 
-                      element={<PieChart data={salesByBrand} />} 
-                      select={<Select selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />} 
-                      title={`Ventas por marca de ${format(selectedMonth, 'MMMM', { locale: es })}`} 
+                        element={
+                            <>
+                                <div className='d-flex align-items-center justify-content-between gap-3'>
+                                    <Select selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+                                    <GroupBySelector groupBy={groupBy} setGroupBy={setGroupBy} />
+                                </div>
+                                <PieChart salesData={salesData} selectedMonth={selectedMonth} groupBy={groupBy} />
+                            </>
+                        }
+                        title={`Ventas por ${groupBy} de ${format(selectedMonth, 'MMMM', { locale: es })}`} 
                     />
                 </div>
             </div>

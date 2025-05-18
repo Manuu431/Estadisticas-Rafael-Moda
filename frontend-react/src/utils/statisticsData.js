@@ -79,12 +79,6 @@ export function groupSalesByMonthAndBrand(data) {
   return result;
 }
 
-
-
-
-
-
-
 export function groupSalesByBrand(data) {
   const brandTotals = {};
 
@@ -120,4 +114,19 @@ export function groupSalesByBrandForMonth(data, monthDate) {
     name,
     value
   }));
+}
+
+export function groupSalesByFieldForMonth(salesData, selectedMonth, field) {
+    const result = {};
+
+    for (const sale of salesData) {
+        const saleDate = typeof sale.sale_date === 'string' ? parseISO(sale.sale_date) : new Date(sale.sale_date);
+
+        if (isSameMonth(saleDate, selectedMonth)) {
+            const key = sale[field] || 'Desconocido';
+            result[key] = (result[key] || 0) + (sale.amount ?? sale.units ?? 0);
+        }
+    }
+
+    return Object.entries(result).map(([name, value]) => ({ name, value }));
 }

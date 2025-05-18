@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { groupSalesByFieldForMonth } from './statisticsData';
 
 export function StackedBarChart({ data, brands }) {
   const COLORS = [
@@ -61,76 +62,78 @@ function CustomLegend({ payload }) {
 }
 
 function renderCustomizedLabel(props) {
-  const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, name } = props;
-  const RADIAN = Math.PI / 180;
-  const radius = innerRadius + (outerRadius - innerRadius) * 1.4;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  const color = COLORS[index % COLORS.length];
-  const lineHeight = 25;
+    const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, name } = props;
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 1.4;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const color = COLORS[index % COLORS.length];
+    const lineHeight = 25;
 
-  const maxLineLength = 10;
-  const lines = name.length > maxLineLength
-      ? [name.slice(0, maxLineLength), name.slice(maxLineLength)]
-      : [name];
+    const maxLineLength = 10;
+    const lines = name.length > maxLineLength
+        ? [name.slice(0, maxLineLength), name.slice(maxLineLength)]
+        : [name];
 
-  const totalHeight = lineHeight * (lines.length + 1);
+    const totalHeight = lineHeight * (lines.length + 1);
 
-  return (
-      <text
-          x={x}
-          y={y}
-          fill={color}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize={20}
-          fontWeight={500}
-      >
-          {lines.map((line, i) => (
-              <tspan
-                  key={i}
-                  x={x}
-                  dy={i === 0 ? -totalHeight / 2 + lineHeight / 2 : lineHeight}
-              >
-              {line}
-              </tspan>
-          ))}
-          <tspan x={x} dy={lineHeight}>{`${(percent * 100).toFixed(0)}%`}</tspan>
-      </text>
-  );
+    return (
+        <text
+            x={x}
+            y={y}
+            fill={color}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize={20}
+            fontWeight={500}
+        >
+            {lines.map((line, i) => (
+                <tspan
+                    key={i}
+                    x={x}
+                    dy={i === 0 ? -totalHeight / 2 + lineHeight / 2 : lineHeight}
+                >
+                {line}
+                </tspan>
+            ))}
+            <tspan x={x} dy={lineHeight}>{`${(percent * 100).toFixed(0)}%`}</tspan>
+        </text>
+    );
 }
 
-export function PieChart({ data }) {
-  return (
-    <div className="d-flex align-items-center">
-      <ResponsiveContainer width="60%" height={500}>
-        <RechartsPieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            outerRadius={160}
-            fill="#8884d8"
-            dataKey="value"
-            label={renderCustomizedLabel}
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </RechartsPieChart>
-      </ResponsiveContainer>
+export function PieChart({ salesData, selectedMonth, groupBy }) {
+    const data = groupSalesByFieldForMonth(salesData, selectedMonth, groupBy);
 
-      <div>
-        <CustomLegend payload={data.map((entry, index) => ({
-          value: entry.name,
-          color: COLORS[index % COLORS.length],
-        }))} />
-      </div>
-    </div>
-  );
+    return (
+        <div className="d-flex align-items-center">
+            <ResponsiveContainer width="60%" height={500}>
+                <RechartsPieChart>
+                    <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={160}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={renderCustomizedLabel}
+                    >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Tooltip />
+                </RechartsPieChart>
+            </ResponsiveContainer>
+
+            <div>
+                <CustomLegend payload={data.map((entry, index) => ({
+                    value: entry.name,
+                    color: COLORS[index % COLORS.length],
+                }))} />
+            </div>
+        </div>
+    );
 }
 
 export function getOptions () {
@@ -143,6 +146,21 @@ export function getOptions () {
     }
 
     return options;
+}
+
+export function GroupBySelector({ groupBy, setGroupBy }) {
+  return (
+    <select
+      className="form-select form-select-lg border border-2 border-dark"
+      value={groupBy}
+      onChange={e => setGroupBy(e.target.value)}
+    >
+      <option value="brand">Marca</option>
+      <option value="family">Familia</option>
+      <option value="color">Color</option>
+      <option value="size">Talla</option>
+    </select>
+  );
 }
 
 export function Select({ selectedMonth, setSelectedMonth }) {
