@@ -8,6 +8,13 @@ import { DATABASE_TABLES } from "../../database.js";
 import { startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+const groupByLabels = {
+    brand: "marca",
+    family: "familia",
+    size: "talla",
+    color: "color",
+};
+
 function ControlPanel(props) {
     const [salesData, setSalesData] = useState([]);
     const [salesByMonthAndBrand, setSalesByMonthAndBrand] = useState([]);
@@ -65,7 +72,7 @@ function ControlPanel(props) {
                                 <PieChart salesData={salesData} selectedMonth={selectedMonth} groupBy={groupBy} />
                             </>
                         }
-                        title={`Ventas por ${groupBy} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
+                        title={`Ventas por ${groupByLabels[groupBy]} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
                     />
                 </div>
             </div>
