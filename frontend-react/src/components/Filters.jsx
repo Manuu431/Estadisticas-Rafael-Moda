@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FILTERS_CONFIG } from "../../filtersConfig.js";
+import { FILTERS_CONFIG } from "../../config.js";
 import { CONFIG } from "../../config.js";
 import { SelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 import {

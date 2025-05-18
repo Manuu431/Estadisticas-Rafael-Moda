@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Title from '../components/Title';
 import Card from '../components/Card';
-import { TinyBarChart, PieChart, Select } from '../utils/ControlPanelComponents.jsx';
-import { groupSalesByMonth, groupSalesByBrandForMonth } from '../utils/statisticsData';
+import { StackedBarChart, PieChart, Select } from '../utils/ControlPanelComponents.jsx';
+import { getUniqueBrands, groupSalesByMonthAndBrand, groupSalesByBrandForMonth } from '../utils/statisticsData';
 import { CONFIG } from '../../config.js';
 import { subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -11,9 +11,10 @@ import { es } from 'date-fns/locale';
 function ControlPanel(props) {
     const [salesData, setSalesData] = useState([]);
     const [salesByMonth, setSalesByMonth] = useState([]);
+    const [brandList, setBrandList] = useState([]);
     const [salesByBrand, setSalesByBrand] = useState([]);
 
-    const initialMonth = startOfMonth(subMonths(new Date(), 11));
+    const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
 
     const config = CONFIG["sales"];
@@ -23,9 +24,6 @@ function ControlPanel(props) {
             try {
                 const response = await axios.get(config.endpoint);
                 setSalesData(response.data);
-
-                const groupedByMonth = groupSalesByMonth(response.data);
-                setSalesByMonth(groupedByMonth);
             } catch (error) {
                 console.error("Error fetching sales data:", error);
             }
@@ -36,6 +34,12 @@ function ControlPanel(props) {
 
     useEffect(() => {
         if (salesData.length > 0) {
+            const grouped = groupSalesByMonthAndBrand(salesData);
+            setSalesByMonth(grouped);
+
+            const brands = getUniqueBrands(salesData);
+            setBrandList(brands);
+
             const filteredBrands = groupSalesByBrandForMonth(salesData, selectedMonth);
             setSalesByBrand(filteredBrands);
         }
@@ -46,7 +50,10 @@ function ControlPanel(props) {
             <Title title={props.title} />
             <div className='row my-3'>
                 <div className='col-lg-7'>
-                    <Card element={<TinyBarChart data={salesByMonth} />} title="Ventas últimos 12 meses" />
+                    <Card 
+                        element={<StackedBarChart data={salesByMonth} brands={brandList} />} 
+                        title="Ventas por marca últimos 12 meses"
+                    />
                 </div>
                 <div className="col-lg-5">
                     <Card element={<>A</>} title="Eventos" />

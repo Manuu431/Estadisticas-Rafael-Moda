@@ -4,6 +4,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   XAxis,
+  YAxis,
   PieChart as RechartsPieChart,
   Pie,
   Cell
@@ -11,13 +12,26 @@ import {
 import { subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-export function TinyBarChart({ data }) {
+export function StackedBarChart({ data, brands }) {
+  const COLORS = [
+    '#0088FE', '#00C49F', '#FFBB28', '#FF8042',
+    '#AA46BE', '#FF595E', '#1982C4', '#6A4C93'
+  ];
+
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data}>
-        <XAxis dataKey="month" tick={{dy: 7 }} />
+    <ResponsiveContainer width="100%" height={500}>
+      <BarChart data={data} margin={{ top: 10, bottom: 60, left: 10, right: 10 }}>
+        <XAxis dataKey="month" tick={{ dy: 10 }} angle={-45} textAnchor="end" />
+        <YAxis width={30} />
         <Tooltip />
-        <Bar dataKey="sales" fill="#DD6C10" />
+        {brands.map((brand, index) => (
+          <Bar
+            key={brand}
+            dataKey={brand}
+            stackId="a"
+            fill={COLORS[index % COLORS.length]}
+          />
+        ))}
       </BarChart>
     </ResponsiveContainer>
   );
@@ -119,7 +133,7 @@ export function PieChart({ data }) {
   );
 }
 
-const getOptions = () => {
+export function getOptions () {
     const now = new Date();
     const options = [];
 

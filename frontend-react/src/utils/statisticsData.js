@@ -1,35 +1,89 @@
-import { parseISO, format, subMonths, isSameMonth } from 'date-fns';
+import { parseISO, format, subMonths, isSameMonth, startOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
+
+export function getUniqueBrands(data) {
+  const brandSet = new Set();
+  data.forEach(sale => {
+    if (sale.brand) {
+      brandSet.add(sale.brand);
+    }
+  });
+  return Array.from(brandSet);
+}
 
 export function groupSalesByMonth(data) {
     const monthlyTotals = {};
-
+    
     data.forEach(sale => {
-        const date = parseISO(sale.sale_date);
-        const rawKey = format(date, "MMM", { locale: es });
-        const key = rawKey.charAt(0).toUpperCase() + rawKey.slice(1);
+        const date = startOfMonth(parseISO(sale.sale_date));
+        const key = format(date, "yyyy-MM");
 
         if (!monthlyTotals[key]) {
             monthlyTotals[key] = 0;
         }
+
         monthlyTotals[key] += sale.units;
     });
 
-    const monthOrder = [];
     const now = new Date();
+    const result = [];
 
     for (let i = 11; i >= 0; i--) {
-        const d = subMonths(now, i);
-        const rawMonth = format(d, "MMM", { locale: es });
-        const month = rawMonth.charAt(0).toUpperCase() + rawMonth.slice(1);
-        monthOrder.push(month);
+        const date = startOfMonth(subMonths(now, i));
+        const key = format(date, "yyyy-MM");
+        const label = format(date, "MMMM", { locale: es });
+
+        result.push({
+            month: label.charAt(0).toUpperCase() + label.slice(1),
+            sales: monthlyTotals[key] || 0,
+        });
     }
-    
-    return monthOrder.map(month => ({
-        month,
-        sales: monthlyTotals[month] || 0,
-    }));
+
+    return result;
 }
+
+export function groupSalesByMonthAndBrand(data) {
+  const monthlyBrandTotals = {};
+
+  data.forEach(sale => {
+    const date = startOfMonth(parseISO(sale.sale_date));
+    const key = format(date, "yyyy-MM");
+    const brand = sale.brand;
+
+    if (!monthlyBrandTotals[key]) {
+      monthlyBrandTotals[key] = {};
+    }
+
+    if (!monthlyBrandTotals[key][brand]) {
+      monthlyBrandTotals[key][brand] = 0;
+    }
+
+    monthlyBrandTotals[key][brand] += sale.units;
+  });
+
+  const now = new Date();
+  const result = [];
+
+  for (let i = 11; i >= 0; i--) {
+    const date = startOfMonth(subMonths(now, i));
+    const key = format(date, "yyyy-MM");
+    const label = format(date, "MMMM", { locale: es });
+    const brands = monthlyBrandTotals[key] || {};
+
+    result.push({
+      month: label.charAt(0).toUpperCase() + label.slice(1),
+      ...brands
+    });
+  }
+
+  return result;
+}
+
+
+
+
+
+
 
 export function groupSalesByBrand(data) {
   const brandTotals = {};
