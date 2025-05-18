@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import Logo from '../components/Logo';
 import '../App.css';
-import { MENU_ITEMS } from '../../info';
+import { MENU_ITEMS } from '../../info.js';
 
 function Sidebar() {
   return (

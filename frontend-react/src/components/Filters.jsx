@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FILTERS_CONFIG } from "../../config.js";
-import { CONFIG } from "../../config.js";
+import { DATABASE_TABLES } from "../../database.js"
+
 import { SelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 import {
     handleSelectChange,
@@ -12,23 +12,22 @@ import {
 } from "../utils/filterUtils.js";
 
 function Filters({ type, onFilterChange, classCols }) {
-    const filtersConfig = FILTERS_CONFIG[type];
-    const config = CONFIG[type];
+    const DATABASE_TABLE = DATABASE_TABLES[type];
     const [optionsData, setOptionsData] = useState({});
     const [selectedValues, setSelectedValues] = useState({});
     const [rangeInputs, setRangeInputs] = useState({});
     const [textInputs, setTextInputs] = useState({});
 
     useEffect(() => {
-        updateSelectOptions(config, filtersConfig, {}, setOptionsData);
-    }, [config.endpoint]);
+        updateSelectOptions(DATABASE_TABLE, {}, setOptionsData);
+    }, [DATABASE_TABLE.endpoint]);
 
     return (
         <>
             <div className="row bg-gray py-2">
-                {filtersConfig.label.map((label, index) => {
-                    const inputId = filtersConfig.inputId[index];
-                    const inputType = filtersConfig.inputType[index];
+                {DATABASE_TABLE.filters.label.map((label, index) => {
+                    const inputId = DATABASE_TABLE.filters.inputId[index];
+                    const inputType = DATABASE_TABLE.filters.inputType[index];
 
                     return (
                         <div className={`${classCols} col-xl-4`} key={index}>
@@ -51,8 +50,8 @@ function Filters({ type, onFilterChange, classCols }) {
                                         handleRangeInputChange={(id, values) =>
                                             handleRangeInputChange(id, values, setRangeInputs)
                                         }
-                                        minPrice={config.minPrice}
-                                        maxPrice={config.maxPrice}
+                                        minPrice={DATABASE_TABLE.tables.minPrice}
+                                        maxPrice={DATABASE_TABLE.tables.maxPrice}
                                     />
                                 ) : (
                                     <TextInputFilter
@@ -84,8 +83,7 @@ function Filters({ type, onFilterChange, classCols }) {
                             setTextInputs,
                             setRangeInputs,
                             onFilterChange,
-                            config,
-                            filtersConfig,
+                            DATABASE_TABLE,
                             setOptionsData
                         )
                     }
@@ -102,8 +100,7 @@ function Filters({ type, onFilterChange, classCols }) {
                             textInputs,
                             rangeInputs,
                             onFilterChange,
-                            config,
-                            filtersConfig,
+                            DATABASE_TABLE,
                             setOptionsData
                         )
                     }

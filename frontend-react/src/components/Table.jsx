@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { CONFIG } from '../../config.js';
+import { DATABASE_TABLES } from "../../database.js";
 import HeaderTable from './HeaderTable.jsx';
 import Pagination from './Pagination.jsx';
 import {
@@ -17,7 +17,7 @@ function Table({ type, filters = {}, classCols }) {
     const [totalPages, setTotalPages] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const itemsPerPage = 10;
-    const config = CONFIG[type];
+    const DATABASE_TABLE = DATABASE_TABLES[type];
     const haveHeader = type === "campaigns" || type === "seasons";
 
     const sortedData = getSortedData(data, sortConfig);
@@ -28,7 +28,7 @@ function Table({ type, filters = {}, classCols }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(config.endpoint, {
+                const response = await axios.get(DATABASE_TABLE.endpoint, {
                     params: filters,
                     paramsSerializer: serializeParams
                 });
@@ -42,7 +42,7 @@ function Table({ type, filters = {}, classCols }) {
         };
 
         fetchData();
-    }, [config.endpoint, filters]);
+    }, [DATABASE_TABLE.endpoint, filters]);
 
     return (
         <>
@@ -53,8 +53,8 @@ function Table({ type, filters = {}, classCols }) {
                         <table className="table table-bordered border-dark table-striped table-hover w-100 text-center">
                             <thead>
                                 <tr>
-                                    {config.columns.map((columnName, index) => {
-                                        const columnKey = config.values[index];
+                                    {DATABASE_TABLE.tables.columns.map((columnName, index) => {
+                                        const columnKey = DATABASE_TABLE.tables.values[index];
                                         const iconClass = getSortIconClass(columnKey, sortConfig);
 
                                         return (
@@ -76,7 +76,7 @@ function Table({ type, filters = {}, classCols }) {
                             <tbody>
                                 {currentData.map((item, index) => (
                                     <tr key={index}>
-                                        {config.values.map((columnName, colIndex) => {
+                                        {DATABASE_TABLE.tables.values.map((columnName, colIndex) => {
                                             let formattedValue = item[columnName];
 
                                             if (columnName.toLowerCase().includes("date") && item[columnName]) {

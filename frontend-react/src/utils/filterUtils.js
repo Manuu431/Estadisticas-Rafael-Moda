@@ -42,15 +42,14 @@ export const handleManualClear = async (
     setTextInputs,
     setRangeInputs,
     onFilterChange,
-    config,
-    filtersConfig,
+    databaseTable,
     setOptionsData
 ) => {
     setSelectedValues({});
     setTextInputs({});
     setRangeInputs({});
     onFilterChange({});
-    await updateSelectOptions(config, filtersConfig, {}, setOptionsData);
+    await updateSelectOptions(databaseTable, {}, setOptionsData);
 };
 
 export const handleManualFilter = async (
@@ -58,8 +57,7 @@ export const handleManualFilter = async (
     textInputs,
     rangeInputs,
     onFilterChange,
-    config,
-    filtersConfig,
+    databaseTable,
     setOptionsData
 ) => {
     const flattenedRangeInputs = {};
@@ -82,12 +80,11 @@ export const handleManualFilter = async (
     };
 
     onFilterChange(filters);
-    await updateSelectOptions(config, filtersConfig, filters, setOptionsData);
+    await updateSelectOptions(databaseTable, filters, setOptionsData);
 };
 
 export const updateSelectOptions = async (
-    config,
-    filtersConfig,
+    databaseTable,
     filters,
     setOptionsData
 ) => {
@@ -96,13 +93,13 @@ export const updateSelectOptions = async (
             Object.entries(filters).filter(([_, value]) => value)
         );
         
-        const response = await axios.get(config.endpoint, {
+        const response = await axios.get(databaseTable.endpoint, {
             params: queryParams,
             paramsSerializer: params => qs.stringify(params, { arrayFormat: "repeat" })
         });
 
-        filtersConfig.inputId.forEach((inputId, index) => {
-            const inputType = filtersConfig.inputType[index];
+        databaseTable.filters.inputId.forEach((inputId, index) => {
+            const inputType = databaseTable.filters.inputType[index];
             if (inputType === "select") {
                 const uniqueOptions = filterOptions(response, inputId);
                 const options = uniqueOptions.map(value => ({

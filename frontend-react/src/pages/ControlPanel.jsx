@@ -4,7 +4,7 @@ import Title from '../components/Title';
 import Card from '../components/Card';
 import { StackedBarChart, PieChart, Select, GroupBySelector } from '../utils/ControlPanelComponents.jsx';
 import { getUniqueBrands, groupSalesByMonthAndBrand, groupSalesByFieldForMonth } from '../utils/statisticsData';
-import { CONFIG } from '../../config.js';
+import { DATABASE_TABLES } from "../../database.js";
 import { subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -17,12 +17,12 @@ function ControlPanel(props) {
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
 
-    const config = CONFIG["sales"];
+    const DATABASE_TABLE = DATABASE_TABLES["sales"].tables;
 
     useEffect(() => {
         const fetchSales = async () => {
             try {
-                const response = await axios.get(config.endpoint);
+                const response = await axios.get(DATABASE_TABLE.endpoint);
                 setSalesData(response.data);
             } catch (error) {
                 console.error("Error fetching sales data:", error);
