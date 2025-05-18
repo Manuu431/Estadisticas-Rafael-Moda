@@ -66,7 +66,7 @@ export function PieChart({ salesData, selectedMonth, groupBy }) {
 
     return (
         <div className="d-flex align-items-center">
-            <ResponsiveContainer width="60%" height={500}>
+            <ResponsiveContainer width="60%" height={460}>
                 <RechartsPieChart>
                     <Pie
                         data={data}
@@ -122,15 +122,21 @@ export function Select({ selectedMonth, setSelectedMonth }) {
 
     return (
         <select
-            className="form-select form-select-lg border border-2 border-dark color-dark-gray"
+            className="form-select form-select-lg border border-2 border-dark"
             value={selectedMonth.toISOString()}
             onChange={e => setSelectedMonth(startOfMonth(new Date(e.target.value)))}
         >
             {options.map(date => (
                 <option key={date.toISOString()} value={date.toISOString()}>
-                    {format(date, "MMMM yyyy", { locale: es })}
+                    {getFormatDate(date)}
                 </option>
             ))}
         </select>
     );
+}
+
+function getFormatDate(date) {
+    let formatted = format(date, "MMMM yyyy", { locale: es });
+    formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    return formatted;
 }
