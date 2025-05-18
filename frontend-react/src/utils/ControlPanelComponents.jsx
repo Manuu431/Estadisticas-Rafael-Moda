@@ -141,6 +141,8 @@ function getFormatDate(date) {
     return formatted;
 }
 
+import { useNavigate } from 'react-router-dom';
+
 export function Campaigns({ data, startIndex = 0 }) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -149,13 +151,20 @@ export function Campaigns({ data, startIndex = 0 }) {
         .filter(campaign => new Date(campaign.start_date) >= today)
         .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
         .slice(startIndex, startIndex + 10);
+    
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate('/campañas');
+    };
 
     return (
         <div className="d-flex flex-column gap-2">
             {visible.map((item, index) => (
                 <div
                     key={index}
-                    className="p-3 border rounded bg-light shadow-sm d-flex justify-content-between align-items-center"
+                    className="campaign-card p-3 border rounded shadow-sm d-flex justify-content-between align-items-center"
+                    onClick={() => handleClick()}
+                    style={{ cursor: 'pointer' }}
                 >
                     <span className="fs-5 fw-bold">{item.name}</span>
                     <span className="fs-5">{formatDate(item.start_date)}</span>

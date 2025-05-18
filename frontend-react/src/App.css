@@ -114,3 +114,19 @@
 .pagination .page-item:not(.disabled) .page-link {
   cursor: pointer !important;
 }
+
+/**
+ * PANEL CONTROL - CAMPAIGNS
+*/
+.campaign-card {
+    background-color: var(--lightGray) !important;
+    transition: background-color 0.2s ease, transform 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.campaign-card:hover {
+    background-color: var(--hoverGray) !important;
+    transform: scale(1.01) !important;
+    color: var(--orange) !important;
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.5) !important;
+}
