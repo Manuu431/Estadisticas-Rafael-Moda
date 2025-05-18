@@ -5,7 +5,8 @@ import Card from '../components/Card';
 import { TinyBarChart, PieChart, Select } from '../utils/ControlPanelComponents.jsx';
 import { groupSalesByMonth, groupSalesByBrandForMonth } from '../utils/statisticsData';
 import { CONFIG } from '../../config.js';
-import { subMonths, startOfMonth } from 'date-fns';
+import { subMonths, startOfMonth, format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 function ControlPanel(props) {
     const [salesData, setSalesData] = useState([]);
@@ -54,7 +55,7 @@ function ControlPanel(props) {
                     <Card 
                       element={<PieChart data={salesByBrand} />} 
                       select={<Select selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />} 
-                      title="Ventas por marca" 
+                      title={`Ventas por marca de ${format(selectedMonth, 'MMMM', { locale: es })}`} 
                     />
                 </div>
             </div>

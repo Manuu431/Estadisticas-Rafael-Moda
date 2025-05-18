@@ -119,26 +119,32 @@ export function PieChart({ data }) {
   );
 }
 
+const getOptions = () => {
+    const now = new Date();
+    const options = [];
+
+    for (let i = 11; i >= 0; i--) {
+        const d = startOfMonth(subMonths(now, i));
+        options.push(d);
+    }
+
+    return options;
+}
+
 export function Select({ selectedMonth, setSelectedMonth }) {
-  const now = new Date();
-  const options = [];
+    const options = getOptions();
 
-  for (let i = 11; i >= 0; i--) {
-    const d = startOfMonth(subMonths(now, i));
-    options.push(d);
-  }
-
-  return (
-    <select
-      className="form-select form-select-lg border border-2 border-dark color-dark-gray"
-      value={selectedMonth.toISOString()}
-      onChange={e => setSelectedMonth(startOfMonth(new Date(e.target.value)))}
-    >
-      {options.map(date => (
-        <option key={date.toISOString()} value={date.toISOString()}>
-          {format(date, "MMMM yyyy", { locale: es })}
-        </option>
-      ))}
-    </select>
-  );
+    return (
+        <select
+            className="form-select form-select-lg border border-2 border-dark color-dark-gray"
+            value={selectedMonth.toISOString()}
+            onChange={e => setSelectedMonth(startOfMonth(new Date(e.target.value)))}
+        >
+            {options.map(date => (
+                <option key={date.toISOString()} value={date.toISOString()}>
+                    {format(date, "MMMM yyyy", { locale: es })}
+                </option>
+            ))}
+        </select>
+    );
 }

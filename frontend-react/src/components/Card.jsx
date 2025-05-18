@@ -9,7 +9,7 @@ export default function Card(props) {
                     {props.select}
                 </div>
             </h3>
-            <div className="card-body">
+            <div className="card-body bg-light-gray">
                 {props.element}
             </div>
         </div>
