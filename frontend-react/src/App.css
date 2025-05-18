@@ -44,75 +44,83 @@
  */
 
 .react-select__control {
-  height: 3.75em !important;
-  padding-left: 0.2em !important; 
-  border: 1px solid #ced4da !important;
-  border-radius: 0.5em !important;
+    height: 3.75em !important;
+    padding-left: 0.2em !important; 
+    border: 1px solid #ced4da !important;
+    border-radius: 0.5em !important;
 }
 
 .react-select__multi-value {
-  background-color: var(--gray) !important;
-  border-radius: 0.25rem !important;
+    background-color: var(--gray) !important;
+    border-radius: 0.25rem !important;
 }
 
 /**
  * TABLE
  */
 .table {
-  table-layout: fixed !important;
+    table-layout: fixed !important;
 }
 
 .table td {
-  height: 1.5rem !important;
-  padding: 0.35rem !important;
+    height: 1.5rem !important;
+    padding: 0.35rem !important;
 }
 
 .table thead th {
-  background-color: var(--orange) !important;
-  font-weight: 600 !important;
-  font-size: 1em !important;
-  padding: 0.75rem !important;
+    background-color: var(--orange) !important;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    padding: 0.75rem !important;
+}
+
+.tableIcon:hover {
+    color: var(--orange) !important;
+}
+
+.tableIcon:active {
+    color: var(--darkOrange) !important;
 }
 
 /**
  * PAGINATION
  */
 .pagination {
-  display: flex !important;
-  justify-content: center !important;
-  margin-top: 1rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 1rem !important;
 }
 
 .pagination .page-item .page-link {
-  background-color: var(--lightGray) !important;
-  border: 1px solid var(--gray) !important;
-  color: var(--darkGray) !important;
-  cursor: pointer !important;
-  transition: background-color 0.2s ease !important;
+    background-color: var(--lightGray) !important;
+    border: 1px solid var(--gray) !important;
+    color: var(--darkGray) !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
 }
 
 .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
-  background-color: var(--hoverGray) !important;
-  color: var(--orange) !important;
+    background-color: var(--hoverGray) !important;
+    color: var(--orange) !important;
 }
 
 .pagination .page-item.active .page-link {
-  background-color: var(--orange) !important;
-  border-color: var(--darkOrange) !important;
-  color: white !important;
-  cursor: default !important;
+    background-color: var(--orange) !important;
+    border-color: var(--darkOrange) !important;
+    color: white !important;
+    cursor: default !important;
 }
 
 .pagination .page-item.disabled .page-link {
-  background-color: var(--lightGray) !important;
-  border: 1px solid var(--gray) !important;
-  color: var(--gray) !important;
-  cursor: not-allowed !important;
-  pointer-events: none !important;
+    background-color: var(--lightGray) !important;
+    border: 1px solid var(--gray) !important;
+    color: var(--gray) !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
 }
 
 .pagination .page-item:not(.disabled) .page-link {
-  cursor: pointer !important;
+    cursor: pointer !important;
 }
 
 /**

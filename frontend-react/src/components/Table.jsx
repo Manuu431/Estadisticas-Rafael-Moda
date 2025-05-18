@@ -3,6 +3,7 @@ import axios from 'axios';
 import { DATABASE_TABLES } from "../../database.js";
 import HeaderTable from './HeaderTable.jsx';
 import Pagination from './Pagination.jsx';
+import Modal from './Modal.jsx';
 import {
     handleSort,
     getSortedData,
@@ -10,6 +11,7 @@ import {
     serializeParams,
     getSortIconClass
 } from '../utils/tableUtils.js';
+import { TableIconButton } from '../utils/smallComponents.jsx'
 
 function Table({ type, filters = {}, classCols }) {
     const [data, setData] = useState([]);
@@ -58,7 +60,7 @@ function Table({ type, filters = {}, classCols }) {
                                         const iconClass = getSortIconClass(columnKey, sortConfig);
 
                                         return (
-                                            <th className="text-white" key={index}>
+                                            <th className="text-white align-middle" key={index}>
                                                 <div className="d-flex justify-content-between align-items-center ms-2">
                                                     <span className='fs-5'>{columnName}</span>
                                                      <i
@@ -71,6 +73,13 @@ function Table({ type, filters = {}, classCols }) {
                                             </th>
                                         );
                                     })}
+                                    {(type === "campaigns" || type === "seasons") && (
+                                        <th className="text-white align-middle">
+                                            <div className="d-flex justify-content-center">
+                                                <span className='fs-5'>Acciones</span>
+                                            </div>
+                                        </th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,6 +98,16 @@ function Table({ type, filters = {}, classCols }) {
                                                 </td>
                                             );
                                         })}
+
+                                        {(type === "campaigns" || type === "seasons") && (
+                                            <td className="py-1 align-middle">
+                                                <div className="d-flex justify-content-center gap-4">
+                                                    <TableIconButton onClickFunction={() => {visualize()}} title="visualizar" classIcon="bi bi-eye" />
+                                                    <TableIconButton onClickFunction={() => {edit()}} title="editar" classIcon="bi bi-pencil-square" />
+                                                    <TableIconButton onClickFunction={() => {remove()}} title="eliminar" classIcon="bi bi-trash" />
+                                                </div>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>
@@ -103,6 +122,18 @@ function Table({ type, filters = {}, classCols }) {
             </div>
         </>
     );
+}
+
+function visualize() {
+    console.log("visualizar");
+}
+
+function edit() {
+    console.log("editar");
+}
+
+function remove() {
+    alert("eliminar");
 }
 
 export default Table;
