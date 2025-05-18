@@ -142,7 +142,11 @@ function getFormatDate(date) {
 }
 
 export function Campaigns({ data, startIndex = 0 }) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const visible = [...data]
+        .filter(campaign => new Date(campaign.start_date) >= today)
         .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
         .slice(startIndex, startIndex + 10);
 

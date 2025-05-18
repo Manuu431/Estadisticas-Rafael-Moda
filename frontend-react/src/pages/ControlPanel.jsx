@@ -21,6 +21,9 @@ function ControlPanel(props) {
     const [brandList, setBrandList] = useState([]);
     const [groupBy, setGroupBy] = useState("brand");
     const [campaignsData, setCampaignsData] = useState([]);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const upcomingCampaigns = campaignsData.filter(c => new Date(c.start_date) >= today);
     const [campaignIndex, setCampaignIndex] = useState(0);
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
@@ -54,26 +57,11 @@ function ControlPanel(props) {
         <>
             <Title title={props.title} />
             <div className='row my-3'>
-                <div className='col-lg-7'>
+                <div className='col-lg-7 d-flex flex-column gap-3'>
                     <Card 
                         element={<StackedBarChart data={salesByMonthAndBrand} brands={brandList} />} 
                         title="Ventas por marca últimos 12 meses"
                     />
-                </div>
-                <div className="col-lg-5">
-                    <Card 
-                        element={<Campaigns data={campaignsData} startIndex={campaignIndex} />} 
-                        secondaryElement={
-                            <CampaignButtons 
-                            currentIndex={campaignIndex} 
-                            setCurrentIndex={setCampaignIndex} 
-                            total={campaignsData.length} 
-                            />
-                        } 
-                        title="Campañas" 
-                    />
-                </div>
-                <div className='col-lg-7 mt-3'>
                     <Card 
                         element={
                             <>
@@ -85,6 +73,19 @@ function ControlPanel(props) {
                             </>
                         }
                         title={`Ventas por ${groupByLabels[groupBy]} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
+                    />
+                </div>
+                <div className="col-lg-5">
+                    <Card
+                        element={<Campaigns data={campaignsData} startIndex={campaignIndex} />}
+                        secondaryElement={
+                            <CampaignButtons
+                                currentIndex={campaignIndex}
+                                setCurrentIndex={setCampaignIndex}
+                                total={upcomingCampaigns.length}
+                            />
+                        } 
+                        title="Proximas campañas" 
                     />
                 </div>
             </div>
