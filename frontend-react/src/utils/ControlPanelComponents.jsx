@@ -140,3 +140,74 @@ function getFormatDate(date) {
     formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
     return formatted;
 }
+
+export function Campaigns({ data, startIndex = 0 }) {
+    const visible = [...data]
+        .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+        .slice(startIndex, startIndex + 10);
+
+    return (
+        <div className="d-flex flex-column gap-2">
+            {visible.map((item, index) => (
+                <div
+                    key={index}
+                    className="p-3 border rounded bg-light shadow-sm d-flex justify-content-between align-items-center"
+                >
+                    <span className="fs-5 fw-bold">{item.name}</span>
+                    <span className="fs-5">{formatDate(item.start_date)}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const formatted = format(date, "d MMM yyyy", { locale: es });
+
+    return formatted.replace(/(\d+)\s(\p{L}+)(\s\d{4})/, (_, d, month, y) => {
+        return `${d} ${month.charAt(0).toUpperCase() + month.slice(1)}${y}`;
+    });
+}
+
+export function CampaignButtons({ currentIndex, setCurrentIndex, total }) {
+    const campaignNumber = 10;
+    
+    const handleUp = () => {
+        setCurrentIndex((prev) => Math.max(prev - campaignNumber, 0));
+    };
+
+    const handleDown = () => {
+        setCurrentIndex((prev) => (prev + campaignNumber < total ? prev + campaignNumber : prev));
+    };
+
+    return (
+        <div className="d-flex flex-column me-2">
+            <CampaignButton
+                onClickFunction={handleUp}
+                disabled={currentIndex === 0}
+                title="previous campaigns"
+                classIcon="bi bi-caret-up-fill"
+            />
+            <CampaignButton
+                onClickFunction={handleDown}
+                disabled={currentIndex + campaignNumber >= total}
+                title="next campaigns"
+                classIcon="bi bi-caret-down-fill"
+            />
+        </div>
+    );
+}
+
+function CampaignButton (props) {
+    return (
+        <button 
+            className="btn btn-sm py-0 d-flex justify-content-center align-items-center border-orange" 
+            onClick={props.onClickFunction}
+            disabled={props.disabled}
+            title={props.title}
+        >
+            <i className={props.classIcon}></i>
+        </button>
+    );
+}

@@ -6,7 +6,7 @@ export default function Card(props) {
                     {props.title}
                 </div>
                 <div className="d-flex align-items-center">
-                    {props.select}
+                    {props.secondaryElement}
                 </div>
             </h3>
             <div className="card-body bg-light-gray">

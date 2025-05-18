@@ -11,6 +11,10 @@
     background-color: var(--orange) !important;
 }
 
+.border-orange {
+    border-color: var(--orange) !important;
+}
+
 .bg-gray {
     background-color: var(--gray) !important;
 }

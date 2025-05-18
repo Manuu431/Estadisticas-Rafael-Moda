@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Title from '../components/Title';
 import Card from '../components/Card';
-import { StackedBarChart, PieChart, Select, GroupBySelector } from '../utils/ControlPanelComponents.jsx';
+import { StackedBarChart, Select, GroupBySelector, PieChart, Campaigns, CampaignButtons } from '../utils/ControlPanelComponents.jsx';
 import { getUniqueBrands, groupSalesByMonthAndBrand } from '../utils/statisticsData';
 import { DATABASE_TABLES } from "../../database.js";
 import { startOfMonth, format } from 'date-fns';
@@ -20,17 +20,19 @@ function ControlPanel(props) {
     const [salesByMonthAndBrand, setSalesByMonthAndBrand] = useState([]);
     const [brandList, setBrandList] = useState([]);
     const [groupBy, setGroupBy] = useState("brand");
-
+    const [campaignsData, setCampaignsData] = useState([]);
+    const [campaignIndex, setCampaignIndex] = useState(0);
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
-
-    const DATABASE_TABLE = DATABASE_TABLES["sales"];
 
     useEffect(() => {
         const fetchSales = async () => {
             try {
-                const response = await axios.get(DATABASE_TABLE.endpoint);
-                setSalesData(response.data);
+                const responseSales = await axios.get(DATABASE_TABLES["sales"].endpoint);
+                setSalesData(responseSales.data);
+
+                const responseCampaigns = await axios.get(DATABASE_TABLES["campaigns"].endpoint);
+                setCampaignsData(responseCampaigns.data);
             } catch (error) {
                 console.error("Error fetching sales data:", error);
             }
@@ -59,7 +61,17 @@ function ControlPanel(props) {
                     />
                 </div>
                 <div className="col-lg-5">
-                    <Card element={<>A</>} title="Eventos" />
+                    <Card 
+                        element={<Campaigns data={campaignsData} startIndex={campaignIndex} />} 
+                        secondaryElement={
+                            <CampaignButtons 
+                            currentIndex={campaignIndex} 
+                            setCurrentIndex={setCampaignIndex} 
+                            total={campaignsData.length} 
+                            />
+                        } 
+                        title="Campañas" 
+                    />
                 </div>
                 <div className='col-lg-7 mt-3'>
                     <Card 
