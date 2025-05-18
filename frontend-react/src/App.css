@@ -19,6 +19,10 @@
     background-color: var(--darkGray) !important;
 }
 
+.color-dark-gray {
+    color: var(--darkGray) !important;
+}
+
 .bg-light-gray {
     background-color: var(--lightGray) !important;
 }

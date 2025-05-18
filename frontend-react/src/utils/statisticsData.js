@@ -1,4 +1,4 @@
-import { parseISO, format, subMonths } from 'date-fns';
+import { parseISO, format, subMonths, isSameMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export function groupSalesByMonth(data) {
@@ -40,6 +40,26 @@ export function groupSalesByBrand(data) {
       brandTotals[brand] = 0;
     }
     brandTotals[brand] += sale.units;
+  });
+
+  return Object.entries(brandTotals).map(([name, value]) => ({
+    name,
+    value
+  }));
+}
+
+export function groupSalesByBrandForMonth(data, monthDate) {
+  const brandTotals = {};
+
+  data.forEach(sale => {
+    const saleDate = parseISO(sale.sale_date);
+    if (isSameMonth(saleDate, monthDate)) {
+      const brand = sale.brand;
+      if (!brandTotals[brand]) {
+        brandTotals[brand] = 0;
+      }
+      brandTotals[brand] += sale.units;
+    }
   });
 
   return Object.entries(brandTotals).map(([name, value]) => ({

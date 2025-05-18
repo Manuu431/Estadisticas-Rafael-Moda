@@ -8,6 +8,8 @@ import {
   Pie,
   Cell
 } from "recharts";
+import { subMonths, startOfMonth, format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export function TinyBarChart({ data }) {
   return (
@@ -47,7 +49,7 @@ function CustomLegend({ payload }) {
 function renderCustomizedLabel(props) {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, name } = props;
   const RADIAN = Math.PI / 180;
-  const radius = innerRadius + (outerRadius - innerRadius) * 1.3;
+  const radius = innerRadius + (outerRadius - innerRadius) * 1.4;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
   const color = COLORS[index % COLORS.length];
@@ -114,5 +116,29 @@ export function PieChart({ data }) {
         }))} />
       </div>
     </div>
+  );
+}
+
+export function Select({ selectedMonth, setSelectedMonth }) {
+  const now = new Date();
+  const options = [];
+
+  for (let i = 11; i >= 0; i--) {
+    const d = startOfMonth(subMonths(now, i));
+    options.push(d);
+  }
+
+  return (
+    <select
+      className="form-select form-select-lg border border-2 border-dark color-dark-gray"
+      value={selectedMonth.toISOString()}
+      onChange={e => setSelectedMonth(startOfMonth(new Date(e.target.value)))}
+    >
+      {options.map(date => (
+        <option key={date.toISOString()} value={date.toISOString()}>
+          {format(date, "MMMM yyyy", { locale: es })}
+        </option>
+      ))}
+    </select>
   );
 }
