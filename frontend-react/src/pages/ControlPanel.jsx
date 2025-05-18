@@ -3,9 +3,9 @@ import axios from 'axios';
 import Title from '../components/Title';
 import Card from '../components/Card';
 import { StackedBarChart, PieChart, Select, GroupBySelector } from '../utils/ControlPanelComponents.jsx';
-import { getUniqueBrands, groupSalesByMonthAndBrand, groupSalesByFieldForMonth } from '../utils/statisticsData';
+import { getUniqueBrands, groupSalesByMonthAndBrand } from '../utils/statisticsData';
 import { DATABASE_TABLES } from "../../database.js";
-import { subMonths, startOfMonth, format } from 'date-fns';
+import { startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 function ControlPanel(props) {
@@ -17,7 +17,7 @@ function ControlPanel(props) {
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
 
-    const DATABASE_TABLE = DATABASE_TABLES["sales"].tables;
+    const DATABASE_TABLE = DATABASE_TABLES["sales"];
 
     useEffect(() => {
         const fetchSales = async () => {
@@ -65,7 +65,7 @@ function ControlPanel(props) {
                                 <PieChart salesData={salesData} selectedMonth={selectedMonth} groupBy={groupBy} />
                             </>
                         }
-                        title={`Ventas por ${groupBy} de ${format(selectedMonth, 'MMMM', { locale: es })}`} 
+                        title={`Ventas por ${groupBy} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
                     />
                 </div>
             </div>

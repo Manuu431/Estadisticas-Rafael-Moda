@@ -2,13 +2,13 @@ export const DATABASE_TABLES = {
     sales: {
         endpoint: "http://localhost:8000/api/sales",
         tables: {
-            columns: ["ID", "Familia", "Color", "Talla", "Marca", "PVD", "PVP", "Unidades", "Descuento", "Beneficio", "Fecha de venta"],
-            values: ["id", "family", "color", "size", "brand", "pvd", "pvp", "units", "discount", "profit", "sale_date"],
+            columns: ["ID", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio"],
+            values: ["id", "family", "size", "brand", "pvd", "pvp", "discount", "profit"],
         },
         filters: {
-            label: ["ID", "Familia", "Color", "Talla", "Marca", "PVD", "PVP", "Unidades", "Descuento", "Beneficio", "Fecha de venta"],
-            inputId: ["id", "family", "color", "size", "brand", "pvd", "pvp", "units", "discount", "profit", "sale_date"],
-            inputType: ["text", "select", "select", "select", "select", "range", "range", "text", "range", "range", "date"]
+            label: ["ID", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio"],
+            inputId: ["id", "family", "size", "brand", "pvd", "pvp", "discount", "profit"],
+            inputType: ["text", "select", "select", "select", "range", "range", "range", "range"]
         }
     },
     clients: {

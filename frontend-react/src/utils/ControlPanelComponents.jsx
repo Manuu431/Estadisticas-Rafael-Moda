@@ -61,46 +61,6 @@ function CustomLegend({ payload }) {
   );
 }
 
-function renderCustomizedLabel(props) {
-    const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, name } = props;
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 1.4;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    const color = COLORS[index % COLORS.length];
-    const lineHeight = 25;
-
-    const maxLineLength = 10;
-    const lines = name.length > maxLineLength
-        ? [name.slice(0, maxLineLength), name.slice(maxLineLength)]
-        : [name];
-
-    const totalHeight = lineHeight * (lines.length + 1);
-
-    return (
-        <text
-            x={x}
-            y={y}
-            fill={color}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize={20}
-            fontWeight={500}
-        >
-            {lines.map((line, i) => (
-                <tspan
-                    key={i}
-                    x={x}
-                    dy={i === 0 ? -totalHeight / 2 + lineHeight / 2 : lineHeight}
-                >
-                {line}
-                </tspan>
-            ))}
-            <tspan x={x} dy={lineHeight}>{`${(percent * 100).toFixed(0)}%`}</tspan>
-        </text>
-    );
-}
-
 export function PieChart({ salesData, selectedMonth, groupBy }) {
     const data = groupSalesByFieldForMonth(salesData, selectedMonth, groupBy);
 
@@ -110,13 +70,7 @@ export function PieChart({ salesData, selectedMonth, groupBy }) {
                 <RechartsPieChart>
                     <Pie
                         data={data}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={160}
-                        fill="#8884d8"
                         dataKey="value"
-                        label={renderCustomizedLabel}
                     >
                         {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
