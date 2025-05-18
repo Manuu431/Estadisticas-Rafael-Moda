@@ -30,3 +30,20 @@ export function groupSalesByMonth(data) {
         sales: monthlyTotals[month] || 0,
     }));
 }
+
+export function groupSalesByBrand(data) {
+  const brandTotals = {};
+
+  data.forEach(sale => {
+    const brand = sale.brand;
+    if (!brandTotals[brand]) {
+      brandTotals[brand] = 0;
+    }
+    brandTotals[brand] += sale.units;
+  });
+
+  return Object.entries(brandTotals).map(([name, value]) => ({
+    name,
+    value
+  }));
+}

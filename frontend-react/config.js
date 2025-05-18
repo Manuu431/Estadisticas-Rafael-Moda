@@ -1,8 +1,8 @@
 export const CONFIG = {
     sales: {
         endpoint: "http://localhost:8000/api/sales",
-        columns: ["ID", "Modelo", "Familia", "Color", "Talla", "PVD", "PVP", "Unidades", "Descuento", "Beneficio", "Fecha de venta"],
-        values: ["id", "model", "family", "color", "size", "pvd", "pvp", "units", "discount", "profit", "sale_date"]
+        columns: ["ID", "Modelo", "Familia", "Color", "Talla", "Marca", "PVD", "PVP", "Unidades", "Descuento", "Beneficio", "Fecha de venta"],
+        values: ["id", "model", "family", "color", "size", "brand", "pvd", "pvp", "units", "discount", "profit", "sale_date"]
     },
     clients: {
         endpoint: "http://localhost:8000/api/clients",

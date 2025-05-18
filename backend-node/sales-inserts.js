@@ -4,6 +4,7 @@ const families = ['Pantalón', 'Camiseta', 'Vestido', 'Falda', 'Abrigo', 'Sudade
 const models = ['Vaquero', 'Slim', 'Casual', 'Formal', 'Deportiva', 'Elegante', 'Básica', 'Corta'];
 const colors = ['Azul', 'Negro', 'Blanco', 'Rojo', 'Gris', 'Verde', 'Beige', 'Amarillo'];
 const sizes = ['XXS', 'S', 'M', 'L', 'XL', 'XXL'];
+const brands = ['Kleymac', 'Massana', 'Escorpion', 'Naf naf', 'Lois', 'Paz torras', 'Victorio & lucchino', 'Pertegaz'];
 
 function getRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
@@ -27,6 +28,7 @@ sql += `CREATE TABLE sales (
     family VARCHAR(50),
     color VARCHAR(30),
     size VARCHAR(10),
+    brand VARCHAR(50),
     pvd DECIMAL(10,2),
     pvp DECIMAL(10,2),
     units INT,
@@ -35,7 +37,7 @@ sql += `CREATE TABLE sales (
     sale_date DATE
 );\n\n`;
 
-sql += `INSERT INTO sales (id, model, family, color, size, pvd, pvp, units, discount, profit, sale_date) VALUES\n`;
+sql += `INSERT INTO sales (id, model, family, color, size, brand, pvd, pvp, units, discount, profit, sale_date) VALUES\n`;
 
 const startDate = new Date('2024-01-01');
 const endDate = new Date('2025-05-17');
@@ -45,6 +47,7 @@ for (let i = 1; i <= 100; i++) {
     const family = getRandom(families);
     const color = getRandom(colors);
     const size = getRandom(sizes);
+    const brand = getRandom(brands);
     const pvd = getRandomNumber(8, 35);
     const pvp = getRandomNumber(pvd + 10, pvd + 30);
     const units = Math.floor(Math.random() * 4) + 1;
@@ -52,7 +55,7 @@ for (let i = 1; i <= 100; i++) {
     const profit = ((pvp - pvd - discount) * units).toFixed(2);
     const sale_date = getRandomDate(startDate, endDate);
 
-    sql += `(${i}, '${model}', '${family}', '${color}', '${size}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < 100 ? ',' : ';'}\n`;
+    sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < 100 ? ',' : ';'}\n`;
 }
 
 fs.writeFileSync('sales-inserts.sql', sql, { encoding: 'utf8' });
