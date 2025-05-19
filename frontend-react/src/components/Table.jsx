@@ -69,9 +69,19 @@ function Table({ type, filters = {}, classCols }) {
         setModalMode('view');
     };
 
+    const handleCreate = () => {
+        const emptyItem = {};
+        DATABASE_TABLE.tables.values.forEach((key) => {
+            emptyItem[key] = '';
+        });
+        setModalData(emptyItem);
+        setModalMode('create');
+        setModalVisible(true);
+    };
+    
     return (
         <>
-            {haveHeader ? <HeaderTable classCols={classCols} /> : null}
+            {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} />}
             <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
                 <div className="col-12">
                     <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>

@@ -1,6 +1,6 @@
 import { Button } from '../utils/smallComponents';
 
-function HeaderTable({ classCols }) {
+function HeaderTable({ classCols, onCreate }) {
     return (
         <div className="row">
             <div className={`col-12 mt-3`}>
@@ -12,7 +12,7 @@ function HeaderTable({ classCols }) {
                             <div className={`d-flex justify-content-center mx-3 my-3 my-md-2`}>
                                 <Button
                                     buttonClasses={"btn-info"}
-                                    onClickFunction={() => {console.log("crear")}}
+                                    onClickFunction={onCreate}
                                     iconClasses={"bi-plus-circle"}
                                     text={"Crear"}
                                 />

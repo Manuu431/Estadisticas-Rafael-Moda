@@ -17,7 +17,7 @@ function formatDateDDMMYYYY(date) {
 let sql = `
 DROP TABLE IF EXISTS seasons;
 CREATE TABLE seasons (
-  id INT PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100),
   start_date DATE,
   end_date DATE,

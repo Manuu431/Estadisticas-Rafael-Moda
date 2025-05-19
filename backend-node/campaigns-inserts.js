@@ -39,7 +39,7 @@ function getRandomDateAfterISO(dateStr) {
 let sql = `
 DROP TABLE IF EXISTS campaigns;
 CREATE TABLE campaigns (
-  id INT PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100),
   start_date DATE,
   end_date DATE,
@@ -47,7 +47,7 @@ CREATE TABLE campaigns (
   profits DECIMAL(10,2)
 );
 
-INSERT INTO campaigns (id, name, start_date, end_date, expenses, profits) VALUES
+INSERT INTO campaigns (name, start_date, end_date, expenses, profits) VALUES
 `;
 
 for (let i = 1; i <= 50; i++) {
@@ -57,7 +57,7 @@ for (let i = 1; i <= 50; i++) {
   const expenses = (Math.random() * 5000).toFixed(2);
   const profits = (Math.random() * 20000).toFixed(2);
 
-  sql += `(${i}, '${name}', '${startDate}', '${endDate}', ${expenses}, ${profits})${i < 50 ? ',' : ';'}\n`;
+  sql += `('${name}', '${startDate}', '${endDate}', ${expenses}, ${profits})${i < 50 ? ',' : ';'}\n`;
 }
 
 fs.writeFileSync('campaigns-inserts.sql', sql, { encoding: 'utf8' });
