@@ -3,7 +3,7 @@ import axios from 'axios';
 import { DATABASE_TABLES } from "../../database.js";
 import HeaderTable from './HeaderTable.jsx';
 import Pagination from './Pagination.jsx';
-import Modal from './Modal.jsx';
+import CustomModal from './CustomModal.jsx';
 import {
     handleSort,
     getSortedData,
@@ -18,6 +18,11 @@ function Table({ type, filters = {}, classCols }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalData, setModalData] = useState(null);
+    const [modalMode, setModalMode] = useState('view'); // 'view' | 'edit'
+
     const itemsPerPage = 10;
     const DATABASE_TABLE = DATABASE_TABLES[type];
     const haveHeader = type === "campaigns" || type === "seasons";
@@ -46,6 +51,24 @@ function Table({ type, filters = {}, classCols }) {
         fetchData();
     }, [DATABASE_TABLE.endpoint, filters]);
 
+    const handleVisualize = (item) => {
+        setModalData(item);
+        setModalMode('view');
+        setModalVisible(true);
+    };
+
+    const handleEdit = (item) => {
+        setModalData(item);
+        setModalMode('edit');
+        setModalVisible(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalVisible(false);
+        setModalData(null);
+        setModalMode('view');
+    };
+
     return (
         <>
             {haveHeader ? <HeaderTable classCols={classCols} /> : null}
@@ -63,7 +86,7 @@ function Table({ type, filters = {}, classCols }) {
                                             <th className="text-white align-middle" key={index}>
                                                 <div className="d-flex justify-content-between align-items-center ms-2">
                                                     <span className='fs-5'>{columnName}</span>
-                                                     <i
+                                                    <i
                                                         className={`${iconClass} cursor-pointer fs-4`}
                                                         onClick={() => handleSort(sortConfig, setSortConfig, columnKey)}
                                                         title={`Ordenar por ${columnName.toLowerCase()}`}
@@ -102,9 +125,9 @@ function Table({ type, filters = {}, classCols }) {
                                         {(type === "campaigns" || type === "seasons") && (
                                             <td className="py-1 align-middle">
                                                 <div className="d-flex justify-content-center gap-4">
-                                                    <TableIconButton onClickFunction={() => {visualize()}} title="visualizar" classIcon="bi bi-eye" />
-                                                    <TableIconButton onClickFunction={() => {edit()}} title="editar" classIcon="bi bi-pencil-square" />
-                                                    <TableIconButton onClickFunction={() => {remove()}} title="eliminar" classIcon="bi bi-trash" />
+                                                    <TableIconButton onClickFunction={() => handleVisualize(item)} title="visualizar" classIcon="bi bi-eye" />
+                                                    <TableIconButton onClickFunction={() => handleEdit(item)} title="editar" classIcon="bi bi-pencil-square" />
+                                                    <TableIconButton onClickFunction={() => alert("eliminar")} title="eliminar" classIcon="bi bi-trash" />
                                                 </div>
                                             </td>
                                         )}
@@ -120,20 +143,18 @@ function Table({ type, filters = {}, classCols }) {
                     />
                 </div>
             </div>
+
+            {modalVisible && (
+                <CustomModal
+                    show={modalVisible}
+                    data={modalData}
+                    mode={modalMode}
+                    onHide={handleCloseModal}
+                    type={type}
+                />
+            )}
         </>
     );
-}
-
-function visualize() {
-    console.log("visualizar");
-}
-
-function edit() {
-    console.log("editar");
-}
-
-function remove() {
-    alert("eliminar");
 }
 
 export default Table;
