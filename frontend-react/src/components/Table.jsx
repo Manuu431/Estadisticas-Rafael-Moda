@@ -167,4 +167,8 @@ function Table({ type, filters = {}, classCols }) {
     );
 }
 
+function remove({ props }) {
+
+}
+
 export default Table;

@@ -1,9 +1,12 @@
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm } from 'formik';
+import axios from 'axios';
+import { DATABASE_TABLES } from '../../database';
 
 function CustomModal({ show, onHide, data, mode, type }) {
     if (!data) return null;
 
+    const endPoint = DATABASE_TABLES[type].endpoint;
     const isView = mode === 'view';
     const isEdit = mode === 'edit';
     const isCreate = mode === 'create';
@@ -22,6 +25,26 @@ function CustomModal({ show, onHide, data, mode, type }) {
         profits: "Beneficios",
     };
 
+    // Función para crear
+    async function create(data) {
+        try {
+            const response = await axios.post(endPoint, data);
+            console.log('Campaña creada:', response.data);
+        } catch (error) {
+            console.error('Error al crear:', error);
+        }
+    }
+
+    // Función para actualizar
+    async function update(data) {
+        try {
+            const response = await axios.put(`${endPoint}/${data.id}`, data);
+            console.log('Campaña actualizada:', response.data);
+        } catch (error) {
+            console.error('Error al actualizar:', error);
+        }
+    }
+
     return (
         <Modal show={show} onHide={onHide} size="lg" centered backdrop="static">
             <Modal.Header closeButton className="bg-orange text-white">
@@ -32,8 +55,12 @@ function CustomModal({ show, onHide, data, mode, type }) {
 
             <Formik
                 initialValues={data}
-                onSubmit={(values) => {
-                    console.log("Guardar valores:", values);
+                onSubmit={async (values) => {
+                    if (isCreate) {
+                        await create(values);
+                    } else if (isEdit) {
+                        await update(values);
+                    }
                     onHide();
                 }}
             >
@@ -44,8 +71,14 @@ function CustomModal({ show, onHide, data, mode, type }) {
                                 {Object.entries(values).map(([key, value], index) => {
                                     if (isCreate && key === 'id') return null;
 
-                                    let label = labels[key];
+                                    const label = labels[key];
+                                    if (!label) return null;
+
                                     const goodLabel = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
+
+                                    const isDateField = ['start_date', 'end_date'].includes(key);
+
+                                    const dateValue = isDateField && value ? value.split('T')[0] : value;
 
                                     return (
                                         <Col md={6} key={index}>
@@ -58,6 +91,8 @@ function CustomModal({ show, onHide, data, mode, type }) {
                                                     name={key}
                                                     readOnly={isView || key === 'id'}
                                                     plaintext={isView}
+                                                    type={isDateField ? 'date' : 'text'}
+                                                    value={isDateField ? dateValue : value}
                                                     className={`form-control ${isView ? 'bg-white border-0 ps-0' : ''}`}
                                                 />
                                             </Form.Group>
@@ -73,7 +108,7 @@ function CustomModal({ show, onHide, data, mode, type }) {
                             </Button>
                             {!isView && (
                                 <Button variant="primary" type="submit">
-                                    Guardar
+                                    {isCreate ? 'Crear' : 'Guardar'}
                                 </Button>
                             )}
                         </Modal.Footer>
@@ -82,18 +117,6 @@ function CustomModal({ show, onHide, data, mode, type }) {
             </Formik>
         </Modal>
     );
-}
-
-function create({ props }) {
-
-}
-
-function update({ props }) {
-
-}
-
-function remove({ props }) {
-
 }
 
 export default CustomModal;

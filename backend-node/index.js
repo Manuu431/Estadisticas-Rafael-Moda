@@ -61,6 +61,54 @@ const makeGet = (endpoint) => {
     });
 };
 
+const allowedTables = ['campaigns', 'seasons'];
+
+const makePost = (endpoint) => {
+    if (!allowedTables.includes(endpoint)) return;
+    app.post(`/api/${endpoint}`, (req, res) => {
+        const data = req.body;
+        const query = `INSERT INTO ${endpoint} SET ?`;
+        db.query(query, data, (err, results) => {
+            if (err) {
+                console.error(`Error creating ${endpoint}: ${err}`);
+                return res.status(500).json({ error: 'Server error' });
+            }
+            res.json(results);
+        });
+    });
+};
+
+const makeUpdate = (endpoint) => {
+    if (!allowedTables.includes(endpoint)) return;
+    app.put(`/api/${endpoint}/:id`, (req, res) => {
+        const data = req.body;
+        const id = req.params.id;
+        const query = `UPDATE ${endpoint} SET ? WHERE id = ?`;
+        db.query(query, [data, id], (err, results) => {
+            if (err) {
+                console.error(`Error updating ${endpoint}: ${err}`);
+                return res.status(500).json({ error: 'Server error' });
+            }
+            res.json(results);
+        });
+    });
+};
+
+const makeDelete = (endpoint) => {
+    if (!allowedTables.includes(endpoint)) return;
+    app.delete(`/api/${endpoint}/:id`, (req, res) => {
+        const id = req.params.id;
+        const query = `DELETE FROM ${endpoint} WHERE id = ?`;
+        db.query(query, [id], (err, results) => {
+            if (err) {
+                console.error(`Error deleting from ${endpoint}: ${err}`);
+                return res.status(500).json({ error: 'Server error' });
+            }
+            res.json(results);
+        });
+    });
+};
+
 app.use(cors());
 app.use(express.json());
 
@@ -83,6 +131,15 @@ makeGet('sales');
 makeGet('clients');
 makeGet('campaigns');
 makeGet('seasons');
+
+makePost('campaigns');
+makePost('seasons');
+
+makeUpdate('campaigns');
+makeUpdate('seasons');
+
+makeDelete('campaigns');
+makeDelete('seasons');
 
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`);
