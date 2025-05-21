@@ -112,10 +112,9 @@ function Table({ type, filters = {}, classCols }) {
                                                 <div className="d-flex justify-content-between align-items-center ms-2">
                                                     <span className='fs-5'>{columnName}</span>
                                                     <i
-                                                        className={`${iconClass} cursor-pointer fs-4`}
+                                                        className={`${iconClass} icon fs-4`}
                                                         onClick={() => handleSort(sortConfig, setSortConfig, columnKey)}
                                                         title={`Ordenar por ${columnName.toLowerCase()}`}
-                                                        style={{ cursor: 'pointer' }}
                                                     ></i>
                                                 </div>
                                             </th>
