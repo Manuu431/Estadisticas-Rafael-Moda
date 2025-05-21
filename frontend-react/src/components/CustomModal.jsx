@@ -45,6 +45,26 @@ function CustomModal({ show, onHide, data, mode, type }) {
         }
     }
 
+    function returnFormattedValues(values) {
+        const formatDate = (isoString) => {
+            const date = new Date(isoString);
+            const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return offsetDate.toISOString().slice(0, 19).replace("T", " ");
+        };
+
+        const formattedValues = {
+            ...values,
+            start_date: formatDate(values.start_date),
+            end_date: formatDate(values.end_date),
+        };
+
+        if (!formattedValues.id || isNaN(Number(formattedValues.id))) {
+            delete formattedValues.id;
+        }
+
+        return formattedValues;
+    }
+
     return (
         <Modal show={show} onHide={onHide} size="lg" centered backdrop="static">
             <Modal.Header closeButton className="bg-orange text-white">
@@ -55,11 +75,13 @@ function CustomModal({ show, onHide, data, mode, type }) {
 
             <Formik
                 initialValues={data}
-                onSubmit={async (values) => {
+                onSubmit={async (values) => {                    
+                    const formattedValues = returnFormattedValues(values);
+                    
                     if (isCreate) {
-                        await create(values);
+                        await create(formattedValues);
                     } else if (isEdit) {
-                        await update(values);
+                        await update(formattedValues);
                     }
                     onHide();
                 }}

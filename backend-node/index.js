@@ -5,6 +5,26 @@ const mysql = require('mysql2');
 const app = express();
 const PORT = 8000;
 
+app.use(cors());
+app.use(express.json());
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'estadisticas_rafael_moda_bbdd'
+});
+
+db.connect(err => {
+    if (err) {
+        console.error(`Error connecting to MySQL: ${err}`);
+        return;
+    }
+    console.log('Connecting to the MySQL database...');
+});
+
+const allowedTables = ['campaigns', 'seasons'];
+
 const makeGet = (endpoint) => {
     app.get(`/api/${endpoint}`, (req, res) => {
         const filters = req.query;
@@ -15,7 +35,6 @@ const makeGet = (endpoint) => {
 
         for (const key in filters) {
             const value = filters[key];
-            
             if (value === undefined || value === null || value === '') continue;
 
             if (key.endsWith('_min') || key.startsWith('start')) {
@@ -60,8 +79,6 @@ const makeGet = (endpoint) => {
         });
     });
 };
-
-const allowedTables = ['campaigns', 'seasons'];
 
 const makePost = (endpoint) => {
     if (!allowedTables.includes(endpoint)) return;
@@ -109,24 +126,6 @@ const makeDelete = (endpoint) => {
     });
 };
 
-app.use(cors());
-app.use(express.json());
-
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'estadisticas_rafael_moda_bbdd'
-});
-
-db.connect(err => {
-    if (err) {
-        console.error(`Error connecting to MySQL: ${err}`);
-        return;
-    }
-    console.log('Connecting to the MySQL database...');
-});
-
 makeGet('sales');
 makeGet('clients');
 makeGet('campaigns');
@@ -142,5 +141,5 @@ makeDelete('campaigns');
 makeDelete('seasons');
 
 app.listen(PORT, () => {
-    console.log(`Server running on port http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });

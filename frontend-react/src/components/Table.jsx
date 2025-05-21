@@ -78,7 +78,22 @@ function Table({ type, filters = {}, classCols }) {
         setModalMode('create');
         setModalVisible(true);
     };
-    
+
+    const handleDelete = async (item) => {
+        const confirmDelete = window.confirm(`¿Estás seguro de que quieres eliminar "${item.name || 'este elemento'}"?`);
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete(`${DATABASE_TABLE.endpoint}/${item.id}`);
+            const updatedData = data.filter((d) => d.id !== item.id);
+            setData(updatedData);
+            setTotalPages(Math.ceil(updatedData.length / itemsPerPage));
+        } catch (error) {
+            console.error("Error al eliminar el elemento:", error.response ? error.response.data : error);
+            alert("No se pudo eliminar el elemento.");
+        }
+    };
+
     return (
         <>
             {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} />}
@@ -137,7 +152,7 @@ function Table({ type, filters = {}, classCols }) {
                                                 <div className="d-flex justify-content-center gap-4">
                                                     <TableIconButton onClickFunction={() => handleVisualize(item)} title="visualizar" classIcon="bi bi-eye" />
                                                     <TableIconButton onClickFunction={() => handleEdit(item)} title="editar" classIcon="bi bi-pencil-square" />
-                                                    <TableIconButton onClickFunction={() => alert("eliminar")} title="eliminar" classIcon="bi bi-trash" />
+                                                    <TableIconButton onClickFunction={() => handleDelete(item)} title="eliminar" classIcon="bi bi-trash" />
                                                 </div>
                                             </td>
                                         )}
