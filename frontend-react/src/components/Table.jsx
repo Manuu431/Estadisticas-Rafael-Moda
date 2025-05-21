@@ -51,32 +51,18 @@ function Table({ type, filters = {}, classCols }) {
         fetchData();
     }, [DATABASE_TABLE.endpoint, filters]);
 
-    const handleVisualize = (item) => {
+    const openModal = ({ item, modalMode }) => {
         setModalData(item);
-        setModalMode('view');
+        setModalMode(modalMode);
         setModalVisible(true);
+    };
+
+    const handleVisualize = (item) => {
+        openModal({ item, modalMode: 'view' });
     };
 
     const handleEdit = (item) => {
-        setModalData(item);
-        setModalMode('edit');
-        setModalVisible(true);
-    };
-
-    const handleCloseModal = () => {
-        setModalVisible(false);
-        setModalData(null);
-        setModalMode('view');
-    };
-
-    const handleCreate = () => {
-        const emptyItem = {};
-        DATABASE_TABLE.tables.values.forEach((key) => {
-            emptyItem[key] = '';
-        });
-        setModalData(emptyItem);
-        setModalMode('create');
-        setModalVisible(true);
+        openModal({ item, modalMode: 'edit' });
     };
 
     const handleDelete = async (item) => {
@@ -92,6 +78,20 @@ function Table({ type, filters = {}, classCols }) {
             console.error("Error al eliminar el elemento:", error.response ? error.response.data : error);
             alert("No se pudo eliminar el elemento.");
         }
+    };
+
+    const handleCreate = () => {
+        const emptyItem = {};
+        DATABASE_TABLE.tables.values.forEach((key) => {
+            emptyItem[key] = '';
+        });
+        openModal({ item: emptyItem, modalMode: 'create' });
+    };
+    
+    const handleCloseModal = () => {
+        setModalVisible(false);
+        setModalData(null);
+        setModalMode('view');
     };
 
     return (
