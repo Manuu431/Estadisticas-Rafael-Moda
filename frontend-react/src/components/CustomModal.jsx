@@ -57,7 +57,6 @@ function CustomModal({ show, onHide, data, mode, type }) {
     async function create(data) {
         try {
             const response = await axios.post(endPoint, data);
-            console.log('Campaña creada:', response.data);
         } catch (error) {
             console.error('Error al crear:', error);
         }
@@ -66,7 +65,6 @@ function CustomModal({ show, onHide, data, mode, type }) {
     async function update(data) {
         try {
             const response = await axios.put(`${endPoint}/${data.id}`, data);
-            console.log('Campaña actualizada:', response.data);
         } catch (error) {
             console.error('Error al actualizar:', error);
         }

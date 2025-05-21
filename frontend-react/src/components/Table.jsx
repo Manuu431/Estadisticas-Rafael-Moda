@@ -21,7 +21,7 @@ function Table({ type, filters = {}, classCols }) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState(null);
-    const [modalMode, setModalMode] = useState('view'); // 'view' | 'edit'
+    const [modalMode, setModalMode] = useState('view');
 
     const itemsPerPage = 10;
     const DATABASE_TABLE = DATABASE_TABLES[type];
@@ -32,22 +32,22 @@ function Table({ type, filters = {}, classCols }) {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(DATABASE_TABLE.endpoint, {
+                params: filters,
+                paramsSerializer: serializeParams
+            });
+
+            setData(response.data);
+            setCurrentPage(1);
+            setTotalPages(Math.ceil(response.data.length / itemsPerPage));
+        } catch (error) {
+            console.error(`Error obtaining ${type} data:`, error.response ? error.response.data : error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(DATABASE_TABLE.endpoint, {
-                    params: filters,
-                    paramsSerializer: serializeParams
-                });
-
-                setData(response.data);
-                setCurrentPage(1);
-                setTotalPages(Math.ceil(response.data.length / itemsPerPage));
-            } catch (error) {
-                console.error(`Error obtaining ${type} data:`, error.response ? error.response.data : error);
-            }
-        };
-
         fetchData();
     }, [DATABASE_TABLE.endpoint, filters]);
 
@@ -96,7 +96,7 @@ function Table({ type, filters = {}, classCols }) {
 
     return (
         <>
-            {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} />}
+            {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} onRefresh={fetchData} />}
             <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
                 <div className="col-12">
                     <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>
