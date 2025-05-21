@@ -1,7 +1,36 @@
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
-import { Formik, Field, Form as FormikForm } from 'formik';
+import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import axios from 'axios';
 import { DATABASE_TABLES } from '../../database';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('El nombre es obligatorio')
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .max(30, 'El nombre debe tener como máximo 30 caracteres'),
+
+  start_date: Yup.date()
+    .required('La fecha de inicio es obligatoria')
+    .typeError('Fecha inválida'),
+
+  end_date: Yup.date()
+    .required('La fecha de fin es obligatoria')
+    .typeError('Fecha inválida')
+    .min(Yup.ref('start_date'), 'La fecha de fin debe ser posterior a la de inicio'),
+
+  expenses: Yup.number()
+    .typeError('Los gastos deben ser un número')
+    .required('Los gastos son obligatorios')
+    .min(1, 'Los gastos deben ser al menos 1')
+    .max(9999999, 'El gasto no puede ser mayor que 9,999,999'),
+
+  profits: Yup.number()
+    .typeError('Los beneficios deben ser un número')
+    .required('Los beneficios son obligatorios')
+    .min(1, 'Los beneficios deben ser al menos 1')
+    .max(9999999, 'El beneficio no puede ser mayor que 9,999,999'),
+});
 
 function CustomModal({ show, onHide, data, mode, type }) {
     if (!data) return null;
@@ -25,7 +54,6 @@ function CustomModal({ show, onHide, data, mode, type }) {
         profits: "Beneficios",
     };
 
-    // Función para crear
     async function create(data) {
         try {
             const response = await axios.post(endPoint, data);
@@ -35,7 +63,6 @@ function CustomModal({ show, onHide, data, mode, type }) {
         }
     }
 
-    // Función para actualizar
     async function update(data) {
         try {
             const response = await axios.put(`${endPoint}/${data.id}`, data);
@@ -75,9 +102,10 @@ function CustomModal({ show, onHide, data, mode, type }) {
 
             <Formik
                 initialValues={data}
+                validationSchema={validationSchema}
                 onSubmit={async (values) => {                    
                     const formattedValues = returnFormattedValues(values);
-                    
+
                     if (isCreate) {
                         await create(formattedValues);
                     } else if (isEdit) {
@@ -102,6 +130,22 @@ function CustomModal({ show, onHide, data, mode, type }) {
 
                                     const dateValue = isDateField && value ? value.split('T')[0] : value;
 
+                                    let inputType = 'text';
+                                    let inputMin = undefined;
+                                    let inputMax = undefined;
+                                    let inputStep = undefined;
+
+                                    if (isDateField) {
+                                        inputType = 'date';
+                                    } else if (key === 'expenses' || key === 'profits') {
+                                        inputType = 'number';
+                                        inputMin = 1;
+                                        inputMax = 9999999;
+                                        inputStep = '0.01';
+                                    } else if (key === 'name') {
+                                        inputMax = 30;
+                                    }
+
                                     return (
                                         <Col md={6} key={index}>
                                             <Form.Group controlId={key}>
@@ -113,10 +157,14 @@ function CustomModal({ show, onHide, data, mode, type }) {
                                                     name={key}
                                                     readOnly={isView || key === 'id'}
                                                     plaintext={isView}
-                                                    type={isDateField ? 'date' : 'text'}
+                                                    type={inputType}
+                                                    min={inputMin}
+                                                    maxLength={inputMax}
+                                                    step={inputStep}
                                                     value={isDateField ? dateValue : value}
                                                     className={`form-control ${isView ? 'bg-white border-0 ps-0' : ''}`}
                                                 />
+                                                <ErrorMessage name={key} component="div" className="text-danger small mt-1" />
                                             </Form.Group>
                                         </Col>
                                     );
