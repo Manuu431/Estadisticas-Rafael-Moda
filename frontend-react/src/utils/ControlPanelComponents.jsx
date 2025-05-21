@@ -153,7 +153,8 @@ export function Campaigns({ data, startIndex = 0 }) {
         .slice(startIndex, startIndex + 10);
     
     const navigate = useNavigate();
-    const handleClick = () => {
+    const handleClick = (campaign) => {
+        localStorage.setItem("temporalCampaign", JSON.stringify(campaign));
         navigate('/campañas');
     };
 
@@ -163,7 +164,7 @@ export function Campaigns({ data, startIndex = 0 }) {
                 <div
                     key={index}
                     className="campaign-card p-3 border rounded shadow-sm d-flex justify-content-between align-items-center"
-                    onClick={() => handleClick()}
+                    onClick={() => handleClick(item)}
                     style={{ cursor: 'pointer' }}
                 >
                     <span className="fs-5 fw-bold">{item.name}</span>

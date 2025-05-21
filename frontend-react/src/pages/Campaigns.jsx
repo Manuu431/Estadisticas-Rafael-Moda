@@ -1,16 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Title from '../components/Title';
 import Filters from "../components/Filters.jsx";
 import Table from "../components/Table.jsx";
 
 function Campaigns(props) {
     const [filters, setFilters] = useState({});
+    const location = useLocation();
+    const [externalCampaign, setExternalCampaign] = useState(null);
+
+    useEffect(() => {
+        const storedCampaign = localStorage.getItem("temporalCampaign");
+        if (storedCampaign) {
+            const campaign = JSON.parse(storedCampaign);
+            setExternalCampaign(campaign);
+        }
+    }, [location.state]);
 
     return (
         <>
             <Title title={props.title} />
             <Filters type="campaigns" onFilterChange={setFilters} classCols={props.classCols} />
-            <Table type="campaigns" filters={filters} classCols={props.classCols} />
+            <Table
+                type="campaigns"
+                filters={filters}
+                classCols={props.classCols}
+                externalCampaign={externalCampaign}
+            />
         </>
     );
 }

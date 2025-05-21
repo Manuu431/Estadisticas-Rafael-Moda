@@ -13,7 +13,7 @@ import {
 } from '../utils/tableUtils.js';
 import { TableIconButton } from '../utils/smallComponents.jsx'
 
-function Table({ type, filters = {}, classCols }) {
+function Table({ type, filters = {}, classCols, externalCampaign = null }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -89,10 +89,21 @@ function Table({ type, filters = {}, classCols }) {
     };
     
     const handleCloseModal = () => {
+        localStorage.removeItem("temporalCampaign");
         setModalVisible(false);
         setModalData(null);
         setModalMode('view');
     };
+
+    useEffect(() => {
+        console.log("externalCampaign useEffect", externalCampaign);
+        if (externalCampaign && data.length > 0) {
+            const itemToOpen = data.find(item => item.id === externalCampaign.id);
+            if (itemToOpen) {
+                handleVisualize(itemToOpen);
+            }
+        }
+    }, [externalCampaign, data]);
 
     return (
         <>
