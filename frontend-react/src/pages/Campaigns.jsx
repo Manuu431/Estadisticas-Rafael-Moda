@@ -26,6 +26,7 @@ function Campaigns(props) {
                 filters={filters}
                 classCols={props.classCols}
                 externalCampaign={externalCampaign}
+                setExternalCampaign={setExternalCampaign}
             />
         </>
     );

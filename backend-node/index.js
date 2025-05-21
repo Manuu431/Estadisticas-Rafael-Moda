@@ -12,7 +12,8 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'estadisticas_rafael_moda_bbdd'
+    database: 'estadisticas_rafael_moda_bbdd',
+    dateStrings: true
 });
 
 db.connect(err => {

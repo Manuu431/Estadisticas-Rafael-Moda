@@ -13,7 +13,7 @@ import {
 } from '../utils/tableUtils.js';
 import { TableIconButton } from '../utils/smallComponents.jsx'
 
-function Table({ type, filters = {}, classCols, externalCampaign = null }) {
+function Table({ type, filters = {}, classCols, externalCampaign = null, setExternalCampaign }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -39,6 +39,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null }) {
                 paramsSerializer: serializeParams
             });
 
+            console.log("response data 1", response.data[0]);
             setData(response.data);
             setCurrentPage(1);
             setTotalPages(Math.ceil(response.data.length / itemsPerPage));
@@ -90,13 +91,14 @@ function Table({ type, filters = {}, classCols, externalCampaign = null }) {
     
     const handleCloseModal = () => {
         localStorage.removeItem("temporalCampaign");
+        setExternalCampaign(null);
         setModalVisible(false);
         setModalData(null);
         setModalMode('view');
     };
 
     useEffect(() => {
-        console.log("externalCampaign useEffect", externalCampaign);
+        console.log("externalCampaign", externalCampaign);
         if (externalCampaign && data.length > 0) {
             const itemToOpen = data.find(item => item.id === externalCampaign.id);
             if (itemToOpen) {
