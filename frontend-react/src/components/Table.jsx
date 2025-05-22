@@ -25,7 +25,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
 
     const itemsPerPage = 10;
     const DATABASE_TABLE = DATABASE_TABLES[type];
-    const haveHeader = type === "campaigns" || type === "seasons";
+    const haveHeader = type === "campaigns" || type === "seasons" || type === "seasonTypes";
 
     const sortedData = getSortedData(data, sortConfig);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -39,9 +39,19 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                 paramsSerializer: serializeParams
             });
 
-            setData(response.data);
+            let result = response.data;
+
+            if (type === "seasonTypes") {
+                result = result.map(item => ({
+                    ...item,
+                    start_date_formatted: `${item.start_day}/${item.start_month}`,
+                    end_date_formatted: `${item.end_day}/${item.end_month}`,
+                }));
+            }
+            
+            setData(result);
             setCurrentPage(1);
-            setTotalPages(Math.ceil(response.data.length / itemsPerPage));
+            setTotalPages(Math.ceil(result.length / itemsPerPage));
         } catch (error) {
             console.error(`Error obtaining ${type} data:`, error.response ? error.response.data : error);
         }
@@ -148,8 +158,10 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                         {DATABASE_TABLE.tables.values.map((columnName, colIndex) => {
                                             let formattedValue = item[columnName];
 
-                                            if (columnName.toLowerCase().includes("date") && item[columnName]) {
-                                                formattedValue = formatDate(item[columnName]);
+                                            if(type !== "seasonTypes"){
+                                                if (columnName.toLowerCase().includes("date") && item[columnName]) {
+                                                    formattedValue = formatDate(item[columnName]);
+                                                }
                                             }
 
                                             return (
@@ -182,11 +194,11 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                                             />
                                                         </>
                                                     )}
-                                                    {/* <TableIconButton
+                                                    <TableIconButton
                                                         onClickFunction={() => handleDelete(item)}
                                                         title="eliminar"
                                                         classIcon="bi bi-trash"
-                                                    /> */}
+                                                    />
                                                 </div>
                                             </td>
                                         )}

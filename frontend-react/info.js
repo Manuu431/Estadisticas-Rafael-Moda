@@ -7,4 +7,5 @@ export const MENU_ITEMS = [
   { name: 'Campañas', path: '/campañas', element: 'Campaigns', icon: 'bi bi-megaphone' },
   { name: 'Gastos', path: '/gastos', element: 'Expenses', icon: 'bi bi-cash-stack' },
   { name: 'Temporadas', path: '/temporadas', element: 'Seasons', icon: 'bi bi-brightness-high' },
+  { name: 'Tipos de temporada', path: '/tipos-temporadas', element: 'SeasonTypes', icon: 'bi bi-brightness-high' },
 ];

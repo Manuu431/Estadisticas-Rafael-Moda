@@ -10,6 +10,7 @@ import Calendar from './pages/Calendar';
 import Campaigns from './pages/Campaigns';
 import Expenses from './pages/Expenses';
 import Seasons from './pages/Seasons';
+import SeasonTypes from './pages/SeasonTypes';
 
 const classFilterCols = "col-12 col-md-6";
 
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />
                     <Route path="/gastos" element={<Expenses title="Gastos" />} />
                     <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
+                    <Route path="/tipos-temporadas" element={<SeasonTypes title="Tipos de temporada" classCols={classFilterCols} />} />
                 </Routes>
             </div>
           </div>

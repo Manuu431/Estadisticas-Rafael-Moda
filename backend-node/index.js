@@ -107,7 +107,7 @@ const makeUpdate = (endpoint) => {
         let data = req.body;
         const id = req.params.id;
 
-        if (endpoint === 'seasons') {
+        if (endpoint === 'seasons' || endpoint === 'campaigns') {
             data = normalizeDecimalFields(data, ['expenses', 'profits']);
         }
 
@@ -141,15 +141,19 @@ makeGet('sales');
 makeGet('clients');
 makeGet('campaigns');
 makeGet('seasons');
+makeGet('season_types');
 
 makePost('campaigns');
 makePost('seasons');
+makePost('season_types');
 
 makeUpdate('campaigns');
 makeUpdate('seasons');
+makeUpdate('season_types');
 
 makeDelete('campaigns');
 makeDelete('seasons');
+makeDelete('season_types');
 
 const normalizeDecimalFields = (data, fields) => {
     const newData = { ...data };
@@ -162,7 +166,6 @@ const normalizeDecimalFields = (data, fields) => {
     });
     return newData;
 };
-
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

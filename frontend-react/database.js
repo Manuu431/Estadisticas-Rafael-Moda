@@ -46,5 +46,17 @@ export const DATABASE_TABLES = {
             inputId: ["id", "name", "start_date", "end_date", "expenses", "profits"],
             inputType: ["text", "text", "date", "date", "range", "range"]
         }
+    },
+    seasonTypes: {
+        endpoint: "http://localhost:8000/api/season_types",
+        tables: {
+            columns: ["ID", "Nombre", "Inicio", "Fin"],
+            values: ["id", "name", "start_date_formatted", "end_date_formatted"]
+        },
+        filters: {
+            label: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin"],
+            inputId: ["id", "name", "start_date", "end_date"],
+            inputType: ["text", "text", "date", "date"]
+        }
     }
 }
