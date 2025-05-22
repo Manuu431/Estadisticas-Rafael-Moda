@@ -24,7 +24,7 @@ db.connect(err => {
     console.log('Connecting to the MySQL database...');
 });
 
-const allowedTables = ['campaigns', 'seasons'];
+const allowedTables = ['campaigns', 'seasons', 'season_types', 'campaign_types'];
 
 const makeGet = (endpoint) => {
     app.get(`/api/${endpoint}`, (req, res) => {
@@ -82,23 +82,83 @@ const makeGet = (endpoint) => {
 };
 
 const makePost = (endpoint) => {
-    if (!allowedTables.includes(endpoint)) return;
-    app.post(`/api/${endpoint}`, (req, res) => {
-        let data = req.body;
+  if (!allowedTables.includes(endpoint)) return;
+  app.post(`/api/${endpoint}`, async (req, res) => {
+    let data = req.body;
 
-        if (endpoint === 'seasons') {
-            data = normalizeDecimalFields(data, ['expenses', 'profits']);
+    if (endpoint === 'seasons') {
+      data = normalizeDecimalFields(data, ['expenses', 'profits']);
+    }
+
+    try {
+      if (endpoint === 'season_types') {
+        const [result] = await db.promise().query(`INSERT INTO ${endpoint} SET ?`, data);
+        const newId = result.insertId;
+
+        const [[newSeasonType]] = await db.promise().query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
+
+        const startYear = newSeasonType.start_year || new Date().getFullYear();
+        const endYear = new Date().getFullYear() + 1;
+
+        const formatDateISO = (date) => {
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          return `${year}-${month}-${day}`;
+        };
+
+        const parseDate = (month, day, year) => {
+          const date = new Date(year, month - 1, day);
+          return formatDateISO(date);
+        };
+
+        const inserts = [];
+
+        for (let year = startYear; year <= endYear; year++) {
+          const startDay = newSeasonType.start_day;
+          const startMonth = newSeasonType.start_month;
+          const endDay = newSeasonType.end_day;
+          const endMonth = newSeasonType.end_month;
+
+          const startDate = parseDate(startMonth, startDay, year);
+
+          let endDate, seasonName;
+
+          if (endMonth < startMonth || (endMonth === startMonth && endDay < startDay)) {
+            endDate = parseDate(endMonth, endDay, year + 1);
+            seasonName = `${newSeasonType.name} ${year}-${year + 1}`;
+          } else {
+            endDate = parseDate(endMonth, endDay, year);
+            seasonName = `${newSeasonType.name} ${year}`;
+          }
+
+          inserts.push([
+            seasonName,
+            startDate,
+            endDate,
+            null,
+            null,
+            newId,
+          ]);
         }
 
-        const query = `INSERT INTO ${endpoint} SET ?`;
-        db.query(query, data, (err, results) => {
-            if (err) {
-                console.error(`Error creating ${endpoint}: ${err}`);
-                return res.status(500).json({ error: 'Server error' });
-            }
-            res.json(results);
-        });
-    });
+        if (inserts.length > 0) {
+          await db.promise().query(
+            'INSERT INTO seasons (name, start_date, end_date, expenses, profits, season_type_id) VALUES ?',
+            [inserts]
+          );
+        }
+
+        return res.json({ message: 'Season type and seasons created', season_type_id: newId });
+      } else {
+        const [results] = await db.promise().query(`INSERT INTO ${endpoint} SET ?`, data);
+        return res.json(results);
+      }
+    } catch (err) {
+      console.error(`Error creating ${endpoint}:`, err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+  });
 };
 
 const makeUpdate = (endpoint) => {

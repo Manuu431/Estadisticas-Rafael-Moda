@@ -7,13 +7,6 @@ function formatDateISO(date) {
   return `${year}-${month}-${day}`;
 }
 
-function formatDateDDMMYYYY(date) {
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-}
-
 let sql = `
 DROP TABLE IF EXISTS seasons;
 CREATE TABLE seasons (
@@ -31,7 +24,7 @@ INSERT INTO seasons (id, name, start_date, end_date, expenses, profits, season_t
 `;
 
 let id = 1;
-for (let year = 2019; year <= 2025; year++) {
+for (let year = 2020; year <= 2025; year++) {
   // Temporada Verano: 1 marzo - 1 septiembre mismo año
   const veranoStart = new Date(year, 2, 1);        // 1/3/yyyy
   const veranoEnd = new Date(year, 8, 1);           // 1/9/yyyy

@@ -3,7 +3,8 @@ import axios from 'axios';
 import { DATABASE_TABLES } from "../../database.js";
 import HeaderTable from './HeaderTable.jsx';
 import Pagination from './Pagination.jsx';
-import CustomModal from './CustomModal.jsx';
+import EditOrVisualizeModal from './EditOrVisualizeModal.jsx';
+import CreateModal from './CreateModal.jsx';
 import {
     handleSort,
     getSortedData,
@@ -12,6 +13,10 @@ import {
     getSortIconClass
 } from '../utils/tableUtils.js';
 import { TableIconButton } from '../utils/smallComponents.jsx'
+
+
+
+import ModalComponent from './ModalComponent.jsx';
 
 function Table({ type, filters = {}, classCols, externalCampaign = null, setExternalCampaign }) {
     const [data, setData] = useState([]);
@@ -48,7 +53,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                     end_date_formatted: `${item.end_day}/${item.end_month}`,
                 }));
             }
-            
+
             setData(result);
             setCurrentPage(1);
             setTotalPages(Math.ceil(result.length / itemsPerPage));
@@ -119,7 +124,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
 
     return (
         <>
-            {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} onRefresh={fetchData} />}
+            {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} onRefresh={fetchData} type={type} />}
             <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
                 <div className="col-12">
                     <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>
@@ -143,7 +148,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                             </th>
                                         );
                                     })}
-                                    {(type === "campaigns" || type === "seasons") && (
+                                    {(type === "campaigns" || type === "seasons" || type === "seasonTypes") && (
                                         <th className="text-white align-middle">
                                             <div className="d-flex justify-content-center">
                                                 <span className='fs-5'>Acciones</span>
@@ -202,6 +207,27 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                                 </div>
                                             </td>
                                         )}
+                                        {type === "seasonTypes" && (
+                                            <td className="py-1 align-middle">
+                                                <div className="d-flex justify-content-center gap-4">
+                                                    <TableIconButton
+                                                        onClickFunction={() => handleVisualize(item)}
+                                                        title="visualizar"
+                                                        classIcon="bi bi-eye"
+                                                    />
+                                                    <TableIconButton
+                                                        onClickFunction={() => handleEdit(item)}
+                                                        title="editar"
+                                                        classIcon="bi bi-pencil-square"
+                                                    />
+                                                    <TableIconButton
+                                                        onClickFunction={() => handleDelete(item)}
+                                                        title="eliminar"
+                                                        classIcon="bi bi-trash"
+                                                    />
+                                                </div>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>
@@ -216,7 +242,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
             </div>
 
             {modalVisible && (
-                <CustomModal
+                <ModalComponent
                     show={modalVisible}
                     data={modalData}
                     mode={modalMode}
@@ -226,10 +252,6 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
             )}
         </>
     );
-}
-
-function remove({ props }) {
-
 }
 
 export default Table;

@@ -18,7 +18,6 @@ function formatDateISO(date) {
 }
 
 function parseDate(month, day, year) {
-  // Creamos la fecha y devolvemos formato YYYY-MM-DD con formatDateISO para evitar desfase
   const date = new Date(year, month - 1, day);
   return formatDateISO(date);
 }

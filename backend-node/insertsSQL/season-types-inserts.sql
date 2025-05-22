@@ -6,9 +6,10 @@ CREATE TABLE season_types (
   start_day INT,
   start_month INT,
   end_day INT,
-  end_month INT
+  end_month INT,
+  start_year INT
 );
 
-INSERT INTO season_types (id, name, start_day, start_month, end_day, end_month) VALUES
-(1, 'Temporada de Verano', 1, 3, 1, 9),
-(2, 'Temporada de Invierno', 1, 9, 1, 3);
+INSERT INTO season_types (id, name, start_day, start_month, end_day, end_month, start_year) VALUES
+(1, 'Temporada de Verano', 1, 3, 1, 9, 2020),
+(2, 'Temporada de Invierno', 1, 9, 1, 3, 2020);
