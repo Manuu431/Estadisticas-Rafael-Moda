@@ -50,10 +50,10 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
 
   const getDays = (monthIndex) => (monthIndex === '' ? [] : Array.from({ length: daysInMonth[monthIndex] }, (_, i) => i + 1));
 
-  const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada" };
+  const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campañas" };
   const title = isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear';
 
-  const isCreateType = type === 'seasonTypes' || type === 'campaignsTypes';
+  const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
   const validationSchema = isCreateType ? validationSchemas.season_types : validationSchemas.default;
   
   const initialValues = isCreate

@@ -1,13 +1,13 @@
 const fs = require('fs');
 
-const campaignNames = [
-  "Campaña Día de San Valentín",
-  "Campaña Verano",
-  "Campaña Navidad",
-  "Campaña Rebajas Invierno",
-  "Campaña Black Friday",
-  "Campaña Primavera",
-  "Campaña Otoño"
+const campaignTypes = [
+  { id: 1, name: "Campaña Día de San Valentín" },
+  { id: 2, name: "Campaña Verano" },
+  { id: 3, name: "Campaña Navidad" },
+  { id: 4, name: "Campaña Rebajas Invierno" },
+  { id: 5, name: "Campaña Black Friday" },
+  { id: 6, name: "Campaña Primavera" },
+  { id: 7, name: "Campaña Otoño" }
 ];
 
 function getRandom(arr) {
@@ -29,9 +29,7 @@ function getRandomDateISO(startYear = 2023, endYear = 2025) {
 }
 
 function getRandomDateAfterISO(dateStr) {
-  // dateStr en formato YYYY-MM-DD
   const date = new Date(dateStr);
-  // Suma aleatoria hasta 20 días
   const newDate = new Date(date.getTime() + Math.floor(Math.random() * (20 * 24 * 60 * 60 * 1000)) + 1);
   return formatDateISO(newDate);
 }
@@ -44,20 +42,22 @@ CREATE TABLE campaigns (
   start_date DATE,
   end_date DATE,
   expenses DECIMAL(10,2),
-  profits DECIMAL(10,2)
+  profits DECIMAL(10,2),
+  campaign_type_id INT,
+  FOREIGN KEY (campaign_type_id) REFERENCES campaign_types(id)
 );
 
-INSERT INTO campaigns (name, start_date, end_date, expenses, profits) VALUES
+INSERT INTO campaigns (name, start_date, end_date, expenses, profits, campaign_type_id) VALUES
 `;
 
 for (let i = 1; i <= 50; i++) {
-  const name = getRandom(campaignNames);
+  const campaign = getRandom(campaignTypes);
   const startDate = getRandomDateISO(2023, 2025);
   const endDate = getRandomDateAfterISO(startDate);
   const expenses = (Math.random() * 5000).toFixed(2);
   const profits = (Math.random() * 20000).toFixed(2);
 
-  sql += `('${name}', '${startDate}', '${endDate}', ${expenses}, ${profits})${i < 50 ? ',' : ';'}\n`;
+  sql += `('${campaign.name}', '${startDate}', '${endDate}', ${expenses}, ${profits}, ${campaign.id})${i < 50 ? ',' : ';'}\n`;
 }
 
 fs.writeFileSync('../insertsSQL/campaigns-inserts.sql', sql, { encoding: 'utf8' });

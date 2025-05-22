@@ -7,8 +7,8 @@ const dbConfig = {
   database: 'estadisticas_rafael_moda_bbdd'
 };
 
-const START_YEAR = 2019;
-const END_YEAR = new Date().getFullYear() + 1;
+const START_YEAR = 2020;
+const END_YEAR = new Date().getFullYear();
 
 function formatDateISO(date) {
   const day = date.getDate().toString().padStart(2, '0');

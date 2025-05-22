@@ -58,5 +58,17 @@ export const DATABASE_TABLES = {
             inputId: ["id", "name", "start_date", "end_date", "start_year"],
             inputType: ["text", "text", "select", "select", "select"]
         }
+    },
+    campaignTypes: {
+        endpoint: "http://localhost:8000/api/campaign_types",
+        tables: {
+            columns: ["ID", "Nombre", "Inicio", "Fin", "Año de inicio"],
+            values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]
+        },
+        filters: {
+            label: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Año de inicio"],
+            inputId: ["id", "name", "start_date", "end_date", "start_year"],
+            inputType: ["text", "text", "select", "select", "select"]
+        }
     }
 }

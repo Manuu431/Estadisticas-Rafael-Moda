@@ -19,7 +19,7 @@ function HeaderTable({ classCols, onCreate, onRefresh, type }) {
                         <div className="col-xl-3 d-xl-flex d-none"></div>
                         <div className="col-xl-4 d-xl-flex d-none"></div>
                         <div className={`${classCols} col-xl-2`}>
-                            {type === "seasonTypes" && 
+                            {(type === "seasonTypes" || type === "campaignTypes") &&
                                 <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
                                     <Button
                                         buttonClasses={"btn-info"}

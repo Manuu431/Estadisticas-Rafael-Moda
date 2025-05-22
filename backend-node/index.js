@@ -91,7 +91,7 @@ const makePost = (endpoint) => {
     }
 
     try {
-      if (endpoint === 'season_types') {
+      if (endpoint === 'season_types' || endpoint === 'campaign_types') {
         const [result] = await db.promise().query(`INSERT INTO ${endpoint} SET ?`, data);
         const newId = result.insertId;
 
@@ -202,18 +202,22 @@ makeGet('clients');
 makeGet('campaigns');
 makeGet('seasons');
 makeGet('season_types');
+makeGet('campaign_types');
 
 makePost('campaigns');
 makePost('seasons');
 makePost('season_types');
+makePost('campaign_types');
 
 makeUpdate('campaigns');
 makeUpdate('seasons');
 makeUpdate('season_types');
+makeUpdate('campaign_types');
 
 makeDelete('campaigns');
 makeDelete('seasons');
 makeDelete('season_types');
+makeDelete('campaign_types');
 
 const normalizeDecimalFields = (data, fields) => {
     const newData = { ...data };
