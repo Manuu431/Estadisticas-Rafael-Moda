@@ -3,8 +3,6 @@ import axios from 'axios';
 import { DATABASE_TABLES } from "../../database.js";
 import HeaderTable from './HeaderTable.jsx';
 import Pagination from './Pagination.jsx';
-import EditOrVisualizeModal from './EditOrVisualizeModal.jsx';
-import CreateModal from './CreateModal.jsx';
 import {
     handleSort,
     getSortedData,
