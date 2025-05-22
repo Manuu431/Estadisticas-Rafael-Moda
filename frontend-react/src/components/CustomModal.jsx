@@ -21,14 +21,10 @@ const validationSchema = Yup.object().shape({
 
   expenses: Yup.number()
     .typeError('Los gastos deben ser un número')
-    .required('Los gastos son obligatorios')
-    .min(1, 'Los gastos deben ser al menos 1')
     .max(9999999, 'El gasto no puede ser mayor que 9,999,999'),
 
   profits: Yup.number()
     .typeError('Los beneficios deben ser un número')
-    .required('Los beneficios son obligatorios')
-    .min(1, 'Los beneficios deben ser al menos 1')
     .max(9999999, 'El beneficio no puede ser mayor que 9,999,999'),
 });
 
@@ -136,7 +132,6 @@ function CustomModal({ show, onHide, data, mode, type }) {
                                     if (isDateField) {
                                         inputType = 'date';
                                     } else if (key === 'expenses' || key === 'profits') {
-                                        inputType = 'number';
                                         inputMin = 1;
                                         inputMax = 9999999;
                                         inputStep = '0.01';

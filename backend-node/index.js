@@ -84,7 +84,12 @@ const makeGet = (endpoint) => {
 const makePost = (endpoint) => {
     if (!allowedTables.includes(endpoint)) return;
     app.post(`/api/${endpoint}`, (req, res) => {
-        const data = req.body;
+        let data = req.body;
+
+        if (endpoint === 'seasons') {
+            data = normalizeDecimalFields(data, ['expenses', 'profits']);
+        }
+
         const query = `INSERT INTO ${endpoint} SET ?`;
         db.query(query, data, (err, results) => {
             if (err) {
@@ -99,8 +104,13 @@ const makePost = (endpoint) => {
 const makeUpdate = (endpoint) => {
     if (!allowedTables.includes(endpoint)) return;
     app.put(`/api/${endpoint}/:id`, (req, res) => {
-        const data = req.body;
+        let data = req.body;
         const id = req.params.id;
+
+        if (endpoint === 'seasons') {
+            data = normalizeDecimalFields(data, ['expenses', 'profits']);
+        }
+
         const query = `UPDATE ${endpoint} SET ? WHERE id = ?`;
         db.query(query, [data, id], (err, results) => {
             if (err) {
@@ -140,6 +150,19 @@ makeUpdate('seasons');
 
 makeDelete('campaigns');
 makeDelete('seasons');
+
+const normalizeDecimalFields = (data, fields) => {
+    const newData = { ...data };
+    fields.forEach((field) => {
+        if (newData[field] === '' || newData[field] === undefined || newData[field] === null) {
+            newData[field] = null;
+        } else {
+            newData[field] = parseFloat(newData[field]);
+        }
+    });
+    return newData;
+};
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

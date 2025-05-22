@@ -39,7 +39,6 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                 paramsSerializer: serializeParams
             });
 
-            console.log("response data 1", response.data[0]);
             setData(response.data);
             setCurrentPage(1);
             setTotalPages(Math.ceil(response.data.length / itemsPerPage));
@@ -91,14 +90,15 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
     
     const handleCloseModal = () => {
         localStorage.removeItem("temporalCampaign");
-        setExternalCampaign(null);
+        if(setExternalCampaign){
+            setExternalCampaign(null);
+        }
         setModalVisible(false);
         setModalData(null);
         setModalMode('view');
     };
 
     useEffect(() => {
-        console.log("externalCampaign", externalCampaign);
         if (externalCampaign && data.length > 0) {
             const itemToOpen = data.find(item => item.id === externalCampaign.id);
             if (itemToOpen) {
@@ -162,9 +162,31 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                         {(type === "campaigns" || type === "seasons") && (
                                             <td className="py-1 align-middle">
                                                 <div className="d-flex justify-content-center gap-4">
-                                                    <TableIconButton onClickFunction={() => handleVisualize(item)} title="visualizar" classIcon="bi bi-eye" />
-                                                    <TableIconButton onClickFunction={() => handleEdit(item)} title="editar" classIcon="bi bi-pencil-square" />
-                                                    <TableIconButton onClickFunction={() => handleDelete(item)} title="eliminar" classIcon="bi bi-trash" />
+                                                    {(item.expenses == null || item.profits == null || item.expenses == 0 || item.profits == 0) ? (
+                                                        <TableIconButton
+                                                            onClickFunction={() => handleEdit(item)}
+                                                            title="añadir gastos o beneficios"
+                                                            classIcon="bi bi-plus-circle"
+                                                        />
+                                                    ) : (
+                                                        <>
+                                                            <TableIconButton
+                                                                onClickFunction={() => handleVisualize(item)}
+                                                                title="visualizar"
+                                                                classIcon="bi bi-eye"
+                                                            />
+                                                            <TableIconButton
+                                                                onClickFunction={() => handleEdit(item)}
+                                                                title="editar"
+                                                                classIcon="bi bi-pencil-square"
+                                                            />
+                                                        </>
+                                                    )}
+                                                    {/* <TableIconButton
+                                                        onClickFunction={() => handleDelete(item)}
+                                                        title="eliminar"
+                                                        classIcon="bi bi-trash"
+                                                    /> */}
                                                 </div>
                                             </td>
                                         )}
