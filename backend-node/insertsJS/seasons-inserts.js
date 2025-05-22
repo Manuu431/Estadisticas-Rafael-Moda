@@ -39,7 +39,7 @@ for (let year = 2019; year <= 2025; year++) {
   const veranoExpenses = (9000 + Math.random() * 2000).toFixed(2);
   const veranoProfits = (16000 + Math.random() * 2000).toFixed(2);
 
-   sql += `(${id++}, '${veranoName}', '${formatDateISO(veranoStart)}', '${formatDateISO(veranoEnd)}', NULL, NULL, 1),\n`;
+   sql += `(${id++}, '${veranoName}', '${formatDateISO(veranoStart)}', '${formatDateISO(veranoEnd)}', ${veranoExpenses}, ${veranoProfits}, 1),\n`;
 
   // Temporada Invierno: 1 septiembre año actual - 1 marzo año siguiente
   const inviernoStart = new Date(year, 8, 1);       // 1/9/yyyy
@@ -48,7 +48,7 @@ for (let year = 2019; year <= 2025; year++) {
   const inviernoExpenses = (10000 + Math.random() * 2000).toFixed(2);
   const inviernoProfits = (18000 + Math.random() * 2000).toFixed(2);
 
-  sql += `(${id++}, '${inviernoName}', '${formatDateISO(inviernoStart)}', '${formatDateISO(inviernoEnd)}', NULL, NULL, 2)${year < 2025 ? ',' : ';'}\n`;
+  sql += `(${id++}, '${inviernoName}', '${formatDateISO(inviernoStart)}', '${formatDateISO(inviernoEnd)}', ${inviernoExpenses}, ${inviernoProfits}, 2)${year < 2025 ? ',' : ';'}\n`;
 }
 
 fs.writeFileSync('../insertsSQL/seasons-inserts.sql', sql, { encoding: 'utf8' });

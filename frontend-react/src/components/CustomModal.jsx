@@ -8,7 +8,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string()
     .required('El nombre es obligatorio')
     .min(3, 'El nombre debe tener al menos 3 caracteres')
-    .max(30, 'El nombre debe tener como máximo 30 caracteres'),
+    .max(50, 'El nombre debe tener como máximo 30 caracteres'),
 
   start_date: Yup.date()
     .required('La fecha de inicio es obligatoria')
