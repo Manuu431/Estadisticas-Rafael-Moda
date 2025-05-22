@@ -49,6 +49,6 @@ for (let year = 2019; year <= 2025; year++) {
   sql += `(${id++}, '${inviernoName}', '${formatDateISO(inviernoStart)}', '${formatDateISO(inviernoEnd)}', ${inviernoExpenses}, ${inviernoProfits}),\n`;
 }
 
-fs.writeFileSync('seasons-inserts.sql', sql, { encoding: 'utf8' });
+fs.writeFileSync('../insertsSQL/seasons-inserts.sql', sql, { encoding: 'utf8' });
 
 console.log("File 'seasons-inserts.sql' generated successfully.");

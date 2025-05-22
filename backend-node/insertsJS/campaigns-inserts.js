@@ -60,6 +60,6 @@ for (let i = 1; i <= 50; i++) {
   sql += `('${name}', '${startDate}', '${endDate}', ${expenses}, ${profits})${i < 50 ? ',' : ';'}\n`;
 }
 
-fs.writeFileSync('campaigns-inserts.sql', sql, { encoding: 'utf8' });
+fs.writeFileSync('../insertsSQL/campaigns-inserts.sql', sql, { encoding: 'utf8' });
 
 console.log("File 'campaigns-inserts.sql' generated successfully.");

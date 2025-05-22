@@ -58,6 +58,6 @@ for (let i = 1; i <= 100; i++) {
     sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < 100 ? ',' : ';'}\n`;
 }
 
-fs.writeFileSync('sales-inserts.sql', sql, { encoding: 'utf8' });
+fs.writeFileSync('../insertsSQL/sales-inserts.sql', sql, { encoding: 'utf8' });
 
 console.log("File 'sales-inserts.sql' generated successfully.");
