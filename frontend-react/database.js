@@ -49,6 +49,7 @@ export const DATABASE_TABLES = {
     },
     seasonTypes: {
         endpoint: "http://localhost:8000/api/season_types",
+        endpointSync: "http://localhost:8000/api/season_types/sync",
         tables: {
             columns: ["ID", "Nombre", "Inicio", "Fin", "Año de inicio"],
             values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]
@@ -61,6 +62,7 @@ export const DATABASE_TABLES = {
     },
     campaignTypes: {
         endpoint: "http://localhost:8000/api/campaign_types",
+        endpointSync: "http://localhost:8000/api/campaign_types/sync",
         tables: {
             columns: ["ID", "Nombre", "Inicio", "Fin", "Año de inicio"],
             values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]

@@ -1,46 +1,55 @@
 import { Button } from '../utils/smallComponents';
 
-function HeaderTable({ classCols, onCreate, onRefresh, type }) {
+function HeaderTable({ onCreate, onRefresh, type, reloadTable }) {
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
+    const types = { campaigns: "campañas", seasons: "temporadas", seasonTypes: "temporada", campaignTypes: "campaña" };
+    const classCols = isCreateType ? "col-12 col-md-6" : "col-12 col-md-4";
 
     return (
         <div className="row">
             <div className={`col-12 mt-3`}>
                 <div className="container-fluid bg-dark-gray rounded-top-3 px-0">
                     <div className="row">
-                        <div className={`${classCols} col-xl-3`}>
-                            <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
-                                <Button
-                                    buttonClasses={"btn-success"}
-                                    onClickFunction={onRefresh}
-                                    iconClasses={"bi bi-arrow-clockwise"}
-                                    text={"Actualizar"}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-xl-3 d-xl-flex d-none"></div>
-                        <div className="col-xl-2 d-xl-flex d-none"></div>
-                        <div className={`${classCols} col-xl-4`}>
-                            <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
-                                {isCreateType ?
-                                    <Button
-                                        buttonClasses={"btn-info"}
-                                        onClickFunction={onCreate}
-                                        iconClasses={"bi bi-plus-circle"}
-                                        text={"Crear"}
-                                    />
-                                :
-                                    <Button
-                                        buttonClasses={"btn-info"}
-                                        onClickFunction={onCreate}
-                                        iconClasses={"bi bi-arrow-clockwise"}
-                                        text={"Cargar campañas"}
-                                    />
-                                }
-                            </div>
-                        </div>
+                        <DivButton
+                            classCols={classCols}
+                            buttonClasses={"btn-success"}
+                            onClickFunction={onRefresh}
+                            iconClasses={"bi bi-arrow-clockwise"}
+                            text="Actualizar"
+                        />
+                        <DivButton
+                            classCols={classCols}
+                            buttonClasses={"btn-info"}
+                            onClickFunction={onCreate}
+                            iconClasses={"bi bi-plus-circle"}
+                            text={`Crear ${types[type]}`}
+                        />
+                        {!isCreateType && (
+                            <DivButton
+                                classCols={classCols}
+                                buttonClasses={"btn-success"}
+                                onClickFunction={reloadTable}
+                                iconClasses={"bi bi-arrow-repeat"}
+                                text={`Sincronizar ${types[type]}`}
+                            />
+                        )}
                     </div>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+function DivButton(props) {
+    return (
+        <div className={props.classCols}>
+            <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
+                <Button
+                    buttonClasses={props.buttonClasses}
+                    onClickFunction={props.onClickFunction}
+                    iconClasses={props.iconClasses}
+                    text={props.text}
+                />
             </div>
         </div>
     );

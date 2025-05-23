@@ -26,6 +26,21 @@ db.connect(err => {
 
 const allowedTables = ['campaigns', 'seasons', 'season_types', 'campaign_types'];
 
+const normalizeDecimalFields = (data, fields) => {
+    const newData = { ...data };
+    fields.forEach((field) => {
+        if (newData[field] === '' || newData[field] === undefined || newData[field] === null) {
+            newData[field] = null;
+        } else {
+            newData[field] = parseFloat(newData[field]);
+        }
+    });
+    return newData;
+};
+
+const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
+
 const makeGet = (endpoint) => {
     app.get(`/api/${endpoint}`, (req, res) => {
         const filters = req.query;
@@ -83,77 +98,72 @@ const makeGet = (endpoint) => {
 
 const makePost = (endpoint) => {
   if (!allowedTables.includes(endpoint)) return;
+
   app.post(`/api/${endpoint}`, async (req, res) => {
     let data = req.body;
 
-    if (endpoint === 'seasons') {
+    if (endpoint === 'seasons' || endpoint === 'campaigns') {
       data = normalizeDecimalFields(data, ['expenses', 'profits']);
     }
 
     try {
-      if (endpoint === 'season_types' || endpoint === 'campaign_types') {
-        const [result] = await db.promise().query(`INSERT INTO ${endpoint} SET ?`, data);
+      if (endpoint === 'season_types') {
+        const [result] = await db.promise().query(`INSERT INTO season_types SET ?`, data);
         const newId = result.insertId;
+        const [[newType]] = await db.promise().query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
 
-        const [[newSeasonType]] = await db.promise().query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
-
-        const startYear = newSeasonType.start_year || new Date().getFullYear();
+        const startYear = newType.start_year || new Date().getFullYear();
         const endYear = new Date().getFullYear();
 
-        const formatDateISO = (date) => {
-          const day = String(date.getDate()).padStart(2, '0');
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const year = date.getFullYear();
-          return `${year}-${month}-${day}`;
-        };
-
-        const parseDate = (month, day, year) => {
-          const date = new Date(year, month - 1, day);
-          return formatDateISO(date);
-        };
+        const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
 
         const inserts = [];
-
         for (let year = startYear; year <= endYear; year++) {
-          const startDay = newSeasonType.start_day;
-          const startMonth = newSeasonType.start_month;
-          const endDay = newSeasonType.end_day;
-          const endMonth = newSeasonType.end_month;
-
-          const startDate = parseDate(startMonth, startDay, year);
-
-          let endDate, seasonName;
-
-          if (endMonth < startMonth || (endMonth === startMonth && endDay < startDay)) {
-            endDate = parseDate(endMonth, endDay, year + 1);
-            seasonName = `${newSeasonType.name} ${year}-${year + 1}`;
-          } else {
-            endDate = parseDate(endMonth, endDay, year);
-            seasonName = `${newSeasonType.name} ${year}`;
-          }
-
-          inserts.push([
-            seasonName,
-            startDate,
-            endDate,
-            null,
-            null,
-            newId,
-          ]);
+          const startDate = parseDate(newType.start_month, newType.start_day, year);
+          const isNextYear = newType.end_month < newType.start_month || (newType.end_month === newType.start_month && newType.end_day < newType.start_day);
+          const endDate = parseDate(newType.end_month, newType.end_day, isNextYear ? year + 1 : year);
+          const name = isNextYear ? `${newType.name} ${year}-${year + 1}` : `${newType.name} ${year}`;
+          inserts.push([name, startDate, endDate, null, null, newId]);
         }
 
         if (inserts.length > 0) {
-          await db.promise().query(
-            'INSERT INTO seasons (name, start_date, end_date, expenses, profits, season_type_id) VALUES ?',
-            [inserts]
-          );
+          await db.promise().query('INSERT INTO seasons (name, start_date, end_date, expenses, profits, season_type_id) VALUES ?', [inserts]);
         }
 
         return res.json({ message: 'Season type and seasons created', season_type_id: newId });
+
+      } else if (endpoint === 'campaign_types') {
+        const [result] = await db.promise().query(`INSERT INTO campaign_types SET ?`, data);
+        const newId = result.insertId;
+        const [[newType]] = await db.promise().query(`SELECT * FROM campaign_types WHERE id = ?`, [newId]);
+
+        const startYear = newType.start_year || new Date().getFullYear();
+        const endYear = new Date().getFullYear();
+
+        const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
+
+        const inserts = [];
+        for (let year = startYear; year <= endYear; year++) {
+          const startDate = parseDate(newType.start_month, newType.start_day, year);
+          const isNextYear = newType.end_month < newType.start_month || (newType.end_month === newType.start_month && newType.end_day < newType.start_day);
+          const endDate = parseDate(newType.end_month, newType.end_day, isNextYear ? year + 1 : year);
+          const name = isNextYear ? `${newType.name} ${year}-${year + 1}` : `${newType.name} ${year}`;
+          inserts.push([name, startDate, endDate, null, null, newId]);
+        }
+
+        if (inserts.length > 0) {
+          await db.promise().query('INSERT INTO campaigns (name, start_date, end_date, expenses, profits, campaign_type_id) VALUES ?', [inserts]);
+        }
+
+        return res.json({ message: 'Campaign type and campaigns created', campaign_type_id: newId });
+
       } else {
         const [results] = await db.promise().query(`INSERT INTO ${endpoint} SET ?`, data);
         return res.json(results);
       }
+
     } catch (err) {
       console.error(`Error creating ${endpoint}:`, err);
       return res.status(500).json({ error: 'Server error' });
@@ -197,6 +207,54 @@ const makeDelete = (endpoint) => {
     });
 };
 
+const makeSyncPost = ({ endpoint, typeTable, targetTable, foreignKey }) => {
+  app.post(`/api/${endpoint}/sync`, async (req, res) => {
+    try {
+      const [types] = await db.promise().query(`SELECT * FROM ${typeTable}`);
+      const [existingEntries] = await db.promise().query(`SELECT ${foreignKey}, start_date FROM ${targetTable}`);
+
+      const currentYear = new Date().getFullYear();
+      const existingKeys = new Set(
+        existingEntries.map(e => `${e[foreignKey]}-${new Date(e.start_date).getFullYear()}`)
+      );
+
+      const inserts = [];
+
+      for (const type of types) {
+        const startYear = type.start_year || 2000;
+        for (let year = startYear; year <= currentYear; year++) {
+          const key = `${type.id}-${year}`;
+          if (!existingKeys.has(key)) {
+            const isNextYear =
+              type.end_month < type.start_month ||
+              (type.end_month === type.start_month && type.end_day < type.start_day);
+
+            const name = isNextYear ? `${type.name} ${year}-${year + 1}` : `${type.name} ${year}`;
+            const startDate = parseDate(type.start_month, type.start_day, year);
+            const endDate = parseDate(type.end_month, type.end_day, isNextYear ? year + 1 : year);
+
+            inserts.push([name, startDate, endDate, null, null, type.id]);
+          }
+        }
+      }
+
+      if (inserts.length > 0) {
+        await db
+          .promise()
+          .query(
+            `INSERT INTO ${targetTable} (name, start_date, end_date, expenses, profits, ${foreignKey}) VALUES ?`,
+            [inserts]
+          );
+      }
+
+      res.json({ message: `${targetTable} up to date.` });
+    } catch (err) {
+      console.error(`Error syncing ${typeTable} -> ${targetTable}:`, err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+};
+
 makeGet('sales');
 makeGet('clients');
 makeGet('campaigns');
@@ -219,17 +277,19 @@ makeDelete('seasons');
 makeDelete('season_types');
 makeDelete('campaign_types');
 
-const normalizeDecimalFields = (data, fields) => {
-    const newData = { ...data };
-    fields.forEach((field) => {
-        if (newData[field] === '' || newData[field] === undefined || newData[field] === null) {
-            newData[field] = null;
-        } else {
-            newData[field] = parseFloat(newData[field]);
-        }
-    });
-    return newData;
-};
+makeSyncPost({
+  endpoint: 'campaign_types',
+  typeTable: 'campaign_types',
+  targetTable: 'campaigns',
+  foreignKey: 'campaign_type_id',
+});
+
+makeSyncPost({
+  endpoint: 'season_types',
+  typeTable: 'season_types',
+  targetTable: 'seasons',
+  foreignKey: 'season_type_id',
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

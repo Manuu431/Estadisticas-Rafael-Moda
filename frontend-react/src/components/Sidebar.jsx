@@ -18,7 +18,7 @@ function Sidebar() {
                 <NavLink
                     to={item.path}
                     className={({ isActive }) =>
-                    `nav-link rounded-0 border-bottom border-black ${idx % 2 === 0 ? 'bg-orange' : 'bg-gray'} ${isActive ? 'text-white' : 'text-dark'} px-4 py-3`
+                    `nav-link rounded-0 border-bottom border-black ${idx % 2 === 0 ? 'bg-orange' : 'bg-gray'} ${isActive ? 'text-white' : 'text-dark'} ps-4 p-3`
                     }
                 >
                     {({ isActive }) => (

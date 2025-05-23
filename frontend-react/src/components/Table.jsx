@@ -30,6 +30,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
     const DATABASE_TABLE = DATABASE_TABLES[type];
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
     const haveHeader = type === "campaigns" || type === "seasons" || isCreateType;
+    const types = { campaigns: "campañas", seasons: "temporadas" };
 
     const sortedData = getSortedData(data, sortConfig);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -58,6 +59,25 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
             setTotalPages(Math.ceil(result.length / itemsPerPage));
         } catch (error) {
             console.error(`Error obtaining ${type} data:`, error.response ? error.response.data : error);
+        }
+    };
+
+    const reloadTable = async () => {
+        try {
+            let endpointType;
+
+            if(type === 'seasons'){
+                endpointType = DATABASE_TABLES["seasonTypes"].endpointSync;
+            } else if(type === 'campaigns'){
+                endpointType = DATABASE_TABLES["campaignTypes"].endpointSync;
+            }
+
+            await axios.post(endpointType);
+            await fetchData();
+            
+            alert(`Se han sincronizado los datos de las ${types[type]}.`);
+        } catch (error) {
+            console.error(`Error reloading ${type} data:`, error.response ? error.response.data : error);
         }
     };
 
@@ -123,7 +143,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
 
     return (
         <>
-            {haveHeader && <HeaderTable classCols={classCols} onCreate={handleCreate} onRefresh={fetchData} type={type} />}
+            {haveHeader && <HeaderTable onCreate={handleCreate} onRefresh={fetchData} type={type} reloadTable={reloadTable} />}
             <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
                 <div className="col-12">
                     <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>
