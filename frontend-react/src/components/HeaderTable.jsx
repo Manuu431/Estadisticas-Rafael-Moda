@@ -1,6 +1,8 @@
 import { Button } from '../utils/smallComponents';
 
 function HeaderTable({ classCols, onCreate, onRefresh, type }) {
+    const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
+
     return (
         <div className="row">
             <div className={`col-12 mt-3`}>
@@ -17,18 +19,25 @@ function HeaderTable({ classCols, onCreate, onRefresh, type }) {
                             </div>
                         </div>
                         <div className="col-xl-3 d-xl-flex d-none"></div>
-                        <div className="col-xl-4 d-xl-flex d-none"></div>
-                        <div className={`${classCols} col-xl-2`}>
-                            {(type === "seasonTypes" || type === "campaignTypes") &&
-                                <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
+                        <div className="col-xl-2 d-xl-flex d-none"></div>
+                        <div className={`${classCols} col-xl-4`}>
+                            <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
+                                {isCreateType ?
                                     <Button
                                         buttonClasses={"btn-info"}
                                         onClickFunction={onCreate}
-                                        iconClasses={"bi-plus-circle"}
+                                        iconClasses={"bi bi-plus-circle"}
                                         text={"Crear"}
                                     />
-                                </div>
-                            }
+                                :
+                                    <Button
+                                        buttonClasses={"btn-info"}
+                                        onClickFunction={onCreate}
+                                        iconClasses={"bi bi-arrow-clockwise"}
+                                        text={"Cargar campañas"}
+                                    />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

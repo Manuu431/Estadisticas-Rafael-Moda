@@ -28,7 +28,8 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
 
     const itemsPerPage = 10;
     const DATABASE_TABLE = DATABASE_TABLES[type];
-    const haveHeader = type === "campaigns" || type === "seasons" || type === "seasonTypes" || type === "campaignTypes";
+    const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
+    const haveHeader = type === "campaigns" || type === "seasons" || isCreateType;
 
     const sortedData = getSortedData(data, sortConfig);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -44,7 +45,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
 
             let result = response.data;
 
-            if (type === "seasonTypes" || type === "campaignTypes") {
+            if (isCreateType) {
                 result = result.map(item => ({
                     ...item,
                     start_date_formatted: `${item.start_day}/${item.start_month}`,
@@ -146,7 +147,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                             </th>
                                         );
                                     })}
-                                    {(type === "campaigns" || type === "seasons" || type === "seasonTypes" || type === "campaignTypes") && (
+                                    {(type === "campaigns" || type === "seasons" || isCreateType) && (
                                         <th className="text-white align-middle">
                                             <div className="d-flex justify-content-center">
                                                 <span className='fs-5'>Acciones</span>
@@ -161,7 +162,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                         {DATABASE_TABLE.tables.values.map((columnName, colIndex) => {
                                             let formattedValue = item[columnName];
 
-                                            if(type !== "seasonTypes" && type !== "campaignTypes"){
+                                            if(!isCreateType){
                                                 if (columnName.toLowerCase().includes("date") && item[columnName]) {
                                                     formattedValue = formatDate(item[columnName]);
                                                 }
@@ -205,7 +206,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
                                                 </div>
                                             </td>
                                         )}
-                                        {(type === "seasonTypes" || type === "campaignTypes") && (
+                                        {isCreateType && (
                                             <td className="py-1 align-middle">
                                                 <div className="d-flex justify-content-center gap-4">
                                                     <TableIconButton
