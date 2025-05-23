@@ -98,7 +98,7 @@ const makePost = (endpoint) => {
         const [[newSeasonType]] = await db.promise().query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
 
         const startYear = newSeasonType.start_year || new Date().getFullYear();
-        const endYear = new Date().getFullYear() + 1;
+        const endYear = new Date().getFullYear();
 
         const formatDateISO = (date) => {
           const day = String(date.getDate()).padStart(2, '0');
