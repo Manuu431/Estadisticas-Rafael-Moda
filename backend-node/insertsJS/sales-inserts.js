@@ -39,10 +39,11 @@ sql += `CREATE TABLE sales (
 
 sql += `INSERT INTO sales (id, model, family, color, size, brand, pvd, pvp, units, discount, profit, sale_date) VALUES\n`;
 
-const startDate = new Date('2024-01-01');
+const startDate = new Date('2020-01-01');
 const endDate = new Date('2025-05-17');
+const numSales = 3000;
 
-for (let i = 1; i <= 100; i++) {
+for (let i = 1; i <= numSales; i++) {
     const model = getRandom(models);
     const family = getRandom(families);
     const color = getRandom(colors);
@@ -55,7 +56,7 @@ for (let i = 1; i <= 100; i++) {
     const profit = ((pvp - pvd - discount) * units).toFixed(2);
     const sale_date = getRandomDate(startDate, endDate);
 
-    sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < 100 ? ',' : ';'}\n`;
+    sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < numSales ? ',' : ';'}\n`;
 }
 
 fs.writeFileSync('../insertsSQL/sales-inserts.sql', sql, { encoding: 'utf8' });

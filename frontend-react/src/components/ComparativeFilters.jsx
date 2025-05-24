@@ -3,7 +3,7 @@ import axios from "axios";
 import { DATABASE_TABLES } from "../../database.js";
 import { SelectFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 
-function ComparativeFilters({ filters, setFilters, onFilter, classCols }) {
+function ComparativeFilters({ filters, setFilters, handleSelectDateByChange, handleClear, onFilter, classCols }) {
     const DATABASE_TABLE = DATABASE_TABLES["comparative"];
     const [optionsData, setOptionsData] = useState({});
 
@@ -20,6 +20,8 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols }) {
                 const options = sortedData.map(item => ({
                     value: item.id,
                     label: item.name,
+                    start_date: item.start_date,
+                    end_date: item.end_date
                 }));
 
                 setOptionsData(prev => ({
@@ -41,11 +43,22 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols }) {
     }, [filters.selectDateBy]);
 
     const handleSelectChange = (inputId, value) => {
-        setFilters(prev => ({ ...prev, [inputId]: value }));
-    };
-
-    const handleSelectDateByChange = (inputId, value) => {
-        setFilters({ groupBy: "none", selectDateBy: value });
+        setFilters(prev => {
+            const newFilters = { ...prev, [inputId]: value };
+            
+            if (filters.selectDateBy === "campaigns" || filters.selectDateBy === "seasons") {
+                const tableKey = filters.selectDateBy;
+                const options = optionsData[tableKey] || [];
+                const selectedOption = options.find(opt => opt.value === value);
+                if (selectedOption) {                    
+                    const suffix = inputId.endsWith("_1") ? "_1" : "_2";
+                    newFilters[`start_date${suffix}`] = selectedOption.start_date;
+                    newFilters[`end_date${suffix}`] = selectedOption.end_date;
+                }
+            }
+            
+            return newFilters;
+        });
     };
 
     const handleTextInputChange = (e) => {
@@ -139,7 +152,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols }) {
                     classCols={classCols}
                     divClasses="justify-content-lg-start"
                     buttonClasses="btn-secondary"
-                    onClickFunction={() => setFilters({ groupBy: "none", selectDateBy: filters.selectDateBy })}
+                    onClickFunction={() => handleClear()}
                     iconClasses="bi bi-trash"
                     text="Limpiar"
                 />
