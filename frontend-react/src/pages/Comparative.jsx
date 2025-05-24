@@ -8,12 +8,12 @@ import { DATABASE_TABLES } from "../../database.js";
 
 function Comparative({ title, classCols }) {
   const [filters, setFilters] = useState({
-    date_start_1: "",
-    date_end_1: "",
-    date_start_2: "",
-    date_end_2: "",
-    showBy: "day",
-    groupBy: "brand",
+    start_date_1: "",
+    end_date_1: "",
+    start_date_2: "",
+    end_date_2: "",
+    showBy: "",
+    groupBy: "",
   });
 
   const [salesData, setSalesData] = useState([]);
@@ -29,32 +29,36 @@ function Comparative({ title, classCols }) {
   };
 
   const applyFilters = (allSales, filters) => {
-    const { date_start_1, date_end_1, date_start_2, date_end_2, showBy, groupBy } = filters;
+    const { start_date_1, end_date_1, start_date_2, end_date_2, showBy, groupBy } = filters;
 
     const inRange = (date, start, end) => {
       const d = new Date(date);
       return (!start || d >= new Date(start)) && (!end || d <= new Date(end));
     };
 
-    const range1 = allSales.filter(sale =>
-      inRange(sale.date, date_start_1, date_end_1)
+    const salesRange1 = allSales.filter(sale =>
+      inRange(sale.sale_date, start_date_1, end_date_1)
     );
 
-    const range2 = allSales.filter(sale =>
-      inRange(sale.date, date_start_2, date_end_2)
+    const salesRange2 = allSales.filter(sale =>
+      inRange(sale.sale_date, start_date_2, end_date_2)
     );
+
+    console.log("salesRange1", salesRange1);
+    console.log("salesRange2", salesRange2);
+    console.log("showBy", showBy);
+    console.log("groupBy", groupBy);
 
     return {
-      series1: groupSales(range1, showBy, groupBy),
-      series2: groupSales(range2, showBy, groupBy),
-      showBy1: showBy,
-      groupBy1: groupBy,
-      showBy2: showBy,
-      groupBy2: groupBy,
+      data1: groupSales(salesRange1, showBy, groupBy),
+      data2: groupSales(salesRange2, showBy, groupBy),
+      showBy: showBy,
+      groupBy: groupBy
     };
   };
 
   const handleFilter = (newFilters) => {
+    console.log("handleFilter newFilters", newFilters);
     setFilters(newFilters);
     const filteredData = applyFilters(salesData, newFilters);
     setComparativeData(filteredData);
@@ -62,12 +66,12 @@ function Comparative({ title, classCols }) {
 
   const handleClear = () => {
     const emptyFilters = {
-      date_start_1: "",
-      date_end_1: "",
-      date_start_2: "",
-      date_end_2: "",
+      start_date_1: "",
+      end_date_1: "",
+      start_date_2: "",
+      end_date_2: "",
       showBy: "day",
-      groupBy: "brand",
+      groupBy: "",
     };
     setFilters(emptyFilters);
     const filteredData = applyFilters(salesData, emptyFilters);
@@ -95,7 +99,7 @@ function Comparative({ title, classCols }) {
         onClear={handleClear}
         classCols={classCols}
       />
-      {comparativeData && <MainComparative data1={comparativeData} data2={comparativeData} classCols={classCols} />}
+      {comparativeData && <MainComparative allData={comparativeData} filters={filters} classCols={classCols} />}
     </>
   );
 }

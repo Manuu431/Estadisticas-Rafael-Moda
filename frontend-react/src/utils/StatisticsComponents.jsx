@@ -13,12 +13,12 @@ import { subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { groupSalesByFieldForMonth } from './statisticsData';
 
-export function StackedBarChart({ data, brands }) {
-  const COLORS = [
-    '#0088FE', '#00C49F', '#FFBB28', '#FF8042',
-    '#AA46BE', '#FF595E', '#1982C4', '#6A4C93'
-  ];
+const COLORS = [
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042',
+  '#AA46BE', '#FF595E', '#1982C4', '#6A4C93'
+];
 
+export function StackedBarChart({ data, brands }) {
   return (
     <ResponsiveContainer width="100%" height={500}>
       <BarChart data={data} margin={{ top: 10, bottom: 60, left: 10, right: 10 }}>
@@ -37,11 +37,6 @@ export function StackedBarChart({ data, brands }) {
     </ResponsiveContainer>
   );
 }
-
-const COLORS = [
-  '#0088FE', '#00C49F', '#FFBB28', '#FF8042',
-  '#AA46BE', '#FF595E', '#1982C4', '#6A4C93'
-];
 
 function CustomLegend({ payload }) {
   return (
@@ -117,6 +112,12 @@ export function GroupBySelector({ groupBy, setGroupBy }) {
   );
 }
 
+function getFormatDate(date) {
+    let formatted = format(date, "MMMM yyyy", { locale: es });
+    formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    return formatted;
+}
+
 export function Select({ selectedMonth, setSelectedMonth }) {
     const options = getOptions();
 
@@ -135,13 +136,16 @@ export function Select({ selectedMonth, setSelectedMonth }) {
     );
 }
 
-function getFormatDate(date) {
-    let formatted = format(date, "MMMM yyyy", { locale: es });
-    formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
-    return formatted;
-}
-
 import { useNavigate } from 'react-router-dom';
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const formatted = format(date, "d MMM yyyy", { locale: es });
+
+    return formatted.replace(/(\d+)\s(\p{L}+)(\s\d{4})/, (_, d, month, y) => {
+        return `${d} ${month.charAt(0).toUpperCase() + month.slice(1)}${y}`;
+    });
+}
 
 export function Campaigns({ data, startIndex = 0 }) {
     const today = new Date();
@@ -167,61 +171,37 @@ export function Campaigns({ data, startIndex = 0 }) {
                     onClick={() => handleClick(item)}
                     style={{ cursor: 'pointer' }}
                 >
-                    <span className="fs-5 fw-bold">{item.name}</span>
-                    <span className="fs-5">{formatDate(item.start_date)}</span>
+                    <span className="fs-5 fw-bold w-75">{item.name}</span>
+                    <span className="fs-5 w-25">{formatDate(item.start_date)}</span>
                 </div>
             ))}
         </div>
     );
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const formatted = format(date, "d MMM yyyy", { locale: es });
-
-    return formatted.replace(/(\d+)\s(\p{L}+)(\s\d{4})/, (_, d, month, y) => {
-        return `${d} ${month.charAt(0).toUpperCase() + month.slice(1)}${y}`;
-    });
-}
-
-export function CampaignButtons({ currentIndex, setCurrentIndex, total }) {
-    const campaignNumber = 10;
-    
-    const handleUp = () => {
-        setCurrentIndex((prev) => Math.max(prev - campaignNumber, 0));
-    };
-
-    const handleDown = () => {
-        setCurrentIndex((prev) => (prev + campaignNumber < total ? prev + campaignNumber : prev));
-    };
+/*/**
+ * COMPARATIVE CHART
+*/
+export function ComparativeStackedBarChart({ data, showBy }) {
+    const categoryKeys = Array.from(
+        new Set(data.flatMap(item => Object.keys(item)))
+    ).filter(key => key !== showBy);
 
     return (
-        <div className="d-flex flex-column me-2">
-            <CampaignButton
-                onClickFunction={handleUp}
-                disabled={currentIndex === 0}
-                title="previous campaigns"
-                classIcon="bi bi-caret-up-fill"
-            />
-            <CampaignButton
-                onClickFunction={handleDown}
-                disabled={currentIndex + campaignNumber >= total}
-                title="next campaigns"
-                classIcon="bi bi-caret-down-fill"
-            />
-        </div>
-    );
-}
-
-function CampaignButton (props) {
-    return (
-        <button 
-            className="btn btn-sm py-0 d-flex justify-content-center align-items-center border-orange" 
-            onClick={props.onClickFunction}
-            disabled={props.disabled}
-            title={props.title}
-        >
-            <i className={props.classIcon}></i>
-        </button>
+        <ResponsiveContainer width="100%" height={500}>
+            <BarChart data={data} margin={{ top: 10, bottom: 60 }}>
+                <XAxis dataKey={showBy} tick={{ dy: 10 }} angle={-45} textAnchor="end" />
+                <YAxis />
+                <Tooltip />
+                {categoryKeys.map((key, index) => (
+                    <Bar
+                        key={key}
+                        dataKey={key}
+                        stackId="a"
+                        fill={COLORS[index % COLORS.length]}
+                    />
+                ))}
+            </BarChart>
+        </ResponsiveContainer>
     );
 }

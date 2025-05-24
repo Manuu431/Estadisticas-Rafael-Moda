@@ -1,25 +1,43 @@
-import { ComparativeStackedBarChart } from "./ComparativeStackedBarChart";
+import { ComparativeStackedBarChart } from "../utils/StatisticsComponents";
 
-function MainComparative({ data1, data2, classCols }) {
-    const { series1, showBy1, groupBy1 } = data1;
-    const { series2, showBy2, groupBy2 } = data2;
+function MainComparative({ allData, filters, classCols }) {
+    console.log("allData", allData);
+    console.log("filters", filters);
+
+    const { data1, data2, showBy, groupBy } = allData;
+
+    const date1 = `${normalizeDate(filters.start_date_1) || "Elegir fecha 1"} - ${normalizeDate(filters.end_date_1) || "Elegir fecha 2"}`;
+    const date2 = `${normalizeDate(filters.start_date_2) || "Elegir fecha 1"} - ${normalizeDate(filters.end_date_2) || "Elegir fecha 2"}`;
 
     return (
         <div className="row mt-3">
             <div className={`${classCols}`}>
                 <div className="d-flex text-center justify-content-center flex-column">
-                    <h4>Fecha 1: {showBy1} - {groupBy1}</h4>
-                    <ComparativeStackedBarChart data={series1} showBy={showBy1} groupBy={groupBy1} />
+                    <h4>{date1}</h4>
+                    <ComparativeStackedBarChart data={data1} showBy={showBy} categories={groupBy} />
                 </div>
             </div>
             <div className={`${classCols}`}>
                 <div className="d-flex text-center justify-content-center flex-column">
-                    <h4>Fecha 2: {showBy2} - {groupBy2}</h4>
-                    <ComparativeStackedBarChart data={series2} showBy={showBy2} groupBy={groupBy2} />
+                    <h4>{date2}</h4>
+                    <ComparativeStackedBarChart data={data2} showBy={showBy} categories={groupBy} />
                 </div>
             </div>
         </div>
     );
+}
+
+function normalizeDate(date) {
+  if (!date) return "";
+
+  const d = new Date(date);
+  if (isNaN(d)) return "";
+
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
 }
 
 export default MainComparative;

@@ -94,41 +94,51 @@ export function groupSalesByFieldForMonth(salesData, selectedMonth, field) {
     return Object.entries(result).map(([name, value]) => ({ name, value }));
 }
 
+import { getWeek, getYear } from 'date-fns';
+
 export function groupSales(sales, showBy, groupBy) {
-  const grouped = {};
+    // console.log("showBy:", showBy, "| groupBy:", groupBy);
+    const grouped = {};
 
-  sales.forEach(sale => {
-    if (!sale.date) return;
+    sales.forEach(sale => {
+        if (!sale.sale_date) return;
 
-    const date = new Date(sale.date);
-    if (isNaN(date)) return;
+        const date = new Date(sale.sale_date);
+        if (isNaN(date)) return;
 
-    let timeKey;
+        let timeKey;
 
-    switch (showBy) {
-      case "day":
-        timeKey = date.toISOString().split("T")[0];
-        break;
-      case "month":
-        timeKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        break;
-      case "year":
-        timeKey = `${date.getFullYear()}`;
-        break;
-      default:
-        timeKey = "Unknown";
-    }
+        switch (showBy) {
+            case "day":
+                timeKey = date.toISOString().split("T")[0];
+                break;
+            case "month":
+                timeKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                break;
+            case "year":
+                timeKey = `${date.getFullYear()}`;
+                break;
+            default:
+                timeKey = "Unknown";
+        }
 
-    const groupKey = sale[groupBy] || "Sin categoría";
+        console.log("sale:", sale);
+        console.log("sale[groupBy]:", sale[groupBy]);
 
-    if (!grouped[timeKey]) grouped[timeKey] = {};
-    if (!grouped[timeKey][groupKey]) grouped[timeKey][groupKey] = 0;
+        const groupKey = sale[groupBy] || "Sin categoría";
 
-    grouped[timeKey][groupKey] += sale.total || 1;
-  });
+        if (!grouped[timeKey]) grouped[timeKey] = {};
+        if (!grouped[timeKey][groupKey]) grouped[timeKey][groupKey] = 0;
 
-  return Object.entries(grouped).map(([timeKey, values]) => ({
-    [groupBy]: timeKey,
-    ...values,
-  }));
+        grouped[timeKey][groupKey] += sale.total || 1;
+    });
+
+    const result = Object.entries(grouped).map(([timeKey, values]) => ({
+        [showBy]: timeKey,
+        ...values,
+    }));
+
+    result.sort((a, b) => new Date(a[showBy]) - new Date(b[showBy]));
+
+    return result;
 }

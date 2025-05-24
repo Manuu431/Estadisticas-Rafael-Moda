@@ -59,16 +59,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                     classCols={classCols}
                     divClasses="justify-content-lg-start"
                     buttonClasses="btn-secondary"
-                    onClickFunction={() =>
-                        handleManualClear(
-                            setSelectedValues,
-                            setTextInputs,
-                            setRangeInputs,
-                            onFilterChange,
-                            DATABASE_TABLE,
-                            setOptionsData
-                        )
-                    }
+                    onClickFunction={() => onClear()}
                     iconClasses="bi bi-trash"
                     text="Limpiar"
                 />
