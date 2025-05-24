@@ -8,8 +8,10 @@ export const filterOptions = (response, inputId) => {
     if (inputId === "size") {
         const tallaOrder = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
         sortedOptions = uniqueOptions.sort((a, b) => tallaOrder.indexOf(a) - tallaOrder.indexOf(b));
-    } else {
+    } else if (typeof uniqueOptions[0] === "string") {
         sortedOptions = uniqueOptions.sort((a, b) => a.localeCompare(b));
+    } else {
+        sortedOptions = uniqueOptions.sort((a, b) => a - b);
     }
 
     return sortedOptions;

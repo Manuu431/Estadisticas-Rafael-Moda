@@ -55,9 +55,9 @@ export const DATABASE_TABLES = {
             values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]
         },
         filters: {
-            label: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Año de inicio"],
-            inputId: ["id", "name", "start_date", "end_date", "start_year"],
-            inputType: ["text", "text", "select", "select", "select"]
+            label: ["ID", "Nombre", "Año de inicio"],
+            inputId: ["id", "name", "start_year"],
+            inputType: ["text", "text", "select"]
         }
     },
     campaignTypes: {
@@ -68,9 +68,9 @@ export const DATABASE_TABLES = {
             values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]
         },
         filters: {
-            label: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Año de inicio"],
-            inputId: ["id", "name", "start_date", "end_date", "start_year"],
-            inputType: ["text", "text", "select", "select", "select"]
+            label: ["ID", "Nombre", "Año de inicio"],
+            inputId: ["id", "name", "start_year"],
+            inputType: ["text", "text", "select"]
         }
     }
 }
