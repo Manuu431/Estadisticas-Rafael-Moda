@@ -182,26 +182,26 @@ export function Campaigns({ data, startIndex = 0 }) {
 /*/**
  * COMPARATIVE CHART
 */
-export function ComparativeStackedBarChart({ data, showBy }) {
-    const categoryKeys = Array.from(
-        new Set(data.flatMap(item => Object.keys(item)))
-    ).filter(key => key !== showBy);
+export function ComparativeStackedBarChart({ data, showBy, maxY }) {
+  const categoryKeys = Array.from(
+    new Set(data.flatMap(item => Object.keys(item)))
+  ).filter(key => key !== showBy);
 
-    return (
-        <ResponsiveContainer width="100%" height={500}>
-            <BarChart data={data} margin={{ top: 10, bottom: 60 }}>
-                <XAxis dataKey={showBy} tick={{ dy: 10 }} angle={-45} textAnchor="end" />
-                <YAxis />
-                <Tooltip />
-                {categoryKeys.map((key, index) => (
-                    <Bar
-                        key={key}
-                        dataKey={key}
-                        stackId="a"
-                        fill={COLORS[index % COLORS.length]}
-                    />
-                ))}
-            </BarChart>
-        </ResponsiveContainer>
-    );
+  return (
+    <ResponsiveContainer width="100%" height={500}>
+      <BarChart data={data} margin={{ top: 10, bottom: 60 }}>
+        <XAxis dataKey={showBy} tick={{ dy: 10 }} angle={-45} textAnchor="end" />
+        <YAxis domain={[0, maxY]} />
+        <Tooltip />
+        {categoryKeys.map((key, index) => (
+          <Bar
+            key={key}
+            dataKey={key}
+            stackId="a"
+            fill={COLORS[index % COLORS.length]}
+          />
+        ))}
+      </BarChart>
+    </ResponsiveContainer>
+  );
 }
