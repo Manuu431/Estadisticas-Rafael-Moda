@@ -2,7 +2,7 @@ export const MENU_ITEMS = [
   { name: 'Panel de control', path: '/', element: 'ControlPanel' },
   { name: 'Ventas', path: '/ventas', element: 'Sales', icon: 'bi bi-currency-euro' },
   { name: 'Clientes', path: '/clientes', element: 'Clients', icon: 'bi bi-person' },
-  { name: 'Comparativa', path: '/comparativa', element: 'Comparison', icon: 'bi bi-arrow-left-right' },
+  { name: 'Comparativa', path: '/comparativa', element: 'Comparative', icon: 'bi bi-arrow-left-right' },
   { name: 'Calendario', path: '/calendario', element: 'Calendar', icon: 'bi bi-calendar' },
   { name: 'Temporadas', path: '/temporadas', element: 'Seasons', icon: 'bi bi-brightness-high' },
   { name: 'Campañas', path: '/campañas', element: 'Campaigns', icon: 'bi bi-megaphone' },

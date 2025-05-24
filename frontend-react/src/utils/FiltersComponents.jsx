@@ -1,7 +1,7 @@
 import Select from 'react-select';
 import { Button } from '../utils/smallComponents';
 
-export function SelectFilter(props) {
+export function MultiSelectFilter(props) {
     return (
         <div className="position-relative m-3">
             <label
@@ -102,3 +102,34 @@ export function FilterButton(props) {
         </div>
     );
 };
+
+export function SelectFilter(props) {
+    return (
+        <div className="position-relative m-3">
+            <label
+                className="position-absolute top-0 start-0 ms-3 mt-1 text-secondary small"
+                htmlFor={props.inputId}
+                style={{ zIndex: 2 }}
+            >
+                {props.label}
+            </label>
+            <Select
+                isMulti={false}
+                inputId={props.inputId}
+                name={props.inputId}
+                options={props.optionsData[props.inputId] || []}
+                classNamePrefix="react-select"
+                className="react-select-container z-2"
+                placeholder={`Seleccionar ${props.label.toLowerCase()}`}
+                value={
+                    (props.optionsData[props.inputId] || []).find(
+                        option => option.value === props.selectedValues[props.inputId]
+                    ) || null
+                }
+                onChange={(selectedOption) =>
+                    props.handleSelectChange(props.inputId, selectedOption?.value || "")
+                }
+            />
+        </div>
+    );
+}

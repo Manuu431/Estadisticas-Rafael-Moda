@@ -72,5 +72,27 @@ export const DATABASE_TABLES = {
             inputId: ["id", "name", "start_year"],
             inputType: ["text", "text", "select"]
         }
+    },
+    comparative: {
+        filters: {
+            label: ["Fecha de inicio 1", "Fecha de fin 1", "Fecha de inicio 2", "Fecha de fin 2", "Mostrar por"],
+            inputId: ["start_date_1", "end_date_1", "start_date_2", "end_date_2", "show_by"],
+            inputType: ["date", "date", "date", "date", "select"],
+            options: {
+                group_by: [
+                    { label: "Por día", value: "day" },
+                    { label: "Por semana", value: "week" },
+                    { label: "Por mes", value: "month" },
+                    { label: "Por año", value: "year" }
+                ],
+                segment_by: [
+                    { label: "Ninguno", value: "" },
+                    { label: "Familia", value: "family" },
+                    { label: "Marca", value: "brand" },
+                    { label: "Color", value: "color" },
+                    { label: "Talla", value: "size" }
+                ]
+            }
+        }
     }
 }

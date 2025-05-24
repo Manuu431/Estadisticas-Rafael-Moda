@@ -5,7 +5,7 @@ import Sidebar from './components/Sidebar';
 import ControlPanel from './pages/ControlPanel';
 import Sales from './pages/Sales';
 import Clients from './pages/Clients';
-import Comparison from './pages/Comparison';
+import Comparative from './pages/Comparative';
 import Calendar from './pages/Calendar';
 import Campaigns from './pages/Campaigns';
 import Expenses from './pages/Expenses';
@@ -27,7 +27,7 @@ function App() {
                     <Route path="/" element={<ControlPanel title="Panel de control" />} />
                     <Route path="/ventas" element={<Sales title="Ventas" classCols={classFilterCols} />} />
                     <Route path="/clientes" element={<Clients title="Clientes" classCols={classFilterCols} />} />
-                    <Route path="/comparativa" element={<Comparison title="Comparativa" />} />
+                    <Route path="/comparativa" element={<Comparative title="Comparativa" classCols={classFilterCols} />} />
                     <Route path="/calendario" element={<Calendar title="Calendario" />} />
                     <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
                     <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />

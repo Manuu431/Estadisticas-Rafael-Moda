@@ -51,7 +51,7 @@ export const handleManualClear = async (
     setTextInputs({});
     setRangeInputs({});
     onFilterChange({});
-    await updateSelectOptions(databaseTable, {}, setOptionsData);
+    await updateMultiSelectOptions(databaseTable, {}, setOptionsData);
 };
 
 export const handleManualFilter = async (
@@ -82,10 +82,10 @@ export const handleManualFilter = async (
     };
 
     onFilterChange(filters);
-    await updateSelectOptions(databaseTable, filters, setOptionsData);
+    await updateMultiSelectOptions(databaseTable, filters, setOptionsData);
 };
 
-export const updateSelectOptions = async (
+export const updateMultiSelectOptions = async (
     databaseTable,
     filters,
     setOptionsData
@@ -115,3 +115,8 @@ export const updateSelectOptions = async (
         console.error("Error loading options:", error.response ? error.response.data : error);
     }
 };
+
+export function updateSelectOptions(DATABASE_TABLE, filters, setOptionsData) {
+    const staticOptions = DATABASE_TABLE.filters.options || {};
+    setOptionsData(staticOptions);
+}

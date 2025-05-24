@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { DATABASE_TABLES } from "../../database.js"
 
-import { SelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
+import { MultiSelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 import {
     handleSelectChange,
     handleRangeInputChange,
     handleTextInputChange,
     handleManualClear,
     handleManualFilter,
-    updateSelectOptions
+    updateMultiSelectOptions
 } from "../utils/filterUtils.js";
 
 function Filters({ type, onFilterChange, classCols }) {
@@ -19,7 +19,7 @@ function Filters({ type, onFilterChange, classCols }) {
     const [textInputs, setTextInputs] = useState({});
 
     useEffect(() => {
-        updateSelectOptions(DATABASE_TABLE, {}, setOptionsData);
+        updateMultiSelectOptions(DATABASE_TABLE, {}, setOptionsData);
     }, [DATABASE_TABLE.endpoint]);
 
     return (
@@ -33,7 +33,7 @@ function Filters({ type, onFilterChange, classCols }) {
                         <div className={`${classCols} col-xl-4`} key={index}>
                             <div className="mb-3 gap-3">
                                 {inputType === "select" ? (
-                                    <SelectFilter
+                                    <MultiSelectFilter
                                         inputId={inputId}
                                         label={label}
                                         optionsData={optionsData}
@@ -88,7 +88,7 @@ function Filters({ type, onFilterChange, classCols }) {
                         )
                     }
                     iconClasses="bi bi-trash"
-                    text="Netejar"
+                    text="Limpiar"
                 />
                 <FilterButton
                     classCols={classCols}
