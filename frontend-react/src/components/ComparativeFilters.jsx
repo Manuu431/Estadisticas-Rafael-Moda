@@ -23,41 +23,78 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
     return (
         <>
             <div className="row bg-gray py-2">
-                {filters.selectDateBy === "exact_date" && DATABASE_TABLE.filters.label.map((label, index) => {
-                    const inputId = DATABASE_TABLE.filters.inputId[index];
-                    const inputType = DATABASE_TABLE.filters.inputType[index];
+                {filters.selectDateBy === "exact_date" && (
+                    <>
+                        {["start_date_1", "end_date_1", "start_date_2", "end_date_2"].map((inputId) => {
+                            const index = DATABASE_TABLE.filters.inputId.indexOf(inputId);
+                            if (index === -1) return null;
+                            const label = DATABASE_TABLE.filters.label[index];
+                            const inputType = DATABASE_TABLE.filters.inputType[index];
+                            return (
+                                <div className={`${classCols}`} key={inputId}>
+                                    <div className="mb-3 gap-3">
+                                        <TextInputFilter
+                                            inputId={inputId}
+                                            label={label}
+                                            inputType={inputType}
+                                            textInputs={filters}
+                                            handleTextInputChange={handleTextInputChange}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </>
+                )}
 
+                {(filters.selectDateBy === "campaigns" || filters.selectDateBy === "seasons") && (
+                    <>
+                        {["_1", "_2"].map(suffix => {
+                            const inputId = filters.selectDateBy === "campaigns" ? `campaign${suffix}` : `season${suffix}`;
+                            return (
+                                <div className={`${classCols}`} key={inputId}>
+                                    <div className="mb-3 gap-3">
+                                        <SelectFilter
+                                            inputId={inputId}
+                                            label={filters.selectDateBy === "campaigns" ? `Campaña ${suffix === "_1" ? "1" : "2"}` : `Temporada ${suffix === "_1" ? "1" : "2"}`}
+                                            optionsData={{ [inputId]: optionsData[filters.selectDateBy] || [] }}
+                                            selectedValues={filters}
+                                            handleSelectChange={handleSelectChange}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </>
+                )}
+
+                {["showBy", "groupBy"].map((inputId) => {
+                    const index = DATABASE_TABLE.filters.inputId.indexOf(inputId);
+                    if (index === -1) return null;
+                    const label = DATABASE_TABLE.filters.label[index];
+                    const options = DATABASE_TABLE.filters.options[inputId];
                     return (
-                        <div className={`${classCols}`} key={index}>
+                        <div className={`${classCols}`} key={inputId}>
                             <div className="mb-3 gap-3">
-                                {inputType === "select" ? (
-                                    <SelectFilter
-                                        inputId={inputId}
-                                        label={label}
-                                        optionsData={optionsData}
-                                        selectedValues={filters}
-                                        handleSelectChange={handleSelectChange}
-                                    />
-                                ) : (
-                                    <TextInputFilter
-                                        inputId={inputId}
-                                        label={label}
-                                        inputType={inputType}
-                                        textInputs={filters}
-                                        handleTextInputChange={handleTextInputChange}
-                                    />
-                                )}
+                                <SelectFilter
+                                    inputId={inputId}
+                                    label={label}
+                                    optionsData={{ [inputId]: options }}
+                                    selectedValues={filters}
+                                    handleSelectChange={handleSelectChange}
+                                />
                             </div>
                         </div>
                     );
                 })}
             </div>
-            <div className='row bg-gray py-2'>
+
+            <div className="row bg-gray py-2">
                 <div className={`${classCols} col-xl-4`}>
                     <div className="m-auto">
                         <SelectFilter
                             inputId={"selectDateBy"}
-                            label={"fecha por"}
+                            label={"Fecha por"}
                             optionsData={{ selectDateBy: DATABASE_TABLE.filters.options.selectDateBy }}
                             selectedValues={filters}
                             handleSelectChange={handleSelectChange}
@@ -69,7 +106,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                     classCols={classCols}
                     divClasses="justify-content-lg-start"
                     buttonClasses="btn-secondary"
-                    onClickFunction={() => onClear()}
+                    onClickFunction={() => setFilters({ selectDateBy: "exact_date" })}
                     iconClasses="bi bi-trash"
                     text="Limpiar"
                 />

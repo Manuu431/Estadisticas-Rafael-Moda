@@ -106,20 +106,13 @@ export function FilterButton(props) {
 export function SelectFilter(props) {
     return (
         <div className="position-relative m-3">
-            <label
-                className="position-absolute top-0 start-0 ms-3 mt-1 text-secondary small"
-                htmlFor={props.inputId}
-                style={{ zIndex: 2 }}
-            >
-                {props.label}
-            </label>
             <Select
                 isMulti={false}
                 inputId={props.inputId}
                 name={props.inputId}
                 options={props.optionsData[props.inputId] || []}
                 classNamePrefix="react-select"
-                className="react-select-container z-2"
+                className="react-select-container"
                 placeholder={`Seleccionar ${props.label.toLowerCase()}`}
                 value={
                     (props.optionsData[props.inputId] || []).find(
