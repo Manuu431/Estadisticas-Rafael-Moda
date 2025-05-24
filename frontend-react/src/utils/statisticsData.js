@@ -93,3 +93,42 @@ export function groupSalesByFieldForMonth(salesData, selectedMonth, field) {
 
     return Object.entries(result).map(([name, value]) => ({ name, value }));
 }
+
+export function groupSales(sales, showBy, groupBy) {
+  const grouped = {};
+
+  sales.forEach(sale => {
+    if (!sale.date) return;
+
+    const date = new Date(sale.date);
+    if (isNaN(date)) return;
+
+    let timeKey;
+
+    switch (showBy) {
+      case "day":
+        timeKey = date.toISOString().split("T")[0];
+        break;
+      case "month":
+        timeKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        break;
+      case "year":
+        timeKey = `${date.getFullYear()}`;
+        break;
+      default:
+        timeKey = "Unknown";
+    }
+
+    const groupKey = sale[groupBy] || "Sin categoría";
+
+    if (!grouped[timeKey]) grouped[timeKey] = {};
+    if (!grouped[timeKey][groupKey]) grouped[timeKey][groupKey] = 0;
+
+    grouped[timeKey][groupKey] += sale.total || 1;
+  });
+
+  return Object.entries(grouped).map(([timeKey, values]) => ({
+    [groupBy]: timeKey,
+    ...values,
+  }));
+}

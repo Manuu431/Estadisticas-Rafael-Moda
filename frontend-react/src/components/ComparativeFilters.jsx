@@ -76,7 +76,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                     classCols={classCols}
                     divClasses="justify-content-lg-end"
                     buttonClasses="bg-orange"
-                    onClickFunction={onFilter(filters)}
+                    onClickFunction={() => onFilter(filters)}
                     iconClasses="bi bi-funnel"
                     text="Filtrar"
                 />
