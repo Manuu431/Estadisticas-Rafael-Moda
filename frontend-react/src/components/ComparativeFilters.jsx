@@ -1,24 +1,52 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { DATABASE_TABLES } from "../../database.js";
 import { SelectFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
-import { updateSelectOptions } from "../utils/filterUtils.js";
 
 function ComparativeFilters({ filters, setFilters, onFilter, classCols }) {
     const DATABASE_TABLE = DATABASE_TABLES["comparative"];
     const [optionsData, setOptionsData] = useState({});
 
+    const fetchOptionsData = async () => {
+        try {
+            if (filters.selectDateBy === "campaigns" || filters.selectDateBy === "seasons") {
+                const tableKey = filters.selectDateBy;
+                const endpoint = DATABASE_TABLES[tableKey].endpoint;
+                const response = await axios.get(endpoint);
+                const data = response.data;
+
+                const sortedData = data.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+
+                const options = sortedData.map(item => ({
+                    value: item.id,
+                    label: item.name,
+                }));
+
+                setOptionsData(prev => ({
+                    ...prev,
+                    [tableKey]: options,
+                }));
+            }
+        } catch (error) {
+            console.error(`Error obteniendo datos de ${filters.selectDateBy}:`, error.response ? error.response.data : error);
+        }
+    };
+
     useEffect(() => {
-        updateSelectOptions(DATABASE_TABLE, setOptionsData);
-    }, []);
+        if (filters.selectDateBy === "campaigns" || filters.selectDateBy === "seasons") {
+            fetchOptionsData();
+        } else {
+            setOptionsData({});
+        }
+    }, [filters.selectDateBy]);
 
     const handleSelectChange = (inputId, value) => {
         setFilters(prev => ({ ...prev, [inputId]: value }));
     };
 
     const handleSelectDateByChange = (inputId, value) => {
-        setFilters({ groupBy: "none" });
-        setFilters(prev => ({ ...prev, [inputId]: value }));
-    }
+        setFilters({ groupBy: "none", selectDateBy: value });
+    };
 
     const handleTextInputChange = (e) => {
         const { name, value } = e.target;
