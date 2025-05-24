@@ -30,7 +30,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
     const DATABASE_TABLE = DATABASE_TABLES[type];
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
     const haveHeader = type === "campaigns" || type === "seasons" || isCreateType;
-    const types = { campaigns: "campañas", seasons: "temporadas" };
+    const types = { campaigns: "campañas", seasons: "temporadas", seasonTypes: "temporadas", campaignTypes: "campañas" };
 
     const sortedData = getSortedData(data, sortConfig);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -110,7 +110,7 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
             setTotalPages(Math.ceil(updatedData.length / itemsPerPage));
         } catch (error) {
             console.error("Error al eliminar el elemento:", error.response ? error.response.data : error);
-            alert("No se pudo eliminar el elemento.");
+            alert(`No se pudo eliminar "${item.name || 'este elemento'}", tienes que eliminar primero las ${types[type]} asociadas.`);
         }
     };
 
