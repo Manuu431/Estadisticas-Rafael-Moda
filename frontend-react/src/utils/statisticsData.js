@@ -97,7 +97,6 @@ export function groupSalesByFieldForMonth(salesData, selectedMonth, field) {
 import { getWeek, getYear } from 'date-fns';
 
 export function groupSales(sales, showBy, groupBy) {
-    // console.log("showBy:", showBy, "| groupBy:", groupBy);
     const grouped = {};
 
     sales.forEach(sale => {
@@ -121,9 +120,6 @@ export function groupSales(sales, showBy, groupBy) {
             default:
                 timeKey = "Unknown";
         }
-
-        console.log("sale:", sale);
-        console.log("sale[groupBy]:", sale[groupBy]);
 
         const groupKey = sale[groupBy] || "Sin categoría";
 

@@ -116,7 +116,7 @@ export const updateMultiSelectOptions = async (
     }
 };
 
-export function updateSelectOptions(DATABASE_TABLE, filters, setOptionsData) {
+export function updateSelectOptions(DATABASE_TABLE, setOptionsData) {
     const staticOptions = DATABASE_TABLE.filters.options || {};
     setOptionsData(staticOptions);
 }

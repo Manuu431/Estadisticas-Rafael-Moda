@@ -8,7 +8,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
     const [optionsData, setOptionsData] = useState({});
 
     useEffect(() => {
-        updateSelectOptions(DATABASE_TABLE, {}, setOptionsData);
+        updateSelectOptions(DATABASE_TABLE, setOptionsData);
     }, []);
 
     const handleSelectChange = (inputId, value) => {
@@ -23,12 +23,12 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
     return (
         <>
             <div className="row bg-gray py-2">
-                {DATABASE_TABLE.filters.label.map((label, index) => {
+                {filters.selectDateBy === "exact_date" && DATABASE_TABLE.filters.label.map((label, index) => {
                     const inputId = DATABASE_TABLE.filters.inputId[index];
                     const inputType = DATABASE_TABLE.filters.inputType[index];
 
                     return (
-                        <div className={`${classCols} col-xl-6`} key={index}>
+                        <div className={`${classCols}`} key={index}>
                             <div className="mb-3 gap-3">
                                 {inputType === "select" ? (
                                     <SelectFilter
@@ -53,7 +53,17 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                 })}
             </div>
             <div className='row bg-gray py-2'>
-                <div className="col-xl-4"></div>
+                <div className={`${classCols} col-xl-4`}>
+                    <div className="m-auto">
+                        <SelectFilter
+                            inputId={"selectDateBy"}
+                            label={"fecha por"}
+                            optionsData={{ selectDateBy: DATABASE_TABLE.filters.options.selectDateBy }}
+                            selectedValues={filters}
+                            handleSelectChange={handleSelectChange}
+                        />
+                    </div>
+                </div>
                 <div className="col-xl-4"></div>
                 <FilterButton
                     classCols={classCols}

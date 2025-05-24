@@ -14,8 +14,9 @@ function Comparative({ title, classCols }) {
     end_date_2: "",
     showBy: "",
     groupBy: "",
+    selectDateBy: "exact_date",
   });
-
+  
   const [salesData, setSalesData] = useState([]);
   const [comparativeData, setComparativeData] = useState(null);
 
@@ -44,11 +45,6 @@ function Comparative({ title, classCols }) {
       inRange(sale.sale_date, start_date_2, end_date_2)
     );
 
-    console.log("salesRange1", salesRange1);
-    console.log("salesRange2", salesRange2);
-    console.log("showBy", showBy);
-    console.log("groupBy", groupBy);
-
     return {
       data1: groupSales(salesRange1, showBy, groupBy),
       data2: groupSales(salesRange2, showBy, groupBy),
@@ -58,7 +54,6 @@ function Comparative({ title, classCols }) {
   };
 
   const handleFilter = (newFilters) => {
-    console.log("handleFilter newFilters", newFilters);
     setFilters(newFilters);
     const filteredData = applyFilters(salesData, newFilters);
     setComparativeData(filteredData);

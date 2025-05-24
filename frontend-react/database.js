@@ -90,6 +90,11 @@ export const DATABASE_TABLES = {
                     { label: "Marca", value: "brand" },
                     { label: "Color", value: "color" },
                     { label: "Talla", value: "size" }
+                ],
+                selectDateBy: [
+                    { label: "Fecha exacta", value: "exact_date" },
+                    { label: "Campañas", value: "campaigns" },
+                    { label: "Temporadas", value: "seasons" }
                 ]
             }
         }

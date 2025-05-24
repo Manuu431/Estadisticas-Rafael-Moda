@@ -1,9 +1,6 @@
 import { ComparativeStackedBarChart } from "../utils/StatisticsComponents";
 
 function MainComparative({ allData, filters, classCols }) {
-    console.log("allData", allData);
-    console.log("filters", filters);
-
     const { data1, data2, showBy, groupBy } = allData;
 
     const date1 = `${normalizeDate(filters.start_date_1) || "Elegir fecha 1"} - ${normalizeDate(filters.end_date_1) || "Elegir fecha 2"}`;
