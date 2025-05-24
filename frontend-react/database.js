@@ -85,7 +85,7 @@ export const DATABASE_TABLES = {
                     { label: "Por año", value: "year" }
                 ],
                 groupBy: [
-                    { label: "Ninguno", value: "" },
+                    { label: "Ninguno", value: "none" },
                     { label: "Familia", value: "family" },
                     { label: "Marca", value: "brand" },
                     { label: "Color", value: "color" },

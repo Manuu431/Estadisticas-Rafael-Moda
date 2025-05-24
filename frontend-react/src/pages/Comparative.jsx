@@ -13,10 +13,9 @@ function Comparative({ title, classCols }) {
     start_date_2: "",
     end_date_2: "",
     showBy: "",
-    groupBy: "",
+    groupBy: "none",
     selectDateBy: "exact_date",
   });
-  
   const [salesData, setSalesData] = useState([]);
   const [comparativeData, setComparativeData] = useState(null);
 
@@ -66,7 +65,7 @@ function Comparative({ title, classCols }) {
       start_date_2: "",
       end_date_2: "",
       showBy: "day",
-      groupBy: "",
+      groupBy: "none",
     };
     setFilters(emptyFilters);
     const filteredData = applyFilters(salesData, emptyFilters);
@@ -91,7 +90,6 @@ function Comparative({ title, classCols }) {
         filters={filters}
         setFilters={setFilters}
         onFilter={handleFilter}
-        onClear={handleClear}
         classCols={classCols}
       />
       {comparativeData && <MainComparative allData={comparativeData} filters={filters} classCols={classCols} />}

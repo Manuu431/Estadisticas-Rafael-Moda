@@ -3,7 +3,7 @@ import { DATABASE_TABLES } from "../../database.js";
 import { SelectFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 import { updateSelectOptions } from "../utils/filterUtils.js";
 
-function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12 col-md-6" }) {
+function ComparativeFilters({ filters, setFilters, onFilter, classCols }) {
     const DATABASE_TABLE = DATABASE_TABLES["comparative"];
     const [optionsData, setOptionsData] = useState({});
 
@@ -14,6 +14,11 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
     const handleSelectChange = (inputId, value) => {
         setFilters(prev => ({ ...prev, [inputId]: value }));
     };
+
+    const handleSelectDateByChange = (inputId, value) => {
+        setFilters({ groupBy: "none" });
+        setFilters(prev => ({ ...prev, [inputId]: value }));
+    }
 
     const handleTextInputChange = (e) => {
         const { name, value } = e.target;
@@ -97,7 +102,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                             label={"Fecha por"}
                             optionsData={{ selectDateBy: DATABASE_TABLE.filters.options.selectDateBy }}
                             selectedValues={filters}
-                            handleSelectChange={handleSelectChange}
+                            handleSelectChange={handleSelectDateByChange}
                         />
                     </div>
                 </div>
@@ -106,7 +111,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                     classCols={classCols}
                     divClasses="justify-content-lg-start"
                     buttonClasses="btn-secondary"
-                    onClickFunction={() => setFilters({ selectDateBy: "exact_date" })}
+                    onClickFunction={() => setFilters({ groupBy: "none", selectDateBy: filters.selectDateBy })}
                     iconClasses="bi bi-trash"
                     text="Limpiar"
                 />
