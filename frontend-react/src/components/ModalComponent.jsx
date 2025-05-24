@@ -2,7 +2,6 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { DATABASE_TABLES } from '../../database';
 
 const monthNames = [
@@ -67,16 +66,20 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const create = async (values) => {
     try {
       await axios.post(endPoint, values);
+      alert('Elemento creado correctamente.');
     } catch (error) {
       console.error('Error al crear:', error);
+      alert('No se pudo crear el elemento.');
     }
   };
 
   const update = async (values) => {
     try {
       await axios.put(`${endPoint}/${values.id}`, values);
+      alert('Elemento actualizado correctamente.');
     } catch (error) {
       console.error('Error al actualizar:', error);
+      alert('No se pudo actualizar el elemento.');
     }
   };
 
