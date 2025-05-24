@@ -28,7 +28,7 @@ function ComparativeFilters({ filters, setFilters, onFilter, classCols = "col-12
                     const inputType = DATABASE_TABLE.filters.inputType[index];
 
                     return (
-                        <div className={`${classCols} col-xl-4`} key={index}>
+                        <div className={`${classCols} col-xl-6`} key={index}>
                             <div className="mb-3 gap-3">
                                 {inputType === "select" ? (
                                     <SelectFilter
