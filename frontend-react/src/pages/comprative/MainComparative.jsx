@@ -1,4 +1,4 @@
-import { ComparativeStackedBarChart } from "../utils/StatisticsComponents";
+import { ComparativeStackedBarChart } from "../../utils/StatisticsComponents";
 
 function getMaxStackedValue(data, keys) {
   return Math.max(...data.map(item =>
