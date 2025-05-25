@@ -3,7 +3,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useNavigate } from 'react-router-dom';
-import { CustomToolbar } from '../utils/smallComponents';
+import { CustomToolbar } from './CustomToolBar.jsx';
 
 const locales = { es };
 

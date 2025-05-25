@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import Title from '../components/Title';
-import EventCalendar from '../components/EventCalendar';
+import Title from '../../components/Title.jsx';
+import EventCalendar from './EventCalendar.jsx';
 import axios from 'axios';
-import { DATABASE_TABLES } from "../../database.js";
+import { DATABASE_TABLES } from "../../../database.js";
 
 function Calendar(props) {
     const endpointCampaigns = DATABASE_TABLES['campaigns'].endpoint;
