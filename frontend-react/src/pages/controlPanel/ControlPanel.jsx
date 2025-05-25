@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Title from '../components/Title';
-import Card from '../components/Card';
-import { StackedBarChart, Select, GroupBySelector, PieChart, Campaigns } from '../utils/StatisticsComponents.jsx';
-import { CampaignButtons } from '../utils/smallComponents.jsx';
-import { getUniqueBrands, groupSalesByMonthAndBrand } from '../utils/statisticsData';
-import { DATABASE_TABLES } from "../../database.js";
+import Title from '../../components/Title.jsx';
+import Card from '../../components/Card.jsx';
+import { StackedBarChart, Select, GroupBySelector, PieChart, UpcomingCampaigns, CampaignButtons } from './ControlPanelComponents.jsx';
+import { getUniqueBrands, groupSalesByMonthAndBrand } from '../../utils/statisticsData.js';
+import { DATABASE_TABLES } from "../../../database.js";
 import { startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -78,7 +77,7 @@ function ControlPanel(props) {
                 </div>
                 <div className="col-lg-5">
                     <Card
-                        element={<Campaigns data={campaignsData} startIndex={campaignIndex} />}
+                        element={<UpcomingCampaigns data={campaignsData} startIndex={campaignIndex} />}
                         secondaryElement={
                             <CampaignButtons
                                 currentIndex={campaignIndex}

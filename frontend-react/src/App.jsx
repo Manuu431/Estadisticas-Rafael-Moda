@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 
-import ControlPanel from './pages/ControlPanel';
+import ControlPanel from './pages/controlPanel/ControlPanel';
 import Sales from './pages/Sales';
 import Clients from './pages/Clients';
 import Comparative from './pages/comparative/Comparative';

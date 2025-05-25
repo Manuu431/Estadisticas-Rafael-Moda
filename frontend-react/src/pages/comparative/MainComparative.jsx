@@ -1,4 +1,4 @@
-import { ComparativeStackedBarChart } from "../../utils/StatisticsComponents";
+import { CustomStackedBarChart } from "../../utils/StatisticsComponents";
 
 function getMaxStackedValue(data, keys) {
   return Math.max(...data.map(item =>
@@ -43,13 +43,13 @@ function MainComparative({ allData, filters, classCols }) {
             <div className={`${classCols}`}>
                 <div className="d-flex text-center justify-content-center flex-column">
                     <h4>{date1}</h4>
-                    <ComparativeStackedBarChart data={data1} showBy={showBy} maxY={yAxisMax} />
+                    <CustomStackedBarChart data={data1} showBy={showBy} maxY={yAxisMax} />
                 </div>
             </div>
             <div className={`${classCols}`}>
                 <div className="d-flex text-center justify-content-center flex-column">
                     <h4>{date2}</h4>
-                    <ComparativeStackedBarChart data={data2} showBy={showBy} maxY={yAxisMax} />
+                    <CustomStackedBarChart data={data2} showBy={showBy} maxY={yAxisMax} />
                 </div>
             </div>
         </div>
