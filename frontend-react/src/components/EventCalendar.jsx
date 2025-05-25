@@ -29,7 +29,7 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
 
     campaigns.forEach((c) => {
         events.push({
-            title: `${c.name}`,
+            title: `🎯${c.name}`,
             start: new Date(c.start_date),
             end: new Date(c.end_date),
             type: 'campaign',
@@ -39,14 +39,14 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
 
     seasons.forEach((s) => {
         events.push({
-            title: `Inicio: ${s.name}`,
+            title: `📅Inicio: ${s.name}`,
             start: new Date(s.start_date),
             end: new Date(s.start_date),
             type: 'season',
             original: s,
         });
         events.push({
-            title: `Fin: ${s.name}`,
+            title: `📅Fin: ${s.name}`,
             start: new Date(s.end_date),
             end: new Date(s.end_date),
             type: 'season',
@@ -63,18 +63,24 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
         return color;
     };
 
+    const getTextColor = (bgColor) => {
+        const hsl = bgColor.match(/\d+/g);
+        const lightness = parseInt(hsl[2], 10);
+        return lightness > 60 ? 'black' : 'white';
+    };
+
     const eventPropGetter = (event) => {
         const backgroundColor = getColorFromName(event.original.name);
+        const color = getTextColor(backgroundColor);
         return {
             style: {
                 backgroundColor,
-                borderRadius: '6px',
-                opacity: 0.9,
-                color: 'white',
-                border: 'none',
-                padding: '2px 4px',
-                fontWeight: 'bold',
-            },
+                color,
+                borderRadius: '0.5em',
+                padding: '0.5em 0.75em',
+                fontSize: '1em',
+                border: `1px solid black`
+            }
         };
     };
 
