@@ -9,7 +9,7 @@ import {
   handleFilter,
   handleClear,
   handleSelectDateByChange,
-} from "./comparative.js";
+} from "./comparativeFunctions.js";
 
 function Comparative({ title, classCols }) {
   const [filters, setFilters] = useState({

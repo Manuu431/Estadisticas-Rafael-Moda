@@ -5,7 +5,7 @@ import Sidebar from './components/Sidebar';
 import ControlPanel from './pages/ControlPanel';
 import Sales from './pages/Sales';
 import Clients from './pages/Clients';
-import Comparative from './pages/comprative/Comparative';
+import Comparative from './pages/comparative/Comparative';
 import Calendar from './pages/calendar/Calendar';
 import Campaigns from './pages/Campaigns';
 import Expenses from './pages/Expenses';
