@@ -86,7 +86,7 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
     };
 
     return (
-        <div className="row px-2 py-3" style={{ height: '50em', width: '100%' }}>
+        <div className="row px-2 py-3" style={{ height: '56em', width: '100%' }}>
             <BigCalendar
                 localizer={localizer}
                 events={events}
