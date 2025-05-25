@@ -3,6 +3,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useNavigate } from 'react-router-dom';
+import { CustomToolbar } from '../utils/smallComponents';
 
 const locales = { es };
 
@@ -19,7 +20,7 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
 
     const handleClick = (event) => {
         localStorage.setItem(
-            event.type === 'campaign' ? 'temporalCampaign' : 'temporalSeason',
+            'temporalItem',
             JSON.stringify(event.original)
         );
         navigate(event.type === 'campaign' ? '/campañas' : '/temporadas');
@@ -85,7 +86,7 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
     };
 
     return (
-        <div className="row px-2 py-3" style={{ height: '80vh'}}>
+        <div className="row px-2 py-3" style={{ height: '50em', width: '100%' }}>
             <BigCalendar
                 localizer={localizer}
                 events={events}
@@ -94,6 +95,7 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
                 style={{ height: '100%' }}
                 onSelectEvent={handleClick}
                 views={['month']}
+                components={{ toolbar: CustomToolbar }}
                 messages={{
                     month: 'Mes',
                     day: 'Día',

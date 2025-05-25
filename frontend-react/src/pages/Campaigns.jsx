@@ -10,7 +10,7 @@ function Campaigns(props) {
     const [externalCampaign, setExternalCampaign] = useState(null);
 
     useEffect(() => {
-        const storedCampaign = localStorage.getItem("temporalCampaign");
+        const storedCampaign = localStorage.getItem("temporalItem");
         if (storedCampaign) {
             const campaign = JSON.parse(storedCampaign);
             setExternalCampaign(campaign);
@@ -25,8 +25,8 @@ function Campaigns(props) {
                 type="campaigns"
                 filters={filters}
                 classCols={props.classCols}
-                externalCampaign={externalCampaign}
-                setExternalCampaign={setExternalCampaign}
+                external={externalCampaign}
+                setExternal={setExternalCampaign}
             />
         </>
     );

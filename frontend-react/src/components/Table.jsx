@@ -16,7 +16,7 @@ import { TableIconButton } from '../utils/smallComponents.jsx'
 
 import ModalComponent from './ModalComponent.jsx';
 
-function Table({ type, filters = {}, classCols, externalCampaign = null, setExternalCampaign }) {
+function Table({ type, filters = {}, classCols, external = null, setExternal }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -123,9 +123,9 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
     };
     
     const handleCloseModal = () => {
-        localStorage.removeItem("temporalCampaign");
-        if(setExternalCampaign){
-            setExternalCampaign(null);
+        localStorage.removeItem("temporalItem");
+        if(setExternal){
+            setExternal(null);
         }
         setModalVisible(false);
         setModalData(null);
@@ -133,13 +133,13 @@ function Table({ type, filters = {}, classCols, externalCampaign = null, setExte
     };
 
     useEffect(() => {
-        if (externalCampaign && data.length > 0) {
-            const itemToOpen = data.find(item => item.id === externalCampaign.id);
+        if (external && data.length > 0) {
+            const itemToOpen = data.find(item => item.id === external.id);
             if (itemToOpen) {
                 handleVisualize(itemToOpen);
             }
         }
-    }, [externalCampaign, data]);
+    }, [external, data]);
 
     return (
         <>

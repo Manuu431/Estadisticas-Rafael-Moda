@@ -146,17 +146,46 @@
 /**
  * CALENDAR
 */
+.rbc-toolbar-label {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+}
+
+.rbc-toolbar button {
+    background-color: var(--lightGray) !important;
+    border: none !important;
+    padding: 0.5em 1em !important;
+    margin-right: 0.75em !important;
+    border-radius: 0.5em !important;
+    font-size: 1rem !important;
+    transition: background-color 0.2s !important;
+}
+
+.rbc-toolbar button:hover {
+    background-color: var(--gray) !important;
+    color: var(--orange) !important;
+}
+
 .rbc-month-view {
-    border-radius: 0.5em;
-    font-family: 'Inter', sans-serif;
-    font-weight: bold;
+    margin-top: 0.25em !important;
+    border-radius: 0.5em !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: bold !important;
+}
+
+.rbc-today {
+    background-color: rgb(195, 255, 255) !important;
 }
 
 .rbc-event-content {
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease !important;
 }
 
-.rbc-event-content:hover {
+.rbc-event:hover {
+    box-shadow: 0 0 5px 5px rgba(128, 128, 128, 0.5) !important;
+    cursor: pointer !important;
+}
+
+.rbc-event:hover .rbc-event-content {
     transform: scale(1.01);
-    cursor: pointer;
 }
