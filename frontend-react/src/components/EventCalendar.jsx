@@ -4,9 +4,7 @@ import { es } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useNavigate } from 'react-router-dom';
 
-const locales = {
-  'es': es,
-};
+const locales = { es };
 
 const localizer = dateFnsLocalizer({
     format,
@@ -21,8 +19,8 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
 
     const handleClick = (event) => {
         localStorage.setItem(
-        event.type === 'campaign' ? 'temporalCampaign' : 'temporalSeason',
-        JSON.stringify(event.original)
+            event.type === 'campaign' ? 'temporalCampaign' : 'temporalSeason',
+            JSON.stringify(event.original)
         );
         navigate(event.type === 'campaign' ? '/campañas' : '/temporadas');
     };
@@ -31,15 +29,8 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
 
     campaigns.forEach((c) => {
         events.push({
-            title: `Inicio: ${c.name}`,
+            title: `${c.name}`,
             start: new Date(c.start_date),
-            end: new Date(c.start_date),
-            type: 'campaign',
-            original: c,
-        });
-        events.push({
-            title: `Fin: ${c.name}`,
-            start: new Date(c.end_date),
             end: new Date(c.end_date),
             type: 'campaign',
             original: c,
@@ -63,8 +54,31 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
         });
     });
 
+    const getColorFromName = (name) => {
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const color = `hsl(${hash % 360}, 70%, 50%)`;
+        return color;
+    };
+
+    const eventPropGetter = (event) => {
+        const backgroundColor = getColorFromName(event.original.name);
+        return {
+            style: {
+                backgroundColor,
+                borderRadius: '6px',
+                opacity: 0.9,
+                color: 'white',
+                border: 'none',
+                padding: '2px 4px',
+                fontWeight: 'bold',
+            },
+        };
+    };
+
     return (
-        // <div className="row px-2 py-3" style={{ height: '50em'}}>
         <div className="row px-2 py-3" style={{ height: '80vh'}}>
             <BigCalendar
                 localizer={localizer}
@@ -75,12 +89,13 @@ function EventCalendar({ campaigns = [], seasons = [] }) {
                 onSelectEvent={handleClick}
                 views={['month']}
                 messages={{
-                month: 'Mes',
-                day: 'Día',
-                today: 'Hoy',
-                previous: 'Anterior',
-                next: 'Siguiente',
+                    month: 'Mes',
+                    day: 'Día',
+                    today: 'Hoy',
+                    previous: 'Anterior',
+                    next: 'Siguiente',
                 }}
+                eventPropGetter={eventPropGetter}
             />
         </div>
     );
