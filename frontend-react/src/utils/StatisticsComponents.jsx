@@ -13,7 +13,7 @@ const COLORS = [
 ];
 
 /**
- * COMPARATIVE CHART
+ * CUSTOM CHART
 */
 export function CustomStackedBarChart({ data, showBy, maxY }) {
   const categoryKeys = Array.from(
