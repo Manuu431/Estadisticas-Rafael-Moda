@@ -159,13 +159,10 @@ export function UpcomingCampaigns({ data, startIndex = 0 }) {
             const startDate = new Date(campaign.start_date);
             const inDateRange = startDate <= oneYearLater;
             const hasMissingFinancials = campaign.expenses == null || campaign.profits == null;
-            if(hasMissingFinancials) console.log(campaign);
             return inDateRange && hasMissingFinancials;
         })
         .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
         .slice(startIndex, startIndex + 10);
-    
-    console.log("visible:", visible);
     
     const navigate = useNavigate();
     const handleClick = (campaign) => {
