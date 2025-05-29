@@ -94,8 +94,6 @@ export function groupSalesByFieldForMonth(salesData, selectedMonth, field) {
     return Object.entries(result).map(([name, value]) => ({ name, value }));
 }
 
-import { getWeek, getYear } from 'date-fns';
-
 export function groupSales(sales, showBy, groupBy) {
     const grouped = {};
 
