@@ -11,7 +11,7 @@ const monthNames = [
 const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const validationSchemas = {
-  season_types: Yup.object().shape({
+  types: Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio').min(3).max(30),
     start_day: Yup.number().required('El día de inicio es obligatorio'),
     start_month: Yup.number().required('El mes de inicio es obligatorio'),
@@ -20,7 +20,7 @@ const validationSchemas = {
     start_year: Yup.number()
         .typeError('El año debe ser un número')
         .required('El año de inicio es obligatorio')
-        .min(2000, 'Debe ser mayor a 2000')
+        .min(1975, 'Debe ser mayor a 1975')
         .max(2100, 'Debe ser menor a 2100')
   }),
   default: Yup.object().shape({
@@ -30,8 +30,8 @@ const validationSchemas = {
       .required('La fecha de fin es obligatoria')
       .typeError('Fecha inválida')
       .min(Yup.ref('start_date'), 'La fecha de fin debe ser posterior'),
-    expenses: Yup.number().typeError('Debe ser un número').max(9999999),
-    profits: Yup.number().typeError('Debe ser un número').max(9999999),
+    expenses: Yup.number().typeError('Debe ser un número').max(9999999).nullable(),
+    profits: Yup.number().typeError('Debe ser un número').max(9999999).nullable(),
   })
 };
 
@@ -53,7 +53,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const title = isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear';
 
   const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
-  const validationSchema = isCreateType ? validationSchemas.season_types : validationSchemas.default;
+  const validationSchema = isCreateType ? validationSchemas.types : validationSchemas.default;
   
   const initialValues = isCreate
     ? isCreateType
