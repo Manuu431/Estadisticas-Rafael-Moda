@@ -8,7 +8,7 @@ import Clients from './pages/Clients';
 import Comparative from './pages/comparative/Comparative';
 import Calendar from './pages/calendar/Calendar';
 import Campaigns from './pages/Campaigns';
-import Expenses from './pages/Expenses';
+import Expenses from './pages/expenses/Expenses';
 import Seasons from './pages/Seasons';
 import SeasonTypes from './pages/SeasonTypes';
 import CampaignTypes from './pages/CampaignTypes';
@@ -31,7 +31,7 @@ function App() {
                     <Route path="/calendario" element={<Calendar title="Calendario" />} />
                     <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
                     <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />
-                    <Route path="/gastos" element={<Expenses title="Gastos" />} />
+                    <Route path="/gastos" element={<Expenses title="Gastos" classCols={classFilterCols} />} />
                     <Route path="/tipos-temporadas" element={<SeasonTypes title="Tipos de temporada" classCols={classFilterCols} />} />
                     <Route path="/tipos-campañas" element={<CampaignTypes title="Tipos de campañas" classCols={classFilterCols} />} />
                 </Routes>

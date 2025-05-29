@@ -5,11 +5,11 @@ import MainComparative from "./MainComparative.jsx";
 
 import {
   fetchSalesData,
-  applyFilters,
+  applyFiltersComparative,
   handleFilter,
   handleClear,
   handleSelectDateByChange,
-} from "./comparativeFunctions.js";
+} from "../../utils/filterUtils.js";
 
 function Comparative({ title, classCols }) {
   const [filters, setFilters] = useState({
@@ -17,7 +17,7 @@ function Comparative({ title, classCols }) {
     end_date_1: "",
     start_date_2: "",
     end_date_2: "",
-    showBy: "",
+    showBy: "all",
     groupBy: "none",
     selectDateBy: "exact_date",
   });
@@ -31,11 +31,11 @@ function Comparative({ title, classCols }) {
 
   useEffect(() => {
     if (salesData.length > 0) {
-      const initialData = applyFilters(salesData, filters);
+      const initialData = applyFiltersComparative(salesData, filters);
       setComparativeData(initialData);
     }
   }, [salesData]);
-
+  
   return (
     <>
         <Title title={title} />
@@ -43,13 +43,13 @@ function Comparative({ title, classCols }) {
             filters={filters}
             setFilters={setFilters}
             handleSelectDateByChange={(inputId, value) =>
-                handleSelectDateByChange(salesData, value, setFilters, setComparativeData)
+                handleSelectDateByChange(salesData, value, setFilters, setComparativeData, applyFiltersComparative)
             }
             handleClear={() =>
-                handleClear(salesData, filters.selectDateBy, setFilters, setComparativeData)
+                handleClear(salesData, filters.selectDateBy, setFilters, setComparativeData, applyFiltersComparative)
             }
             onFilter={(newFilters) =>
-                handleFilter(salesData, newFilters, setFilters, setComparativeData)
+                handleFilter(salesData, newFilters, setFilters, setComparativeData, applyFiltersComparative)
             }
             classCols={classCols}
         />

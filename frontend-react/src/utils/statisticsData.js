@@ -138,3 +138,53 @@ export function groupSales(sales, showBy, groupBy) {
 
     return result;
 }
+
+export function groupExpenses(sales, showBy) {
+    const grouped = {};
+
+    sales.forEach(exp => {
+        if (!exp.sale_date) return;
+
+        const date = new Date(exp.sale_date);
+        if (isNaN(date)) return;
+
+        let timeKey;
+        switch (showBy) {
+            case "day":
+                timeKey = date.toISOString().split("T")[0];
+                break;
+            case "month":
+                timeKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                break;
+            case "year":
+                timeKey = `${date.getFullYear()}`;
+                break;
+            default:
+                timeKey = "Unknown";
+        }
+
+        if (!grouped[timeKey]) {
+            grouped[timeKey] = {
+                expenses: 0,
+                revenue: 0,
+            };
+        }
+
+        const units = exp.units || 0;
+        const pvd = exp.pvd || 0;
+        const pvp = exp.pvp || 0;
+
+        grouped[timeKey].expenses += pvd * units;
+        grouped[timeKey].revenue += pvp * units;
+    });
+
+    const result = Object.entries(grouped).map(([timeKey, values]) => ({
+        name: timeKey,
+        expenses: values.expenses,
+        revenue: values.revenue
+    }));
+
+    result.sort((a, b) => new Date(a.name) - new Date(b.name));
+    
+    return result;
+}

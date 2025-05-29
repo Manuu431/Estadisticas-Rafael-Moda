@@ -4,7 +4,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   XAxis,
-  YAxis
+  YAxis,
+  Legend
 } from "recharts";
 
 const COLORS = [
@@ -37,4 +38,24 @@ export function CustomStackedBarChart({ data, showBy, maxY }) {
       </BarChart>
     </ResponsiveContainer>
   );
+}
+
+/**
+ * EXPENSES
+ */
+
+export function ExpensesChart({ data }) {
+    console.log("DATA", data);
+    return (
+        <ResponsiveContainer width="100%" height={500}>
+            <BarChart data={data} margin={{ top: 10, bottom: 60 }}>
+                <XAxis dataKey="name" tick={{ dy: 10 }} angle={-45} textAnchor="end" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="expenses" stackId="a" fill="#ff0000" name="Gastos" />
+                <Bar dataKey="revenue" stackId="a" fill="#008000" name="Ingresos" />
+            </BarChart>
+        </ResponsiveContainer>
+    );
 }

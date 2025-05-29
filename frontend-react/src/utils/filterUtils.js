@@ -120,3 +120,87 @@ export function updateSelectOptions(DATABASE_TABLE, setOptionsData) {
     const staticOptions = DATABASE_TABLE.filters.options || {};
     setOptionsData(staticOptions);
 }
+
+/**
+ * COMPARATIVE AND EXPENSES FILTERS
+ */
+
+import { groupSales } from "./statisticsData.js";
+import { DATABASE_TABLES } from "../../database.js";
+
+export const fetchSalesData = async () => {
+  try {
+    const res = await axios.get(DATABASE_TABLES["sales"].endpoint);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching sales data:", error);
+    return [];
+  }
+};
+
+export const applyFiltersComparative = (allSales, filters) => {
+  const { start_date_1, end_date_1, start_date_2, end_date_2, showBy, groupBy } = filters;
+
+  const inRange = (date, start, end) => {
+    const d = new Date(date);
+    return (!start || d >= new Date(start)) && (!end || d <= new Date(end));
+  };
+
+  const salesRange1 = allSales.filter(sale =>
+    inRange(sale.sale_date, start_date_1, end_date_1)
+  );
+
+  const salesRange2 = allSales.filter(sale =>
+    inRange(sale.sale_date, start_date_2, end_date_2)
+  );
+
+  return {
+    data1: groupSales(salesRange1, showBy, groupBy),
+    data2: groupSales(salesRange2, showBy, groupBy),
+    showBy,
+    groupBy
+  };
+};
+
+const cleanComparativeData = (salesData, newFilters, setFilters, setComparativeData, applyFilters) => {
+  setFilters(newFilters);
+  const filteredData = applyFilters(salesData, newFilters);
+  setComparativeData(filteredData);
+};
+
+export const handleFilter = (salesData, newFilters, setFilters, setComparativeData, applyFilters) => {
+  cleanComparativeData(salesData, newFilters, setFilters, setComparativeData, applyFilters);
+};
+
+export const handleClear = (salesData, selectDateBy, setFilters, setComparativeData, applyFilters) => {
+  const cleanedFilters = { showBy: "all", groupBy: "none", selectDateBy };
+  cleanComparativeData(salesData, cleanedFilters, setFilters, setComparativeData, applyFilters);
+};
+
+export const handleSelectDateByChange = (salesData, value, setFilters, setComparativeData, applyFilters) => {
+  const cleanedFilters = { showBy: "all", groupBy: "none", selectDateBy: value };
+  cleanComparativeData(salesData, cleanedFilters, setFilters, setComparativeData, applyFilters);
+};
+
+/**
+ * EXPENSES
+ */
+import { groupExpenses } from "./statisticsData.js";
+
+export const applyFiltersExpenses = (allSales, filters) => {  
+    const { start_date, end_date, showBy } = filters;
+
+    const inRange = (date, start, end) => {
+        const d = new Date(date);
+        return (!start || d >= new Date(start)) && (!end || d <= new Date(end));
+    };
+
+    const salesRange = allSales.filter(sale =>
+        inRange(sale.sale_date, start_date, end_date)
+    );
+
+    return {
+        data: groupExpenses(salesRange, showBy),
+        showBy
+    };
+};
