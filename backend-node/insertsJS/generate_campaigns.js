@@ -8,7 +8,7 @@ const dbConfig = {
 };
 
 const START_YEAR = 2020;
-const END_YEAR = new Date().getFullYear();
+const END_YEAR = new Date().getFullYear() + 1;
 
 function formatDateISO(date) {
   const day = date.getDate().toString().padStart(2, '0');
