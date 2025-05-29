@@ -45,16 +45,15 @@ export function CustomStackedBarChart({ data, showBy, maxY }) {
  */
 
 export function ExpensesChart({ data }) {
-    console.log("DATA", data);
     return (
         <ResponsiveContainer width="100%" height={500}>
-            <BarChart data={data} margin={{ top: 10, bottom: 60 }}>
+            <BarChart data={data} margin={{ top: 10, bottom: 70 }}>
                 <XAxis dataKey="name" tick={{ dy: 10 }} angle={-45} textAnchor="end" />
                 <YAxis />
                 <Tooltip />
-                <Legend />
-                <Bar dataKey="expenses" stackId="a" fill="#ff0000" name="Gastos" />
-                <Bar dataKey="revenue" stackId="a" fill="#008000" name="Ingresos" />
+                <Legend verticalAlign="top" height={30} />
+                <Bar dataKey="expenses" fill="#ff0000" name="Gastos" />
+                <Bar dataKey="revenue" fill="#008000" name="Ingresos" />
             </BarChart>
         </ResponsiveContainer>
     );

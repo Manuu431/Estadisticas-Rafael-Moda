@@ -117,6 +117,9 @@ export function groupSales(sales, showBy, groupBy) {
             case "year":
                 timeKey = `${date.getFullYear()}`;
                 break;
+            case "all":
+                timeKey = "Todo";
+                break;
             default:
                 timeKey = "Unknown";
         }
@@ -159,6 +162,9 @@ export function groupExpenses(sales, showBy) {
             case "year":
                 timeKey = `${date.getFullYear()}`;
                 break;
+            case "all":
+                timeKey = "Todo";
+                break;
             default:
                 timeKey = "Unknown";
         }
@@ -185,6 +191,6 @@ export function groupExpenses(sales, showBy) {
     }));
 
     result.sort((a, b) => new Date(a.name) - new Date(b.name));
-    
+
     return result;
 }
