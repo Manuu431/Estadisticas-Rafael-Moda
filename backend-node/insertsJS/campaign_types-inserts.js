@@ -1,9 +1,17 @@
 const fs = require('fs');
 
 const campaignTypes = [
-  { id: 1, name: "Campaña Día de San Valentín", start_day: 1, start_month: 2, end_day: 14, end_month: 2, start_year: 2020 },
-  { id: 2, name: "Campaña Navidad", start_day: 15, start_month: 12, end_day: 6, end_month: 1, start_year: 2020 },
-  { id: 3, name: "Campaña Black Friday", start_day: 20, start_month: 11, end_day: 30, end_month: 11, start_year: 2020 },
+  { id: 1, name: "Reyes", start_day: 26, start_month: 12, end_day: 5, end_month: 1, start_year: 2020 },
+  { id: 2, name: "Rebajas de enero", start_day: 7, start_month: 1, end_day: 28, end_month: 2, start_year: 2020 },
+  { id: 3, name: "Día de los enamorados", start_day: 1, start_month: 2, end_day: 14, end_month: 2, start_year: 2020 },
+  { id: 4, name: "Día del padre", start_day: 1, start_month: 3, end_day: 18, end_month: 3, start_year: 2020 },
+  { id: 5, name: "Comuniones", start_day: 1, start_month: 3, end_day: 15, end_month: 5, start_year: 2020 },
+  { id: 6, name: "Día de la madre", start_day: 20, start_month: 4, end_day: 3, end_month: 5, start_year: 2020 },
+  { id: 7, name: "Feria de junio", start_day: 5, start_month: 6, end_day: 13, end_month: 6, start_year: 2020 },
+  { id: 8, name: "Rebajas de julio", start_day: 1, start_month: 7, end_day: 31, end_month: 7, start_year: 2020 },
+  { id: 9, name: "Rebajas de agosto", start_day: 1, start_month: 8, end_day: 31, end_month: 8, start_year: 2020 },
+  { id: 10, name: "Mocadorà de octubre", start_day: 1, start_month: 10, end_day: 8, end_month: 10, start_year: 2020 },
+  { id: 11, name: "Navidad", start_day: 1, start_month: 12, end_day: 24, end_month: 12, start_year: 2020 },
 ];
 
 let sql = `
