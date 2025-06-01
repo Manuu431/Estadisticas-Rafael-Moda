@@ -84,6 +84,15 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
         }
     };
 
+    const onRefreshTable = async() => {
+        try {
+            await fetchData();
+            alert('Tabla actualizada correctamente.');
+        } catch (error) {
+            console.error(`Error reloading ${type} data:`, error.response ? error.response.data : error);
+        }
+    }
+
     useEffect(() => {
         fetchData();
     }, [DATABASE_TABLE.endpoint, filters]);
@@ -146,7 +155,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
 
     return (
         <>
-            {haveHeader && <HeaderTable onCreate={handleCreate} onRefresh={fetchData} type={type} reloadTable={reloadTable} />}
+            {haveHeader && <HeaderTable onCreate={handleCreate} onRefresh={onRefreshTable} type={type} reloadTable={reloadTable} />}
             <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
                 <div className="col-12">
                     <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>
