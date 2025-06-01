@@ -102,22 +102,33 @@
 }
 
 @media only screen and (max-width: 1199px) {
-    th {
-        display: none;
+    .table.responsive-mode tbody tr {
+        display: block !important;
     }
 
-    td {
-        display: block;
+    .table.responsive-mode td {
+        display: block !important;
+        padding: 1.05rem 2rem !important;
+        text-align: center !important;
     }
 
-    td::before {
-        content: attr(data-cell) ": ";
-        font-weight: 700;
-        text-transform: capitalize;
+    .table.responsive-mode td.tdIcons {
+        padding-top: 0em !important;
+        padding-bottom: 5em !important;
     }
 
-    td[data-no-colon="true"]::before {
-        content: "";
+    .table.responsive-mode td::before {
+        content: attr(data-cell) ":\00a0" !important;
+        font-weight: 700 !important;
+        display: inline-block !important;
+    }
+
+    .table.responsive-mode td[data-no-colon="true"]::before {
+        content: "" !important;
+    }
+
+    .table.responsive-mode thead {
+        display: none !important;
     }
 }
 

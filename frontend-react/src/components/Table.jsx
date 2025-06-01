@@ -147,7 +147,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
             <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
                 <div className="col-12">
                     <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>
-                        <table className="table table-bordered border-dark table-striped table-hover w-100 text-center">
+                        <table className="table responsive-mode table-bordered border-dark table-striped table-hover w-100 text-center">
                             <thead>
                                 <tr>
                                     {DATABASE_TABLE.tables.columns.map((columnName, index) => {
@@ -178,7 +178,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                             </thead>
                             <tbody>
                                 {currentData.map((item, index) => (
-                                    <tr key={index}>
+                                    <tr className='text-center' key={index}>
                                         {DATABASE_TABLE.tables.values.map((columnKey, colIndex) => {
                                             let formattedValue = item[columnKey];
                                             const columnLabel = DATABASE_TABLE.tables.columns[colIndex];
@@ -189,10 +189,9 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
 
                                             return (
                                                 <td
-                                                    className="py-1 align-middle"
+                                                    className="py-1 align-middle text-center"
                                                     key={colIndex}
                                                     data-cell={columnLabel}
-                                                    data-no-colon={false}
                                                 >
                                                     {formattedValue}
                                                 </td>
@@ -201,7 +200,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
 
                                         {(type === "campaigns" || type === "seasons") && (
                                             <td
-                                                className="py-1 align-middle"
+                                                className="py-1 align-middle tdIcons"
                                                 data-no-colon={true}
                                             >
                                                 <div className="d-flex justify-content-center gap-4">
@@ -235,7 +234,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                                         )}
                                         {isCreateType && (
                                             <td
-                                                className="py-1 align-middle"
+                                                className="py-1 align-middle tdIcons"
                                                 data-no-colon={true}
                                             >
                                                 <div className="d-flex justify-content-center gap-4">

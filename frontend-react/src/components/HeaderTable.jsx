@@ -30,7 +30,7 @@ function HeaderTable({ onCreate, onRefresh, type, reloadTable }) {
                                 buttonClasses={"btn-success"}
                                 onClickFunction={reloadTable}
                                 iconClasses={"bi bi-arrow-repeat"}
-                                text={`Sincronizar ${types[type]}`}
+                                text={`Sincronizar`}
                             />
                         )}
                     </div>
