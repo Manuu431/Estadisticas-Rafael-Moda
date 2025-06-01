@@ -97,6 +97,10 @@
     color: var(--darkOrange) !important;
 }
 
+.icon {
+    cursor: pointer !important;
+}
+
 /**
  * MODAL BUTTONS
  */

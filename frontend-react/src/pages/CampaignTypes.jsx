@@ -10,7 +10,7 @@ function CampaignTypes(props) {
         <>
             <Title title={props.title} />
             <Filters type="campaignTypes" onFilterChange={setFilters} classCols={props.classCols} />
-            <Table type="campaignTypes" filters={filters} classCols={props.classCols} />
+            <Table type="campaignTypes" filters={filters} />
         </>
     );
 }

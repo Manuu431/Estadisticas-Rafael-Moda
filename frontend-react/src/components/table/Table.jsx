@@ -3,22 +3,12 @@ import axios from 'axios';
 import { DATABASE_TABLES } from "../../../database.js";
 import HeaderTable from '../HeaderTable.jsx';
 import Pagination from '../Pagination.jsx';
-import {
-    handleSort,
-    getSortedData,
-    formatDate,
-    serializeParams,
-    getSortIconClass
-} from '../../utils/tableUtils.js';
-import { TableIconButton } from '../../utils/smallComponents.jsx'
-
-
-
+import { getSortedData, serializeParams } from '../../utils/tableUtils.js';
 import ModalComponent from '../ModalComponent.jsx';
 import { DesktopTable, MobileTable } from './componentsTable.jsx';
 import { useIsMobile } from '../../utils/useIsMobile.js'
 
-function Table({ type, filters = {}, classCols, external = null, setExternal }) {
+function Table({ type, filters = {}, external = null, setExternal }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -178,6 +168,8 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                                 handleVisualize={handleVisualize}
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
+                                sortConfig={sortConfig}
+                                setSortConfig={setSortConfig}
                             />
                         )}
                     </div>

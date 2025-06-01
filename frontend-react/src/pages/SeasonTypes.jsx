@@ -10,7 +10,7 @@ function SeasonTypes(props) {
         <>
             <Title title={props.title} />
             <Filters type="seasonTypes" onFilterChange={setFilters} classCols={props.classCols} />
-            <Table type="seasonTypes" filters={filters} classCols={props.classCols} />
+            <Table type="seasonTypes" filters={filters} />
         </>
     );
 }

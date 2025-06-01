@@ -24,7 +24,6 @@ function Seasons(props) {
             <Table
                 type="seasons"
                 filters={filters}
-                classCols={props.classCols}
                 external={externalSeason}
                 setExternal={setExternalSeason}
             />

@@ -1,22 +1,27 @@
 import { TableIconButton } from '../../utils/smallComponents.jsx';
-import { formatDate } from '../../utils/tableUtils.js';
+import { formatDate, handleSort, getSortIconClass } from '../../utils/tableUtils.js';
 
-export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete }) {
+export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete, sortConfig, setSortConfig }) {
     return (
         <table className="table responsive-mode table-bordered border-dark table-striped table-hover w-100 text-center">
             <thead>
                 <tr>
                     {DATABASE_TABLE.tables.columns.map((columnName, index) => (
                         <th scope='col' className="text-white align-middle" key={index}>
-                            <div className="d-flex justify-content-center">
-                                <span className='fs-5'>{columnName}</span>
+                            <div className="d-flex justify-content-center align-items-center gap-2 cursor-pointer">
+                                <span className="fs-5">{columnName}</span>
+                                <i
+                                    className={`${getSortIconClass(DATABASE_TABLE.tables.values[index], sortConfig)} icon`}
+                                    onClick={() => handleSort(sortConfig, setSortConfig, DATABASE_TABLE.tables.values[index])}
+                                >
+                                </i>
                             </div>
                         </th>
                     ))}
                     {(type === "campaigns" || type === "seasons" || isCreateType) && (
                         <th scope='col' className="text-white align-middle">
                             <div className="d-flex justify-content-center">
-                                <span className='fs-5'>Acciones</span>
+                                <span className="fs-5">Acciones</span>
                             </div>
                         </th>
                     )}
@@ -24,7 +29,7 @@ export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleV
             </thead>
             <tbody>
                 {data.map((item, index) => (
-                    <tr className='text-center' key={index}>
+                    <tr className="text-center" key={index}>
                         {DATABASE_TABLE.tables.values.map((columnKey, colIndex) => {
                             let value = item[columnKey];
                             if (!isCreateType && columnKey.toLowerCase().includes("date") && value) {

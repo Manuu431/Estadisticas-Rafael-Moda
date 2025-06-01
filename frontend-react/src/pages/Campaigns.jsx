@@ -24,7 +24,6 @@ function Campaigns(props) {
             <Table
                 type="campaigns"
                 filters={filters}
-                classCols={props.classCols}
                 external={externalCampaign}
                 setExternal={setExternalCampaign}
             />

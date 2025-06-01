@@ -10,7 +10,7 @@ function Sales(props) {
         <>
             <Title title={props.title} />
             <Filters type="sales" onFilterChange={setFilters} classCols={props.classCols} />
-            <Table type="sales" filters={filters} classCols={props.classCols} />
+            <Table type="sales" filters={filters} />
         </>
     );
 }
