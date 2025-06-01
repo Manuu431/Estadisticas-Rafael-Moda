@@ -4,9 +4,9 @@ import { MENU_ITEMS } from '../../info.js';
 
 function Sidebar() {
     const handleClick = () => {
-        if (window.innerWidth < 992) {
+        if (window.innerWidth < 1200) {
             const toggler = document.querySelector('.navbar-toggler');
-            const sidebarMenu = document.getElementById('sidebarMenu');
+            const sidebarMenu = document.getElementById('sidebarMenu');            
 
             if (sidebarMenu.classList.contains('show') && toggler) {
                 toggler.click();
