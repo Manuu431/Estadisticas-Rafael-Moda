@@ -98,6 +98,35 @@
 }
 
 /**
+ * MODAL BUTTONS
+ */
+.btn-modal {
+    border: 1px solid black !important;
+    padding: 0.5rem 1.5rem !important;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-create-modify {
+    background-color: var(--orange) !important;
+}
+
+.btn-create-modify:hover {
+    background-color: var(--darkOrange) !important;
+    color: black !important;
+}
+
+.btn-close-custom {
+    background-color: transparent !important;
+    color: var(--darkGray) !important;
+}
+
+.btn-close-custom:hover {
+    background-color: var(--darkGray) !important;
+    color: white !important;
+}
+
+
+/**
  * PAGINATION
  */
 .pagination {

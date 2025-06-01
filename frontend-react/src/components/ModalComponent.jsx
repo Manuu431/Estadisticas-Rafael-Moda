@@ -196,8 +196,8 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
             </Modal.Body>
 
             <Modal.Footer className="bg-secondary-subtle px-4">
-              <Button variant="outline-secondary" onClick={onHide}>Cerrar</Button>
-              {!isView && <Button type="submit" variant="primary">{isCreate ? 'Crear' : 'Guardar'}</Button>}
+              <Button className="btn btn-modal btn-close-custom" onClick={onHide}>Cerrar</Button>
+              {!isView && <Button className='btn btn-modal btn-create-modify' type="submit" variant="primary">{isCreate ? 'Crear' : 'Guardar'}</Button>}
             </Modal.Footer>
           </FormikForm>
         )}
