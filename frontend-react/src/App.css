@@ -40,6 +40,21 @@
 }
 
 /**
+ * NAVBAR
+ */
+@media (min-width: 1199.98px) {
+    .logo {
+        border-right: 1px solid black;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .logo {
+        width: 5em;
+    }
+}
+
+/**
  * FILTERS
  */
 

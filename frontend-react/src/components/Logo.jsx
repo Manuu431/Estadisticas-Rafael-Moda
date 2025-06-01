@@ -1,11 +1,13 @@
 import logo from "/rafaelModaLogo.png";
 
 function Logo() {
-  return (
-    <>
-        <img src={logo} alt="Logo" className="img-fluid" />
-    </>
-  );
+    return (
+        <img
+            src={logo}
+            alt="Logo"
+            className="img-fluid logo"
+        />
+    );
 }
 
 export default Logo;

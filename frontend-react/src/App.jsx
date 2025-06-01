@@ -18,27 +18,29 @@ const classFilterCols = "col-12 col-md-6";
 function App() {
   return (
     <Router>
-      <div className="container-fluid">
-        <div className="row min-vh-100">
-          <Sidebar />
-          <div className="col-12 col-xl-10 p-0">
-            <div className="container-fluid">
-                <Routes>
-                    <Route path="/" element={<ControlPanel title="Panel de control" />} />
-                    <Route path="/ventas" element={<Sales title="Ventas" classCols={classFilterCols} />} />
-                    <Route path="/clientes" element={<Clients title="Clientes" classCols={classFilterCols} />} />
-                    <Route path="/comparativa" element={<Comparative title="Comparativa" classCols={classFilterCols} />} />
-                    <Route path="/calendario" element={<Calendar title="Calendario" />} />
-                    <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
-                    <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />
-                    <Route path="/gastos" element={<Expenses title="Gastos" classCols={classFilterCols} />} />
-                    <Route path="/tipos-temporadas" element={<SeasonTypes title="Tipos de temporada" classCols={classFilterCols} />} />
-                    <Route path="/tipos-campañas" element={<CampaignTypes title="Tipos de campañas" classCols={classFilterCols} />} />
-                </Routes>
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-12 col-xl-2 p-0">
+                    <Sidebar />
+                </div>
+                <div className="col-12 col-xl-10 p-0">
+                    <div className="container-fluid">
+                        <Routes>
+                            <Route path="/" element={<ControlPanel title="Panel de control" />} />
+                            <Route path="/ventas" element={<Sales title="Ventas" classCols={classFilterCols} />} />
+                            <Route path="/clientes" element={<Clients title="Clientes" classCols={classFilterCols} />} />
+                            <Route path="/comparativa" element={<Comparative title="Comparativa" classCols={classFilterCols} />} />
+                            <Route path="/calendario" element={<Calendar title="Calendario" />} />
+                            <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
+                            <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />
+                            <Route path="/gastos" element={<Expenses title="Gastos" classCols={classFilterCols} />} />
+                            <Route path="/tipos-temporadas" element={<SeasonTypes title="Tipos de temporada" classCols={classFilterCols} />} />
+                            <Route path="/tipos-campañas" element={<CampaignTypes title="Tipos de campañas" classCols={classFilterCols} />} />
+                        </Routes>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </Router>
   );
 }
