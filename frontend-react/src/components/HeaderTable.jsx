@@ -43,7 +43,7 @@ function HeaderTable({ onCreate, onRefresh, type, reloadTable }) {
 function DivButton(props) {
     return (
         <div className={props.classCols}>
-            <div className="d-flex justify-content-center mx-3 my-3 my-md-2">
+            <div className="d-flex justify-content-center mx-3 my-2">
                 <Button
                     buttonClasses={props.buttonClasses}
                     onClickFunction={props.onClickFunction}
