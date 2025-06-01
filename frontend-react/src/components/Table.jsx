@@ -155,7 +155,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                                         const iconClass = getSortIconClass(columnKey, sortConfig);
 
                                         return (
-                                            <th className="text-white align-middle" key={index}>
+                                            <th scope='col' className="text-white align-middle" key={index}>
                                                 <div className="d-flex justify-content-between align-items-center ms-2">
                                                     <span className='fs-5'>{columnName}</span>
                                                     <i
@@ -168,7 +168,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                                         );
                                     })}
                                     {(type === "campaigns" || type === "seasons" || isCreateType) && (
-                                        <th className="text-white align-middle">
+                                        <th scope='col' className="text-white align-middle">
                                             <div className="d-flex justify-content-center">
                                                 <span className='fs-5'>Acciones</span>
                                             </div>
@@ -202,9 +202,7 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                                         {(type === "campaigns" || type === "seasons") && (
                                             <td
                                                 className="py-1 align-middle"
-                                                key={colIndex}
-                                                data-cell={DATABASE_TABLE.tables.columns[colIndex]}
-                                                data-no-colon={false}
+                                                data-no-colon={true}
                                             >
                                                 <div className="d-flex justify-content-center gap-4">
                                                     {(item.expenses == null || item.profits == null || item.expenses == 0 || item.profits == 0) ? (

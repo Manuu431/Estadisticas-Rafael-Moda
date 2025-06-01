@@ -101,22 +101,24 @@
     cursor: pointer !important;;
 }
 
-th {
-    display: none;
-}
+@media only screen and (max-width: 1199px) {
+    th {
+        display: none;
+    }
 
-td {
-    display: block;
-}
+    td {
+        display: block;
+    }
 
-td::before {
-    content: attr(data-cell) ": ";
-    font-weight: 700;
-    text-transform: capitalize;
-}
+    td::before {
+        content: attr(data-cell) ": ";
+        font-weight: 700;
+        text-transform: capitalize;
+    }
 
-td[data-no-colon="true"]::before {
-    content: "";
+    td[data-no-colon="true"]::before {
+        content: "";
+    }
 }
 
 /**
