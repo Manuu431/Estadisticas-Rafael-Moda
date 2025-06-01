@@ -148,6 +148,9 @@ function formatDate(dateString) {
 }
 
 export function UpcomingCampaigns({ data, startIndex = 0 }) {
+    const isDesktop = window.innerWidth >= 992;
+    const maxCampaigns = isDesktop ? 10 : 5;
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -162,7 +165,7 @@ export function UpcomingCampaigns({ data, startIndex = 0 }) {
             return inDateRange && hasMissingFinancials;
         })
         .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
-        .slice(startIndex, startIndex + 10);
+        .slice(startIndex, startIndex + maxCampaigns);
     
     const navigate = useNavigate();
     const handleClick = (campaign) => {
@@ -188,7 +191,9 @@ export function UpcomingCampaigns({ data, startIndex = 0 }) {
 }
 
 export function CampaignButtons({ currentIndex, setCurrentIndex, total }) {
-    const campaignNumber = 10;
+    const isDesktop = window.innerWidth >= 992;
+    const campaignNumber = isDesktop ? 10 : 5;
+    total = isDesktop ? total : total - 5;
     
     const handleUp = () => {
         setCurrentIndex((prev) => Math.max(prev - campaignNumber, 0));

@@ -75,7 +75,7 @@ function ControlPanel(props) {
                         title={`Ventas por ${groupByLabels[groupBy]} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
                     />
                 </div>
-                <div className="col-lg-5">
+                <div className="col-lg-5 mt-3 mt-xl-0">
                     <Card
                         element={<UpcomingCampaigns data={campaignsData} startIndex={campaignIndex} />}
                         secondaryElement={
