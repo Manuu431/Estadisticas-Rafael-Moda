@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Title from '../components/Title';
 import Filters from "../components/Filters.jsx";
-import Table from "../components/Table.jsx";
+import Table from "../components/table/Table.jsx";
 
 function Clients(props) {
     const [filters, setFilters] = useState({});
