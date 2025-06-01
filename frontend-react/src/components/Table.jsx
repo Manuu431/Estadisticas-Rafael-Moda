@@ -234,7 +234,10 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                                             </td>
                                         )}
                                         {isCreateType && (
-                                            <td className="py-1 align-middle">
+                                            <td
+                                                className="py-1 align-middle"
+                                                data-no-colon={true}
+                                            >
                                                 <div className="d-flex justify-content-center gap-4">
                                                     <TableIconButton
                                                         onClickFunction={() => handleVisualize(item)}
