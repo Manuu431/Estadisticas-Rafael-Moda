@@ -179,24 +179,33 @@ function Table({ type, filters = {}, classCols, external = null, setExternal }) 
                             <tbody>
                                 {currentData.map((item, index) => (
                                     <tr key={index}>
-                                        {DATABASE_TABLE.tables.values.map((columnName, colIndex) => {
-                                            let formattedValue = item[columnName];
+                                        {DATABASE_TABLE.tables.values.map((columnKey, colIndex) => {
+                                            let formattedValue = item[columnKey];
+                                            const columnLabel = DATABASE_TABLE.tables.columns[colIndex];
 
-                                            if(!isCreateType){
-                                                if (columnName.toLowerCase().includes("date") && item[columnName]) {
-                                                    formattedValue = formatDate(item[columnName]);
-                                                }
+                                            if (!isCreateType && columnKey.toLowerCase().includes("date") && item[columnKey]) {
+                                                formattedValue = formatDate(item[columnKey]);
                                             }
 
                                             return (
-                                                <td className="py-1 align-middle" key={colIndex}>
+                                                <td
+                                                    className="py-1 align-middle"
+                                                    key={colIndex}
+                                                    data-cell={columnLabel}
+                                                    data-no-colon={false}
+                                                >
                                                     {formattedValue}
                                                 </td>
                                             );
                                         })}
 
                                         {(type === "campaigns" || type === "seasons") && (
-                                            <td className="py-1 align-middle">
+                                            <td
+                                                className="py-1 align-middle"
+                                                key={colIndex}
+                                                data-cell={DATABASE_TABLE.tables.columns[colIndex]}
+                                                data-no-colon={false}
+                                            >
                                                 <div className="d-flex justify-content-center gap-4">
                                                     {(item.expenses == null || item.profits == null || item.expenses == 0 || item.profits == 0) ? (
                                                         <TableIconButton
