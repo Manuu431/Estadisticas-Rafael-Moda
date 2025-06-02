@@ -10,7 +10,7 @@ function Layout({ children }) {
             <div className="row">
                 {!hideSidebar && (
                     <div className="col-12 col-xl-2 p-0">
-                    <Sidebar />
+                        <Sidebar />
                     </div>
                 )}
                 <div className={hideSidebar ? 'col-12 p-0' : 'col-12 col-xl-10 p-0'}>
