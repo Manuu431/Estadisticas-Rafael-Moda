@@ -40,6 +40,26 @@
 }
 
 /**
+ * LOGIN
+ */
+.loginDiv {
+    width: 100% !important;
+    max-width: 30em !important;
+}
+
+.password-toggle-icon {
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.2rem;
+  color: black;
+  transition: color 0.3s ease;
+}
+
+.password-toggle-icon:hover {
+  color: var(--orange);
+}
+
+/**
  * NAVBAR
  */
 @media (min-width: 1199.98px) {

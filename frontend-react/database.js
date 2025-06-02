@@ -1,4 +1,7 @@
 export const DATABASE_TABLES = {
+    users: {
+        endpoint: "http://localhost:8000/api/users"
+    },
     sales: {
         endpoint: "http://localhost:8000/api/sales",
         tables: {

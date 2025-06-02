@@ -255,6 +255,31 @@ const makeSyncPost = ({ endpoint, typeTable, targetTable, foreignKey }) => {
   });
 };
 
+const bcrypt = require('bcrypt');
+
+app.post('/api/users', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) return res.status(400).json({ error: 'Missing credentials' });
+
+  const query = 'SELECT * FROM users WHERE email = ?';
+  db.query(query, [email], async (err, results) => {
+    if (err) {
+      console.error('Login error:', err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+
+    if (results.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const user = results[0];
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) return res.status(401).json({ error: 'Invalid credentials' });
+
+    res.json({ message: 'Login successful', user: { id: user.id, username: user.email } });
+  });
+});
+
 makeGet('sales');
 makeGet('clients');
 makeGet('campaigns');
