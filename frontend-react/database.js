@@ -1,9 +1,12 @@
+// const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = import.meta.env.VITE_API_LOCAL_URL;
+
 export const DATABASE_TABLES = {
     users: {
-        endpoint: "http://localhost:8000/api/users"
+        endpoint: `${API_BASE}/users`
     },
     sales: {
-        endpoint: "http://localhost:8000/api/sales",
+        endpoint: `${API_BASE}/sales`,
         tables: {
             columns: ["ID", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio", "Unidades"],
             values: ["id", "family", "size", "brand", "pvd", "pvp", "discount", "profit", "units"],
@@ -15,7 +18,7 @@ export const DATABASE_TABLES = {
         }
     },
     clients: {
-        endpoint: "http://localhost:8000/api/clients",
+        endpoint: `${API_BASE}/clients`,
         tables: {
             columns: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
             values: ["id", "name", "postal_code", "province", "city"]
@@ -27,7 +30,7 @@ export const DATABASE_TABLES = {
         }
     },
     campaigns: {
-        endpoint: "http://localhost:8000/api/campaigns",
+        endpoint: `${API_BASE}/campaigns`,
         tables: {
             columns: ["ID", "Nombre", "Fecha de Inicio", "Fecha de Fin", "Gastos", "Beneficios"],
             values: ["id", "name", "start_date", "end_date", "expenses", "profits"]
@@ -39,7 +42,7 @@ export const DATABASE_TABLES = {
         }
     },
     seasons: {
-        endpoint: "http://localhost:8000/api/seasons",
+        endpoint: `${API_BASE}/seasons`,
         tables: {
             columns: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Gastos", "Beneficios"],
             values: ["id", "name", "start_date", "end_date", "expenses", "profits"]
@@ -51,8 +54,8 @@ export const DATABASE_TABLES = {
         }
     },
     seasonTypes: {
-        endpoint: "http://localhost:8000/api/season_types",
-        endpointSync: "http://localhost:8000/api/season_types/sync",
+        endpoint: `${API_BASE}/season_types`,
+        endpointSync: `${API_BASE}/season_types/sync`,
         tables: {
             columns: ["ID", "Nombre", "Inicio", "Fin", "Año de inicio"],
             values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]
@@ -64,8 +67,8 @@ export const DATABASE_TABLES = {
         }
     },
     campaignTypes: {
-        endpoint: "http://localhost:8000/api/campaign_types",
-        endpointSync: "http://localhost:8000/api/campaign_types/sync",
+        endpoint: `${API_BASE}/campaign_types`,
+        endpointSync: `${API_BASE}/campaign_types/sync`,
         tables: {
             columns: ["ID", "Nombre", "Inicio", "Fin", "Año de inicio"],
             values: ["id", "name", "start_date_formatted", "end_date_formatted", "start_year"]
