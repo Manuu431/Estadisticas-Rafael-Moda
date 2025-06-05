@@ -30,8 +30,8 @@ const validationSchemas = {
       .required('La fecha de fin es obligatoria')
       .typeError('Fecha inválida')
       .min(Yup.ref('start_date'), 'La fecha de fin debe ser posterior'),
-    expenses: Yup.number().typeError('Debe ser un número').max(9999999).nullable(),
-    profits: Yup.number().typeError('Debe ser un número').max(9999999).nullable(),
+    expenses: Yup.number().typeError('Debe ser un número').max(9999999, 'No puede superar los 9.999.999').nullable(),
+    profits: Yup.number().typeError('Debe ser un número').max(9999999, 'No puede superar los 9.999.999').nullable(),
   })
 };
 

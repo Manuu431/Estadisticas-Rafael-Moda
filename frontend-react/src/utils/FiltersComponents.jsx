@@ -30,7 +30,7 @@ export function MultiSelectFilter(props) {
 
 export function RangeFilter(props) {
     const minValue = props.minPrice || 0;
-    const maxValue = props.maxPrice || 200;
+    const maxValue = props.maxPrice || 999999;
 
     const currentMin = props.rangeInputs[props.inputId]?.min ?? "";
     const currentMax = props.rangeInputs[props.inputId]?.max ?? "";
