@@ -1,6 +1,4 @@
-// const API_BASE = import.meta.env.VITE_API_BASE_URL;
-const API_BASE = import.meta.env.VITE_API_LOCAL_URL;
-
+const API_BASE = import.meta.env.VITE_API_URL;
 export const DATABASE_TABLES = {
     users: {
         endpoint: `${API_BASE}/users`
