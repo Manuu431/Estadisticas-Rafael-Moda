@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
+    "dev": "node --watch index.js",
     "hash": "node scripts/hash-password.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Manuel Padilla Pi",
   "license": "ISC",
-  "description": "",
+  "description": "REST API for the Rafael Moda statistics dashboard",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
