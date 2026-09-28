@@ -57,6 +57,7 @@ for (let i = 1; i <= 50; i++) {
   sql += `(${i}, '${name}', '${postalCode}', '${province}', '${city}')${i < 50 ? ',' : ';'}\n`;
 }
 
-fs.writeFileSync('../insertsSQL/clients-inserts.sql', sql, { encoding: 'utf8' });
+fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });
+fs.writeFileSync(`${__dirname}/../inserts/clients-inserts.sql`, sql, { encoding: 'utf8' });
 
 console.log("File 'clients-inserts.sql' generated successfully.");

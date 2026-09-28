@@ -31,6 +31,7 @@ INSERT INTO campaign_types (id, name, start_day, start_month, end_day, end_month
 
 sql += campaignTypes.map(c => `(${c.id}, '${c.name}', ${c.start_day}, ${c.start_month}, ${c.end_day}, ${c.end_month}, ${c.start_year})`).join(',\n') + ';';
 
-fs.writeFileSync('../insertsSQL/campaign-types-inserts.sql', sql, { encoding: 'utf8' });
+fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });
+fs.writeFileSync(`${__dirname}/../inserts/campaign-types-inserts.sql`, sql, { encoding: 'utf8' });
 
 console.log("File 'campaign-types-inserts.sql' generated successfully.");

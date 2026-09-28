@@ -60,6 +60,7 @@ for (let i = 1; i <= 50; i++) {
   sql += `('${campaign.name}', '${startDate}', '${endDate}', ${expenses}, ${profits}, ${campaign.id})${i < 50 ? ',' : ';'}\n`;
 }
 
-fs.writeFileSync('../insertsSQL/campaigns-inserts.sql', sql, { encoding: 'utf8' });
+fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });
+fs.writeFileSync(`${__dirname}/../inserts/campaigns-inserts.sql`, sql, { encoding: 'utf8' });
 
 console.log("File 'campaigns-inserts.sql' generated successfully.");

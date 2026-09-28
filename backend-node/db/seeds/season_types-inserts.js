@@ -1,4 +1,6 @@
+const fs = require('fs');
 
+const sql = `
 DROP TABLE IF EXISTS season_types;
 CREATE TABLE season_types (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -13,3 +15,9 @@ CREATE TABLE season_types (
 INSERT INTO season_types (id, name, start_day, start_month, end_day, end_month, start_year) VALUES
 (1, 'Temporada de Verano', 1, 3, 1, 9, 2020),
 (2, 'Temporada de Invierno', 1, 9, 1, 3, 2020);
+`;
+
+fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });
+fs.writeFileSync(`${__dirname}/../inserts/season-types-inserts.sql`, sql, { encoding: 'utf8' });
+
+console.log("File 'season-types-inserts.sql' generated successfully.");

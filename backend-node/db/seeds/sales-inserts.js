@@ -59,6 +59,7 @@ for (let i = 1; i <= numSales; i++) {
     sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < numSales ? ',' : ';'}\n`;
 }
 
-fs.writeFileSync('../insertsSQL/sales-inserts.sql', sql, { encoding: 'utf8' });
+fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });
+fs.writeFileSync(`${__dirname}/../inserts/sales-inserts.sql`, sql, { encoding: 'utf8' });
 
 console.log("File 'sales-inserts.sql' generated successfully.");

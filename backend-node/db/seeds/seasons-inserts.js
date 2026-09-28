@@ -44,6 +44,7 @@ for (let year = 2020; year <= 2025; year++) {
   sql += `(${id++}, '${inviernoName}', '${formatDateISO(inviernoStart)}', '${formatDateISO(inviernoEnd)}', ${inviernoExpenses}, ${inviernoProfits}, 2)${year < 2025 ? ',' : ';'}\n`;
 }
 
-fs.writeFileSync('../insertsSQL/seasons-inserts.sql', sql, { encoding: 'utf8' });
+fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });
+fs.writeFileSync(`${__dirname}/../inserts/seasons-inserts.sql`, sql, { encoding: 'utf8' });
 
 console.log("File 'seasons-inserts.sql' generated successfully.");
