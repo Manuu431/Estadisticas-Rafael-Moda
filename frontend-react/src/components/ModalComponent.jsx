@@ -103,7 +103,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
           <FormikForm>
             <Modal.Body className="bg-light px-4 py-3">
                 <Row className="g-3">
-                    {Object.entries(values).map(([key, value]) => {
+                    {Object.keys(values).map(key => {
                         if (isCreate && key === 'id') return null;
                         const label = labels[key];
                         if (!label) return null;

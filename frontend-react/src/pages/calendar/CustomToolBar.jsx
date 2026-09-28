@@ -5,7 +5,7 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function CustomToolbar({ label, onNavigate, date }) {
+export function CustomToolbar({ onNavigate, date }) {
     const today = new Date();
 
     const isCurrentMonth = isSameMonth(date, today);

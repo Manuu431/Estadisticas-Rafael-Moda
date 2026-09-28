@@ -92,7 +92,7 @@ export const updateMultiSelectOptions = async (
 ) => {
     try {
         const queryParams = Object.fromEntries(
-            Object.entries(filters).filter(([_, value]) => value)
+            Object.entries(filters).filter(([, value]) => value)
         );
         
         const response = await axios.get(databaseTable.endpoint, {
