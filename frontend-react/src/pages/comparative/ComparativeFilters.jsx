@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { DATABASE_TABLES } from "../../../database.js";
+import { DATABASE_TABLES } from "../../config/database.js";
 import { SelectFilter, TextInputFilter, FilterButton } from "../../utils/FiltersComponents.jsx";
 
 function ComparativeFilters({ filters, setFilters, handleSelectDateByChange, handleClear, onFilter, classCols }) {

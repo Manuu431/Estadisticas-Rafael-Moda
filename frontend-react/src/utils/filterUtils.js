@@ -126,7 +126,7 @@ export function updateSelectOptions(DATABASE_TABLE, setOptionsData) {
  */
 
 import { groupSales } from "./statisticsData.js";
-import { DATABASE_TABLES } from "../../database.js";
+import { DATABASE_TABLES } from "../config/database.js";
 
 export const fetchSalesData = async () => {
   try {

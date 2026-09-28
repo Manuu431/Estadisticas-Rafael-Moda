@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DATABASE_TABLES } from "../../database.js"
+import { DATABASE_TABLES } from "../config/database.js"
 
 import { MultiSelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
 import {

@@ -2,7 +2,7 @@ import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { DATABASE_TABLES } from '../../database';
+import { DATABASE_TABLES } from "../config/database.js";
 
 const monthNames = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',

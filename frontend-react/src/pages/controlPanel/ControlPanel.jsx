@@ -4,7 +4,7 @@ import Title from '../../components/Title.jsx';
 import Card from '../../components/Card.jsx';
 import { StackedBarChart, Select, GroupBySelector, PieChart, UpcomingCampaigns, CampaignButtons } from './ControlPanelComponents.jsx';
 import { getUniqueBrands, groupSalesByMonthAndBrand } from '../../utils/statisticsData.js';
-import { DATABASE_TABLES } from "../../../database.js";
+import { DATABASE_TABLES } from "../../config/database.js";
 import { startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 

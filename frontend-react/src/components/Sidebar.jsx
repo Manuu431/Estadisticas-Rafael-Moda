@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
-import { MENU_ITEMS } from '../../info.js';
+import { MENU_ITEMS } from '../config/info.js';
 
 function Sidebar() {
     const handleClick = () => {

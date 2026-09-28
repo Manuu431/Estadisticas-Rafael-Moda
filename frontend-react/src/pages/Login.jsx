@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { DATABASE_TABLES } from '../../database';
+import { DATABASE_TABLES } from "../config/database.js";
 import 'bootstrap-icons/font/bootstrap-icons.css'; // importa los iconos
 
 function Login() {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { DATABASE_TABLES } from "../../../database.js";
+import { DATABASE_TABLES } from "../../config/database.js";
 import HeaderTable from '../HeaderTable.jsx';
 import Pagination from '../Pagination.jsx';
 import { getSortedData, serializeParams } from '../../utils/tableUtils.js';
