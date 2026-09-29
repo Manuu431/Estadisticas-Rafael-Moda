@@ -18,11 +18,15 @@ export function getSortedData(data, sortConfig) {
         if (valA == null) return 1;
         if (valB == null) return -1;
 
-        const aLower = typeof valA === 'string' ? valA.toLowerCase() : valA;
-        const bLower = typeof valB === 'string' ? valB.toLowerCase() : valB;
+        const numA = Number(valA);
+        const numB = Number(valB);
+        const bothNumeric = valA !== '' && valB !== '' && !isNaN(numA) && !isNaN(numB);
 
-        if (aLower < bLower) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (aLower > bLower) return sortConfig.direction === 'asc' ? 1 : -1;
+        const aComp = bothNumeric ? numA : typeof valA === 'string' ? valA.toLowerCase() : valA;
+        const bComp = bothNumeric ? numB : typeof valB === 'string' ? valB.toLowerCase() : valB;
+
+        if (aComp < bComp) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aComp > bComp) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
     });
 }
