@@ -27,6 +27,15 @@ db.connect(err => {
 
 const allowedTables = ['campaigns', 'seasons', 'season_types', 'campaign_types'];
 
+const allowedColumns = {
+    sales: ['id', 'model', 'family', 'color', 'size', 'brand', 'pvd', 'pvp', 'units', 'discount', 'profit', 'sale_date'],
+    clients: ['id', 'name', 'postal_code', 'province', 'city'],
+    campaigns: ['id', 'name', 'start_date', 'end_date', 'expenses', 'profits', 'campaign_type_id'],
+    seasons: ['id', 'name', 'start_date', 'end_date', 'expenses', 'profits', 'season_type_id'],
+    season_types: ['id', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year'],
+    campaign_types: ['id', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year']
+};
+
 const normalizeDecimalFields = (data, fields) => {
     const newData = { ...data };
     fields.forEach((field) => {
@@ -49,33 +58,35 @@ const makeGet = (endpoint) => {
         let query = `SELECT * FROM ${endpoint}`;
         const conditions = [];
         const values = [];
+        const columns = allowedColumns[endpoint] || [];
 
         for (const key in filters) {
             const value = filters[key];
             if (value === undefined || value === null || value === '') continue;
 
+            const column = key.replace(/_(min|max)$/, '');
+            if (!columns.includes(column)) continue;
+
             if (key.endsWith('_min') || key.startsWith('start')) {
-                const column = key.replace('_min', '');
                 conditions.push(`${column} >= ?`);
                 values.push(value);
             } else if (key.endsWith('_max') || key.startsWith('end')) {
-                const column = key.replace('_max', '');
                 conditions.push(`${column} <= ?`);
                 values.push(value);
             } else if (Array.isArray(value)) {
                 const placeholders = value.map(() => '?').join(', ');
-                conditions.push(`${key} IN (${placeholders})`);
+                conditions.push(`${column} IN (${placeholders})`);
                 values.push(...value);
             } else {
                 if (!isNaN(value)) {
-                    conditions.push(`${key} = ?`);
+                    conditions.push(`${column} = ?`);
                     values.push(parseFloat(value));
                 } else {
                     if (key === 'size') {
-                        conditions.push(`${key} LIKE ?`);
+                        conditions.push(`${column} LIKE ?`);
                         values.push(`${value}`);
                     } else {
-                        conditions.push(`${key} LIKE ?`);
+                        conditions.push(`${column} LIKE ?`);
                         values.push(`%${value}%`);
                     }
                 }
