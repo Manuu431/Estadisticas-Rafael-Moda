@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -267,8 +269,6 @@ const makeSyncPost = ({ endpoint, typeTable, targetTable, foreignKey }) => {
   });
 };
 
-const bcrypt = require('bcrypt');
-
 app.post('/api/users', (req, res) => {
   const { email, password } = req.body;
 
@@ -288,7 +288,9 @@ app.post('/api/users', (req, res) => {
 
     if (!passwordMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
-    res.json({ message: 'Login successful', user: { id: user.id, username: user.email } });
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({ token, user: { id: user.id, username: user.email } });
   });
 });
 
