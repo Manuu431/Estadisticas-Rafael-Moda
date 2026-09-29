@@ -47,7 +47,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const isEdit = mode === 'edit';
   const isCreate = mode === 'create';
 
-  const getDays = (monthIndex) => (monthIndex === '' ? [] : Array.from({ length: daysInMonth[monthIndex] }, (_, i) => i + 1));
+  const getDays = (month) => (month === '' ? [] : Array.from({ length: daysInMonth[month - 1] }, (_, i) => i + 1));
 
   const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campañas" };
   const title = isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear';
