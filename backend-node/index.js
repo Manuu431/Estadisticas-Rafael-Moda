@@ -38,6 +38,15 @@ const allowedColumns = {
     campaign_types: ['id', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year']
 };
 
+const filterColumns = (data, endpoint) => {
+    const columns = allowedColumns[endpoint] || [];
+    const filtered = {};
+    for (const key in data) {
+        if (key !== 'id' && columns.includes(key)) filtered[key] = data[key];
+    }
+    return filtered;
+};
+
 const normalizeDecimalFields = (data, fields) => {
     const newData = { ...data };
     fields.forEach((field) => {
@@ -114,7 +123,7 @@ const makePost = (endpoint) => {
   if (!allowedTables.includes(endpoint)) return;
 
   app.post(`/api/${endpoint}`, async (req, res) => {
-    let data = req.body;
+    let data = filterColumns(req.body, endpoint);
 
     if (endpoint === 'seasons' || endpoint === 'campaigns') {
       data = normalizeDecimalFields(data, ['expenses', 'profits']);
@@ -188,7 +197,7 @@ const makePost = (endpoint) => {
 const makeUpdate = (endpoint) => {
     if (!allowedTables.includes(endpoint)) return;
     app.put(`/api/${endpoint}/:id`, (req, res) => {
-        let data = req.body;
+        let data = filterColumns(req.body, endpoint);
         const id = req.params.id;
 
         if (endpoint === 'seasons' || endpoint === 'campaigns') {
