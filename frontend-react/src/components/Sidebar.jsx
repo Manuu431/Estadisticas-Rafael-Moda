@@ -1,8 +1,14 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { MENU_ITEMS } from '../config/info.js';
 
 function Sidebar() {
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
     const handleClick = () => {
         if (window.innerWidth < 1200) {
             const toggler = document.querySelector('.navbar-toggler');
@@ -56,6 +62,17 @@ function Sidebar() {
                             </li>
                             ) : null
                         )}
+                        <li className="nav-item w-100">
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="nav-link rounded-0 border-bottom border-black bg-gray text-dark ps-4 p-3 w-100 text-start"
+                            >
+                                <div className="nav-link-content">
+                                    <i className="bi bi-box-arrow-right" /> <span>Cerrar sesión</span>
+                                </div>
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>
