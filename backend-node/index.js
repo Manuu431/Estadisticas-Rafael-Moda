@@ -72,6 +72,19 @@ const normalizeDecimalFields = (data, fields) => {
 const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
 
+const buildTypeInserts = (type, startYear, endYear, existingKeys) => {
+    const inserts = [];
+    for (let year = startYear; year <= endYear; year++) {
+        if (existingKeys && existingKeys.has(`${type.id}-${year}`)) continue;
+        const isNextYear = type.end_month < type.start_month || (type.end_month === type.start_month && type.end_day < type.start_day);
+        const name = isNextYear ? `${type.name} ${year}-${year + 1}` : `${type.name} ${year}`;
+        const startDate = parseDate(type.start_month, type.start_day, year);
+        const endDate = parseDate(type.end_month, type.end_day, isNextYear ? year + 1 : year);
+        inserts.push([name, startDate, endDate, null, null, type.id]);
+    }
+    return inserts;
+};
+
 const makeGet = (endpoint) => {
     app.get(`/api/${endpoint}`, async (req, res, next) => {
         const filters = req.query;
@@ -143,20 +156,8 @@ const makePost = (endpoint) => {
         const newId = result.insertId;
         const [[newType]] = await pool.query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
 
-        const startYear = newType.start_year || new Date().getFullYear();
-        const endYear = new Date().getFullYear();
-
-        const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
-
-        const inserts = [];
-        for (let year = startYear; year <= endYear; year++) {
-          const startDate = parseDate(newType.start_month, newType.start_day, year);
-          const isNextYear = newType.end_month < newType.start_month || (newType.end_month === newType.start_month && newType.end_day < newType.start_day);
-          const endDate = parseDate(newType.end_month, newType.end_day, isNextYear ? year + 1 : year);
-          const name = isNextYear ? `${newType.name} ${year}-${year + 1}` : `${newType.name} ${year}`;
-          inserts.push([name, startDate, endDate, null, null, newId]);
-        }
+        const currentYear = new Date().getFullYear();
+        const inserts = buildTypeInserts(newType, newType.start_year || currentYear, currentYear);
 
         if (inserts.length > 0) {
           await pool.query('INSERT INTO seasons (name, start_date, end_date, expenses, profits, season_type_id) VALUES ?', [inserts]);
@@ -169,20 +170,8 @@ const makePost = (endpoint) => {
         const newId = result.insertId;
         const [[newType]] = await pool.query(`SELECT * FROM campaign_types WHERE id = ?`, [newId]);
 
-        const startYear = newType.start_year || new Date().getFullYear();
-        const endYear = new Date().getFullYear();
-
-        const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
-
-        const inserts = [];
-        for (let year = startYear; year <= endYear; year++) {
-          const startDate = parseDate(newType.start_month, newType.start_day, year);
-          const isNextYear = newType.end_month < newType.start_month || (newType.end_month === newType.start_month && newType.end_day < newType.start_day);
-          const endDate = parseDate(newType.end_month, newType.end_day, isNextYear ? year + 1 : year);
-          const name = isNextYear ? `${newType.name} ${year}-${year + 1}` : `${newType.name} ${year}`;
-          inserts.push([name, startDate, endDate, null, null, newId]);
-        }
+        const currentYear = new Date().getFullYear();
+        const inserts = buildTypeInserts(newType, newType.start_year || currentYear, currentYear);
 
         if (inserts.length > 0) {
           await pool.query('INSERT INTO campaigns (name, start_date, end_date, expenses, profits, campaign_type_id) VALUES ?', [inserts]);
@@ -247,21 +236,7 @@ const makeSyncPost = ({ endpoint, typeTable, targetTable, foreignKey }) => {
       const inserts = [];
 
       for (const type of types) {
-        const startYear = type.start_year || 2000;
-        for (let year = startYear; year <= currentYear; year++) {
-          const key = `${type.id}-${year}`;
-          if (!existingKeys.has(key)) {
-            const isNextYear =
-              type.end_month < type.start_month ||
-              (type.end_month === type.start_month && type.end_day < type.start_day);
-
-            const name = isNextYear ? `${type.name} ${year}-${year + 1}` : `${type.name} ${year}`;
-            const startDate = parseDate(type.start_month, type.start_day, year);
-            const endDate = parseDate(type.end_month, type.end_day, isNextYear ? year + 1 : year);
-
-            inserts.push([name, startDate, endDate, null, null, type.id]);
-          }
-        }
+        inserts.push(...buildTypeInserts(type, type.start_year || 2000, currentYear, existingKeys));
       }
 
       if (inserts.length > 0) {
