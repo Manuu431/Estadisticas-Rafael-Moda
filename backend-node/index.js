@@ -5,6 +5,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+if (!process.env.JWT_SECRET) {
+    console.error('Missing JWT_SECRET in .env');
+    process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
