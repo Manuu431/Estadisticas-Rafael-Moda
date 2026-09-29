@@ -9,6 +9,8 @@ const allowedColumns = {
   campaign_types: ['id', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year']
 };
 
+const numericColumns = ['id', 'pvd', 'pvp', 'units', 'discount', 'profit', 'expenses', 'profits', 'campaign_type_id', 'season_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year'];
+
 const filterColumns = (data, endpoint) => {
   const columns = allowedColumns[endpoint] || [];
   const filtered = {};
@@ -30,4 +32,4 @@ const normalizeDecimalFields = (data, fields) => {
   return newData;
 };
 
-module.exports = { allowedTables, allowedColumns, filterColumns, normalizeDecimalFields };
+module.exports = { allowedTables, allowedColumns, numericColumns, filterColumns, normalizeDecimalFields };

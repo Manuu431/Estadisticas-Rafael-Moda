@@ -1,5 +1,5 @@
 const pool = require('../config/db');
-const { allowedColumns, filterColumns, normalizeDecimalFields } = require('../utils/columns');
+const { allowedColumns, numericColumns, filterColumns, normalizeDecimalFields } = require('../utils/columns');
 const { buildTypeInserts } = require('../utils/dates');
 
 const getAll = (endpoint) => async (req, res, next) => {
@@ -27,19 +27,15 @@ const getAll = (endpoint) => async (req, res, next) => {
       const placeholders = value.map(() => '?').join(', ');
       conditions.push(`${column} IN (${placeholders})`);
       values.push(...value);
+    } else if (numericColumns.includes(column)) {
+      conditions.push(`${column} = ?`);
+      values.push(parseFloat(value));
+    } else if (key === 'size') {
+      conditions.push(`${column} LIKE ?`);
+      values.push(`${value}`);
     } else {
-      if (!isNaN(value)) {
-        conditions.push(`${column} = ?`);
-        values.push(parseFloat(value));
-      } else {
-        if (key === 'size') {
-          conditions.push(`${column} LIKE ?`);
-          values.push(`${value}`);
-        } else {
-          conditions.push(`${column} LIKE ?`);
-          values.push(`%${value}%`);
-        }
-      }
+      conditions.push(`${column} LIKE ?`);
+      values.push(`%${value}%`);
     }
   }
 
