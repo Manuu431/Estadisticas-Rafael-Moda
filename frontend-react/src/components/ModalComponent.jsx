@@ -8,7 +8,6 @@ const monthNames = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
-const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const validationSchemas = {
   types: Yup.object().shape({
@@ -47,7 +46,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const isEdit = mode === 'edit';
   const isCreate = mode === 'create';
 
-  const getDays = (month) => (month === '' ? [] : Array.from({ length: daysInMonth[month - 1] }, (_, i) => i + 1));
+  const getDays = (month, year) => (month === '' ? [] : Array.from({ length: new Date(Number(year) || 2001, month, 0).getDate() }, (_, i) => i + 1));
 
   const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campañas" };
   const title = isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear';
@@ -57,10 +56,10 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   
   const initialValues = isCreate
     ? isCreateType
-        ? { name: '', start_day: '', start_month: '', end_day: '', end_month: '', start_year: '' }
+        ? { name: '', start_year: '', start_month: '', start_day: '', end_month: '', end_day: '' }
         : { name: '', start_date: '', end_date: '', expenses: '', profits: '' }
     : isCreateType
-        ? { ...data, start_year: data.start_year ?? '' }
+        ? { id: data.id, name: data.name, start_year: data.start_year ?? '', start_month: data.start_month, start_day: data.start_day, end_month: data.end_month, end_day: data.end_day }
         : { ...data };
 
   const create = async (values) => {
@@ -109,14 +108,17 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                         if (!label) return null;
                         
                         if (['start_day', 'end_day'].includes(key)) {
-                            const month = key === 'start_day' ? values.start_month : values.end_month;
+                            const isStart = key === 'start_day';
+                            const month = isStart ? values.start_month : values.end_month;
+                            const crossesYear = !isStart && values.start_month !== '' && values.end_month !== '' && values.end_month < values.start_month;
+                            const year = values.start_year === '' ? '' : crossesYear ? Number(values.start_year) + 1 : values.start_year;
                             return (
                                 <Col md={3} key={key}>
                                 <Form.Group>
                                     <Form.Label className="fw-semibold">{label}</Form.Label>
                                     <Field as="select" name={key} className="form-select">
                                         <option value="">Día</option>
-                                        {getDays(month).map(day => (
+                                        {getDays(month, year).map(day => (
                                             <option key={day} value={day}>{day}</option>
                                         ))}
                                     </Field>
