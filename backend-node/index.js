@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -16,21 +16,26 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
+const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    dateStrings: true
+    dateStrings: true,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-db.connect(err => {
-    if (err) {
+(async () => {
+    try {
+        const connection = await pool.getConnection();
+        connection.release();
+        console.log('Connected to the MySQL database');
+    } catch (err) {
         console.error(`Error connecting to MySQL: ${err}`);
-        return;
     }
-    console.log('Connecting to the MySQL database...');
-});
+})();
 
 const allowedTables = ['campaigns', 'seasons', 'season_types', 'campaign_types'];
 
@@ -68,7 +73,7 @@ const formatDateISO = (date) => `${date.getFullYear()}-${String(date.getMonth() 
 const parseDate = (m, d, y) => formatDateISO(new Date(y, m - 1, d));
 
 const makeGet = (endpoint) => {
-    app.get(`/api/${endpoint}`, (req, res) => {
+    app.get(`/api/${endpoint}`, async (req, res, next) => {
         const filters = req.query;
 
         let query = `SELECT * FROM ${endpoint}`;
@@ -113,21 +118,19 @@ const makeGet = (endpoint) => {
             query += ` WHERE ${conditions.join(' AND ')}`;
         }
 
-        db.query(query, values, (err, results) => {
-            if (err) {
-                console.error(`Error obtaining ${endpoint} data: ${err}`);
-                return res.status(500).json({ error: 'Server error' });
-            }
-
+        try {
+            const [results] = await pool.query(query, values);
             res.json(results);
-        });
+        } catch (err) {
+            next(err);
+        }
     });
 };
 
 const makePost = (endpoint) => {
   if (!allowedTables.includes(endpoint)) return;
 
-  app.post(`/api/${endpoint}`, async (req, res) => {
+  app.post(`/api/${endpoint}`, async (req, res, next) => {
     let data = filterColumns(req.body, endpoint);
 
     if (endpoint === 'seasons' || endpoint === 'campaigns') {
@@ -136,9 +139,9 @@ const makePost = (endpoint) => {
 
     try {
       if (endpoint === 'season_types') {
-        const [result] = await db.promise().query(`INSERT INTO season_types SET ?`, data);
+        const [result] = await pool.query(`INSERT INTO season_types SET ?`, data);
         const newId = result.insertId;
-        const [[newType]] = await db.promise().query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
+        const [[newType]] = await pool.query(`SELECT * FROM season_types WHERE id = ?`, [newId]);
 
         const startYear = newType.start_year || new Date().getFullYear();
         const endYear = new Date().getFullYear();
@@ -156,15 +159,15 @@ const makePost = (endpoint) => {
         }
 
         if (inserts.length > 0) {
-          await db.promise().query('INSERT INTO seasons (name, start_date, end_date, expenses, profits, season_type_id) VALUES ?', [inserts]);
+          await pool.query('INSERT INTO seasons (name, start_date, end_date, expenses, profits, season_type_id) VALUES ?', [inserts]);
         }
 
         return res.json({ message: 'Season type and seasons created', season_type_id: newId });
 
       } else if (endpoint === 'campaign_types') {
-        const [result] = await db.promise().query(`INSERT INTO campaign_types SET ?`, data);
+        const [result] = await pool.query(`INSERT INTO campaign_types SET ?`, data);
         const newId = result.insertId;
-        const [[newType]] = await db.promise().query(`SELECT * FROM campaign_types WHERE id = ?`, [newId]);
+        const [[newType]] = await pool.query(`SELECT * FROM campaign_types WHERE id = ?`, [newId]);
 
         const startYear = newType.start_year || new Date().getFullYear();
         const endYear = new Date().getFullYear();
@@ -182,26 +185,25 @@ const makePost = (endpoint) => {
         }
 
         if (inserts.length > 0) {
-          await db.promise().query('INSERT INTO campaigns (name, start_date, end_date, expenses, profits, campaign_type_id) VALUES ?', [inserts]);
+          await pool.query('INSERT INTO campaigns (name, start_date, end_date, expenses, profits, campaign_type_id) VALUES ?', [inserts]);
         }
 
         return res.json({ message: 'Campaign type and campaigns created', campaign_type_id: newId });
 
       } else {
-        const [results] = await db.promise().query(`INSERT INTO ${endpoint} SET ?`, data);
+        const [results] = await pool.query(`INSERT INTO ${endpoint} SET ?`, data);
         return res.json(results);
       }
 
     } catch (err) {
-      console.error(`Error creating ${endpoint}:`, err);
-      return res.status(500).json({ error: 'Server error' });
+      next(err);
     }
   });
 };
 
 const makeUpdate = (endpoint) => {
     if (!allowedTables.includes(endpoint)) return;
-    app.put(`/api/${endpoint}/:id`, (req, res) => {
+    app.put(`/api/${endpoint}/:id`, async (req, res, next) => {
         let data = filterColumns(req.body, endpoint);
         const id = req.params.id;
 
@@ -209,37 +211,33 @@ const makeUpdate = (endpoint) => {
             data = normalizeDecimalFields(data, ['expenses', 'profits']);
         }
 
-        const query = `UPDATE ${endpoint} SET ? WHERE id = ?`;
-        db.query(query, [data, id], (err, results) => {
-            if (err) {
-                console.error(`Error updating ${endpoint}: ${err}`);
-                return res.status(500).json({ error: 'Server error' });
-            }
+        try {
+            const [results] = await pool.query(`UPDATE ${endpoint} SET ? WHERE id = ?`, [data, id]);
             res.json(results);
-        });
+        } catch (err) {
+            next(err);
+        }
     });
 };
 
 const makeDelete = (endpoint) => {
     if (!allowedTables.includes(endpoint)) return;
-    app.delete(`/api/${endpoint}/:id`, (req, res) => {
+    app.delete(`/api/${endpoint}/:id`, async (req, res, next) => {
         const id = req.params.id;
-        const query = `DELETE FROM ${endpoint} WHERE id = ?`;
-        db.query(query, [id], (err, results) => {
-            if (err) {
-                console.error(`Error deleting from ${endpoint}: ${err}`);
-                return res.status(500).json({ error: 'Server error' });
-            }
+        try {
+            const [results] = await pool.query(`DELETE FROM ${endpoint} WHERE id = ?`, [id]);
             res.json(results);
-        });
+        } catch (err) {
+            next(err);
+        }
     });
 };
 
 const makeSyncPost = ({ endpoint, typeTable, targetTable, foreignKey }) => {
-  app.post(`/api/${endpoint}/sync`, async (req, res) => {
+  app.post(`/api/${endpoint}/sync`, async (req, res, next) => {
     try {
-      const [types] = await db.promise().query(`SELECT * FROM ${typeTable}`);
-      const [existingEntries] = await db.promise().query(`SELECT ${foreignKey}, start_date FROM ${targetTable}`);
+      const [types] = await pool.query(`SELECT * FROM ${typeTable}`);
+      const [existingEntries] = await pool.query(`SELECT ${foreignKey}, start_date FROM ${targetTable}`);
 
       const currentYear = new Date().getFullYear();
       const existingKeys = new Set(
@@ -267,33 +265,26 @@ const makeSyncPost = ({ endpoint, typeTable, targetTable, foreignKey }) => {
       }
 
       if (inserts.length > 0) {
-        await db
-          .promise()
-          .query(
-            `INSERT INTO ${targetTable} (name, start_date, end_date, expenses, profits, ${foreignKey}) VALUES ?`,
-            [inserts]
-          );
+        await pool.query(
+          `INSERT INTO ${targetTable} (name, start_date, end_date, expenses, profits, ${foreignKey}) VALUES ?`,
+          [inserts]
+        );
       }
 
       res.json({ message: `${targetTable} up to date.` });
     } catch (err) {
-      console.error(`Error syncing ${typeTable} -> ${targetTable}:`, err);
-      res.status(500).json({ error: 'Server error' });
+      next(err);
     }
   });
 };
 
-app.post('/api/users', (req, res) => {
+app.post('/api/users', async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) return res.status(400).json({ error: 'Missing credentials' });
 
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], async (err, results) => {
-    if (err) {
-      console.error('Login error:', err);
-      return res.status(500).json({ error: 'Server error' });
-    }
+  try {
+    const [results] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
     if (results.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
 
@@ -305,7 +296,9 @@ app.post('/api/users', (req, res) => {
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.json({ token, user: { id: user.id, username: user.email } });
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
 const authMiddleware = (req, res, next) => {
@@ -355,6 +348,11 @@ makeSyncPost({
   typeTable: 'season_types',
   targetTable: 'seasons',
   foreignKey: 'season_type_id',
+});
+
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
 });
 
 app.listen(PORT, () => {
