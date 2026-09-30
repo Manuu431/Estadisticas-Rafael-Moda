@@ -2,81 +2,97 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { MENU_ITEMS } from '../config/info.js';
 
+const NAV_GROUPS = MENU_ITEMS.reduce((groups, item) => {
+    const current = groups[groups.length - 1];
+    if (current && current.label === item.group) current.items.push(item);
+    else groups.push({ label: item.group, items: [item] });
+    return groups;
+}, []);
+
+function readUser() {
+    try {
+        return JSON.parse(localStorage.getItem('user'));
+    } catch {
+        return null;
+    }
+}
+
 function Sidebar() {
     const navigate = useNavigate();
+    const user = readUser();
+    const isDemo = user?.id === 0;
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');
     };
     const handleClick = () => {
-        if (window.innerWidth < 1200) {
-            const toggler = document.querySelector('.navbar-toggler');
-            const sidebarMenu = document.getElementById('sidebarMenu');            
-
-            if (sidebarMenu.classList.contains('show') && toggler) {
-                toggler.click();
-            }
-        }
+        if (window.innerWidth >= 1200) return;
+        const toggler = document.querySelector('.navbar-toggler');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        if (sidebarMenu?.classList.contains('show') && toggler) toggler.click();
     };
 
     return (
-        <nav className="navbar navbar-expand-xl navbar-light bg-light p-0">
-            <div className="container-fluid flex-xl-column align-items-stretch p-0">
-                <div className="d-flex justify-content-between justify-content-xl-center align-items-center w-100 border-bottom border-dark bg-primary">
-                    <NavLink to="/" onClick={() => handleClick()}>
+        <aside className="app-sidebar navbar navbar-expand-xl p-0">
+            <div className="container-fluid flex-xl-column align-items-stretch gap-xl-4 p-0">
+                <div className="d-flex justify-content-between align-items-center">
+                    <NavLink to="/" className="app-brand" onClick={handleClick}>
                         <Logo />
                     </NavLink>
-                    <div className='me-4 me-xl-0'>
+                    <button
+                        className="navbar-toggler border-0 shadow-none"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#sidebarMenu"
+                        aria-controls="sidebarMenu"
+                        aria-expanded="false"
+                        aria-label="Abrir el menú"
+                    >
+                        <span className="navbar-toggler-icon" />
+                    </button>
+                </div>
+                <div className="collapse navbar-collapse flex-column align-items-stretch" id="sidebarMenu">
+                    <nav className="d-flex flex-column gap-4 pt-3 pt-xl-0" aria-label="Principal">
+                        {NAV_GROUPS.map((group) => (
+                            <div className="d-flex flex-column" key={group.label ?? 'inicio'}>
+                                {group.label ? <span className="app-nav-group">{group.label}</span> : null}
+                                {group.items.map((item) => (
+                                    <NavLink
+                                        key={item.path}
+                                        to={item.path}
+                                        end={item.path === '/'}
+                                        onClick={handleClick}
+                                        className={({ isActive }) =>
+                                            `app-nav-link d-flex align-items-center gap-3 text-decoration-none${isActive ? ' is-active' : ''}`
+                                        }
+                                    >
+                                        <i className={item.icon} aria-hidden="true" />
+                                        {item.name}
+                                    </NavLink>
+                                ))}
+                            </div>
+                        ))}
+                    </nav>
+                    <div className="app-session d-flex align-items-center gap-2 mt-3 mt-xl-auto">
+                        <span className="app-avatar d-flex align-items-center justify-content-center" aria-hidden="true">RM</span>
+                        <span className="d-flex flex-column flex-grow-1 overflow-hidden">
+                            <span className="fw-semibold text-truncate">{isDemo ? 'Modo demo' : user?.username ?? 'Mi cuenta'}</span>
+                            <span className="app-session-note text-truncate">{isDemo ? 'Datos de ejemplo' : 'Sesión iniciada'}</span>
+                        </span>
                         <button
-                            className="navbar-toggler"
                             type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#sidebarMenu"
-                            aria-controls="sidebarMenu"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation"
+                            className="app-icon-btn d-flex align-items-center justify-content-center flex-shrink-0"
+                            onClick={handleLogout}
+                            aria-label="Cerrar sesión"
+                            title="Cerrar sesión"
                         >
-                            <span className="navbar-toggler-icon" />
+                            <i className="bi bi-box-arrow-right" aria-hidden="true" />
                         </button>
                     </div>
                 </div>
-                <div className="collapse navbar-collapse flex-column w-100 border-end border-black" id="sidebarMenu">
-                    <ul className="navbar-nav w-100 flex-column">
-                        {MENU_ITEMS.map((item, idx) =>
-                            item.icon ? (
-                            <li className="nav-item w-100" key={idx}>
-                                <NavLink
-                                    to={item.path}
-                                    onClick={() => handleClick()}
-                                    className={({ isActive }) =>
-                                        `nav-link rounded-0 border-bottom border-black ${idx % 2 === 0 ? 'bg-primary' : 'bg-gray'} ${isActive ? 'text-white' : 'text-dark'} ps-4 p-3`
-                                    }
-                                >
-                                    {({ isActive }) => (
-                                        <div className="nav-link-content">
-                                            <i className={item.icon} /> <span className={isActive ? 'fst-italic' : ''}>{item.name}</span>
-                                        </div>
-                                    )}
-                                </NavLink>
-                            </li>
-                            ) : null
-                        )}
-                        <li className="nav-item w-100">
-                            <button
-                                type="button"
-                                onClick={handleLogout}
-                                className="nav-link rounded-0 border-bottom border-black bg-gray text-dark ps-4 p-3 w-100 text-start"
-                            >
-                                <div className="nav-link-content">
-                                    <i className="bi bi-box-arrow-right" /> <span>Cerrar sesión</span>
-                                </div>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
             </div>
-        </nav>
+        </aside>
     );
 }
 

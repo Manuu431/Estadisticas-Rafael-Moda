@@ -6,19 +6,13 @@ function Layout({ children }) {
     const hideSidebar = location.pathname === '/login';
 
     return (
-        <div className="container-fluid">
-            <div className="row">
-                {!hideSidebar && (
-                    <div className="col-12 col-xl-2 p-0">
-                        <Sidebar />
-                    </div>
-                )}
-                <div className={hideSidebar ? 'col-12 p-0' : 'col-12 col-xl-10 p-0'}>
-                    <div className="container-fluid">
-                        {children}
-                    </div>
+        <div className="app-shell d-flex flex-column flex-xl-row min-vh-100">
+            {!hideSidebar && <Sidebar />}
+            <main className="app-main flex-grow-1">
+                <div className="container-fluid px-0">
+                    {children}
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

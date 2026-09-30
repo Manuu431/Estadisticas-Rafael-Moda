@@ -1,21 +1,24 @@
 import { useMemo, useState } from 'react';
-import Title from '../../components/Title.jsx';
-import Card from '../../components/Card.jsx';
-import SectionSummary from '../../components/SectionSummary.jsx';
-import { StackedBarChart, Select, GroupBySelector, PieChart, UpcomingCampaigns, CampaignButtons } from './ControlPanelComponents.jsx';
+import {
+    PanelCard,
+    MonthSummary,
+    StackedBarChart,
+    Select,
+    GroupBySelector,
+    PieChart,
+    SectionBreakdown,
+    UpcomingCampaigns,
+    CampaignButtons
+} from './ControlPanelComponents.jsx';
 import { getUniqueBrands, groupSalesByMonthAndBrand } from '../../utils/statisticsData.js';
 import { DATABASE_TABLES } from "../../config/database.js";
 import { useFetch } from '../../hooks/useFetch.js';
+import { GROUP_BY_OPTIONS } from '../../config/info.js';
 import { startOfMonth, format, isSameMonth, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const groupByLabels = {
-    section: "sección",
-    brand: "marca",
-    family: "familia",
-    size: "talla",
-    color: "color",
-};
+const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+const groupByLabel = (groupBy) => GROUP_BY_OPTIONS.find((option) => option.value === groupBy)?.label ?? groupBy;
 
 function ControlPanel(props) {
     const { data: sales } = useFetch(DATABASE_TABLES["sales"].endpoint);
@@ -32,45 +35,55 @@ function ControlPanel(props) {
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
     const monthSales = useMemo(() => (sales ?? []).filter(sale => isSameMonth(parseISO(sale.sale_date), selectedMonth)), [sales, selectedMonth]);
+    const monthLabel = format(selectedMonth, 'MMMM', { locale: es });
 
     return (
         <>
-            <Title title={props.title} />
-            <div className='row my-3'>
-                <div className='col-lg-7 d-flex flex-column gap-3'>
-                    <Card 
-                        element={<StackedBarChart data={salesByMonthAndBrand} brands={brandList} />} 
-                        title="Ventas por marca últimos 12 meses"
-                    />
-                    <Card 
-                        element={
-                            <>
-                                <div className='d-flex align-items-center justify-content-between gap-3'>
-                                    <Select selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
-                                    <GroupBySelector groupBy={groupBy} setGroupBy={setGroupBy} />
-                                </div>
-                                <PieChart salesData={salesData} selectedMonth={selectedMonth} groupBy={groupBy} />
-                            </>
-                        }
-                        title={`Ventas por ${groupByLabels[groupBy]} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
-                    />
-                    <Card
-                        element={<SectionSummary sales={monthSales} />}
-                        title={`Ventas por sección de ${format(selectedMonth, 'MMMM', { locale: es })}`}
-                    />
+            <header className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-4">
+                <div className="d-flex flex-column gap-1">
+                    <span className="panel-kicker">{capitalize(format(today, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es }))}</span>
+                    <h1 className="panel-title m-0">{props.title}</h1>
                 </div>
-                <div className="col-lg-5 mt-3 mt-xl-0">
-                    <Card
-                        element={<UpcomingCampaigns data={campaignsData} startIndex={campaignIndex} />}
-                        secondaryElement={
+                <Select selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+            </header>
+            <div className="row g-4 align-items-start">
+                <div className="col-12 col-xl-5">
+                    <PanelCard title={`Resumen de ${monthLabel}`} note="Sobre las ventas registradas">
+                        <MonthSummary sales={monthSales} />
+                    </PanelCard>
+                </div>
+                <div className="col-12 col-xl-7">
+                    <PanelCard title="Ventas por marca" note="Prendas de los últimos 12 meses">
+                        <StackedBarChart data={salesByMonthAndBrand} brands={brandList} />
+                    </PanelCard>
+                </div>
+                <div className="col-12 col-xl-7">
+                    <PanelCard
+                        title={`Ventas por ${groupByLabel(groupBy)} de ${monthLabel}`}
+                        note="Prendas vendidas"
+                        action={<GroupBySelector groupBy={groupBy} setGroupBy={setGroupBy} />}
+                    >
+                        <PieChart salesData={salesData} selectedMonth={selectedMonth} groupBy={groupBy} />
+                    </PanelCard>
+                </div>
+                <div className="col-12 col-xl-5">
+                    <PanelCard
+                        title="Próximas campañas"
+                        action={
                             <CampaignButtons
                                 currentIndex={campaignIndex}
                                 setCurrentIndex={setCampaignIndex}
                                 total={upcomingCampaigns.length}
                             />
-                        } 
-                        title="Proximas campañas" 
-                    />
+                        }
+                    >
+                        <UpcomingCampaigns data={campaignsData} startIndex={campaignIndex} />
+                    </PanelCard>
+                </div>
+                <div className="col-12">
+                    <PanelCard title={`Ventas por sección de ${monthLabel}`}>
+                        <SectionBreakdown sales={monthSales} />
+                    </PanelCard>
                 </div>
             </div>
         </>
