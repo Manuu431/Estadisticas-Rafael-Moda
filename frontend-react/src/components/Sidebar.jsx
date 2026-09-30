@@ -23,7 +23,7 @@ function Sidebar() {
     return (
         <nav className="navbar navbar-expand-xl navbar-light bg-light p-0">
             <div className="container-fluid flex-xl-column align-items-stretch p-0">
-                <div className="d-flex justify-content-between justify-content-xl-center align-items-center w-100 border-bottom border-dark bg-orange">
+                <div className="d-flex justify-content-between justify-content-xl-center align-items-center w-100 border-bottom border-dark bg-primary">
                     <NavLink to="/" onClick={() => handleClick()}>
                         <Logo />
                     </NavLink>
@@ -50,7 +50,7 @@ function Sidebar() {
                                     to={item.path}
                                     onClick={() => handleClick()}
                                     className={({ isActive }) =>
-                                        `nav-link rounded-0 border-bottom border-black ${idx % 2 === 0 ? 'bg-orange' : 'bg-gray'} ${isActive ? 'text-white' : 'text-dark'} ps-4 p-3`
+                                        `nav-link rounded-0 border-bottom border-black ${idx % 2 === 0 ? 'bg-primary' : 'bg-gray'} ${isActive ? 'text-white' : 'text-dark'} ps-4 p-3`
                                     }
                                 >
                                     {({ isActive }) => (

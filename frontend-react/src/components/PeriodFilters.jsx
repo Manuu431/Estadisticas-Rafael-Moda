@@ -114,7 +114,7 @@ function PeriodFilters({ periods, filters, setFilters, handleSelectDateByChange,
                 <FilterButton
                     classCols={classCols}
                     divClasses="justify-content-lg-end"
-                    buttonClasses="bg-orange"
+                    buttonClasses="bg-primary"
                     onClickFunction={() => onFilter(filters)}
                     iconClasses="bi bi-funnel"
                     text="Filtrar"

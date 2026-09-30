@@ -84,7 +84,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered backdrop="static">
-      <Modal.Header closeButton className="bg-orange text-white">
+      <Modal.Header closeButton className="bg-primary text-white">
         <Modal.Title className="fw-semibold fs-4">{title} {types[type]}</Modal.Title>
       </Modal.Header>
 

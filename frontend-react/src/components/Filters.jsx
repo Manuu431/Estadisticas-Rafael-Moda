@@ -90,7 +90,7 @@ function Filters({ type, onFilterChange, classCols }) {
                 <FilterButton
                     classCols={classCols}
                     divClasses="justify-content-lg-end"
-                    buttonClasses="bg-orange"
+                    buttonClasses="bg-primary"
                     onClickFunction={() =>
                         handleManualFilter(
                             selectedValues,

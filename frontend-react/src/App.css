@@ -1,14 +1,54 @@
+/**
+ * PALETTE
+ */
 :root {
-    --orange: #DD6C10;
+    --rm-cream: #EFE6DA;
+    --rm-cream-light: #FBF8F4;
+    --rm-surface: #FFFFFF;
+    --rm-tint: #F5EFE7;
+    --rm-line: #EDE5DB;
+    --rm-line-strong: #E6DDD2;
+    --rm-line-soft: #F2ECE5;
+    --rm-line-dashed: #D4C8BB;
+    --rm-ink: #221C17;
+    --rm-ink-rgb: 34, 28, 23;
+    --rm-ink-2: #675E56;
+    --rm-ink-3: #756D66;
+    --rm-placeholder: #7A7068;
+    --rm-nav: #4A423B;
+    --rm-orange: #DD6C10;
+    --rm-orange-rgb: 221, 108, 16;
+    --rm-orange-strong: #B85A0D;
+    --rm-orange-strong-hover: #9C4C0B;
+    --rm-orange-ink: #8F4509;
+    --rm-orange-tint: #FBEBDD;
+    --rm-orange-tint-soft: #FDF3EA;
+    --rm-orange-border: #E7C3A2;
+    --rm-orange-focus: rgba(221, 108, 16, .15);
+    --rm-positive: #1E6B45;
+    --rm-positive-tint: #E7F3EC;
+    --rm-negative: #A3261B;
+    --rm-negative-tint: #FBE9E7;
+    --rm-shadow: 0 1px 2px rgba(60, 40, 20, .04), 0 10px 30px rgba(60, 40, 20, .05);
+    --rm-radius-sm: 10px;
+    --rm-radius: 12px;
+    --rm-radius-lg: 18px;
+    --rm-font: 'Figtree', system-ui, sans-serif;
+    --rm-font-display: 'Instrument Serif', Georgia, serif;
+    --bs-primary: var(--rm-orange);
+    --bs-primary-rgb: var(--rm-orange-rgb);
+}
+
+/**
+ * LEGACY COLORS
+ */
+:root {
+    --orange: var(--rm-orange);
     --darkOrange: #b15f01;
     --gray: #aaaaaa;
     --darkGray: #858383;
     --lightGray: #e0dede;
-	--hoverGray: #d0d0d0;
-}
-
-.bg-orange {
-    background-color: var(--orange) !important;
+    --hoverGray: #d0d0d0;
 }
 
 .border-orange {
@@ -35,7 +75,7 @@
   background-color: var(--darkGray) !important;
 }
 
-.nav-link.bg-orange:hover {
+.nav-link.bg-primary:hover {
   background-color: var(--darkOrange) !important;
 }
 

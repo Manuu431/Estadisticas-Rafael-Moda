@@ -16,7 +16,7 @@ function SectionSummary({ sales }) {
             {groups.map(([key, label]) => (
                 <div className="col-12 col-md-4" key={key} data-cy={`summary-${key}`}>
                     <div className="card h-100">
-                        <h5 className="card-header bg-orange text-white">{label}</h5>
+                        <h5 className="card-header bg-primary text-white">{label}</h5>
                         <ul className="list-group list-group-flush">
                             {metrics.map((metric) => (
                                 <li className="list-group-item bg-light-gray d-flex justify-content-between" key={metric.key}>
