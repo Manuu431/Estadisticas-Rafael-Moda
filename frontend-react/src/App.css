@@ -82,21 +82,161 @@
 /**
  * LOGIN
  */
-.loginDiv {
-    width: 100% !important;
-    max-width: 30em !important;
+.login-page {
+    --bs-body-font-family: var(--rm-font);
+    --bs-body-color: var(--rm-ink);
+    --bs-body-color-rgb: var(--rm-ink-rgb);
+    --bs-body-bg: var(--rm-cream-light);
+    --bs-secondary-color: var(--rm-ink-2);
+    --bs-border-color: var(--rm-line-strong);
+    --bs-border-radius: var(--rm-radius);
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    font-family: var(--bs-body-font-family);
 }
 
-.password-toggle-icon {
-  cursor: pointer;
-  user-select: none;
-  font-size: 1.2rem;
-  color: black;
-  transition: color 0.3s ease;
+.login-brand {
+    flex: 0 0 44%;
+    max-width: 40rem;
+    color: var(--rm-ink);
 }
 
-.password-toggle-icon:hover {
-  color: var(--orange);
+.login-kicker {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.login-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 85%;
+    max-width: 33.75rem;
+    aspect-ratio: 826.6 / 636;
+    transform: translate(-50%, -57%);
+}
+
+.login-logo-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.login-logo-r {
+    animation: login-scale-in 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
+}
+
+.login-logo-rafael {
+    animation: login-write 1.3s cubic-bezier(0.5, 0, 0.2, 1) 0.5s both;
+}
+
+.login-logo-underline {
+    animation: login-write 0.7s ease 1.5s both;
+}
+
+.login-logo-moda {
+    animation: login-rise 0.6s ease 1.8s both;
+}
+
+.login-panel {
+    max-width: 25rem;
+    animation: login-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
+}
+
+.login-title {
+    font-family: var(--rm-font-display);
+    font-weight: 400;
+    font-size: 3rem;
+    line-height: 1.05;
+}
+
+.login-input {
+    height: 3rem;
+    font-size: 0.9375rem;
+}
+
+.login-input::placeholder {
+    color: var(--rm-placeholder);
+}
+
+.login-input:focus {
+    border-color: var(--rm-orange);
+    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+}
+
+.login-input.is-invalid {
+    background-image: none;
+}
+
+.login-toggle {
+    --bs-btn-color: var(--rm-ink-2);
+    --bs-btn-hover-color: var(--rm-orange-strong);
+    --bs-btn-active-color: var(--rm-orange-strong-hover);
+}
+
+.btn-brand,
+.btn-brand-outline {
+    --bs-btn-font-weight: 600;
+    height: 3.125rem;
+    font-size: 0.97rem;
+}
+
+.btn-brand {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--rm-orange-strong);
+    --bs-btn-border-color: var(--rm-orange-strong);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--rm-orange-strong-hover);
+    --bs-btn-hover-border-color: var(--rm-orange-strong-hover);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--rm-orange-strong-hover);
+    --bs-btn-active-border-color: var(--rm-orange-strong-hover);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--rm-orange-strong);
+    --bs-btn-disabled-border-color: var(--rm-orange-strong);
+    --bs-btn-focus-shadow-rgb: var(--rm-orange-rgb);
+}
+
+.btn-brand-outline {
+    --bs-btn-border-width: 1.5px;
+    --bs-btn-color: var(--rm-orange-ink);
+    --bs-btn-bg: var(--rm-surface);
+    --bs-btn-border-color: var(--rm-orange-border);
+    --bs-btn-hover-color: var(--rm-orange-ink);
+    --bs-btn-hover-bg: var(--rm-orange-tint-soft);
+    --bs-btn-hover-border-color: var(--rm-orange);
+    --bs-btn-active-color: var(--rm-orange-ink);
+    --bs-btn-active-bg: var(--rm-orange-tint);
+    --bs-btn-active-border-color: var(--rm-orange);
+    --bs-btn-disabled-color: var(--rm-orange-ink);
+    --bs-btn-disabled-bg: var(--rm-surface);
+    --bs-btn-disabled-border-color: var(--rm-orange-border);
+    --bs-btn-focus-shadow-rgb: var(--rm-orange-rgb);
+}
+
+@keyframes login-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes login-scale-in {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes login-write {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-page * {
+        animation: none !important;
+        transition: none !important;
+    }
 }
 
 /**

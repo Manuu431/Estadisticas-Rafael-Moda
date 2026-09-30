@@ -1,7 +1,8 @@
 const API_BASE = import.meta.env.VITE_API_URL;
 export const DATABASE_TABLES = {
     users: {
-        endpoint: `${API_BASE}/users`
+        endpoint: `${API_BASE}/users`,
+        endpointDemo: `${API_BASE}/users/demo`
     },
     sales: {
         endpoint: `${API_BASE}/sales`,
