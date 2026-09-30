@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Title from "../../components/Title.jsx";
-import ComparativeFilters from "./ComparativeFilters.jsx";
+import PeriodFilters from "../../components/PeriodFilters.jsx";
 import MainComparative from "./MainComparative.jsx";
 
 import {
@@ -39,7 +39,8 @@ function Comparative({ title, classCols }) {
   return (
     <>
         <Title title={title} />
-        <ComparativeFilters
+        <PeriodFilters
+            periods={2}
             filters={filters}
             setFilters={setFilters}
             handleSelectDateByChange={(inputId, value) =>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Title from '../../components/Title';
-import ExpensesFilters from './ExpensesFilters';
+import PeriodFilters from '../../components/PeriodFilters';
 import MainExpenses from './MainExpenses';
 
 import {
@@ -36,7 +36,8 @@ function Expenses({ title, classCols }) {
     return (
         <>
             <Title title={title} />
-            <ExpensesFilters
+            <PeriodFilters
+                periods={1}
                 filters={filters}
                 setFilters={setFilters}
                 handleSelectDateByChange={(inputId, value) =>
