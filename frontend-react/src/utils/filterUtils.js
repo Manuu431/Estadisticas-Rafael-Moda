@@ -1,8 +1,5 @@
-import axios from "axios";
-import qs from "qs";
-
-export const filterOptions = (response, inputId) => {
-    const uniqueOptions = [...new Set(response.data.map(item => item[inputId]))];
+export const filterOptions = (rows, inputId) => {
+    const uniqueOptions = [...new Set(rows.map(item => item[inputId]))];
 
     let sortedOptions;
     if (inputId === "size") {
@@ -39,28 +36,26 @@ export const handleTextInputChange = (e, setTextInputs) => {
     setTextInputs(prev => ({ ...prev, [id]: value }));
 };
 
-export const handleManualClear = async (
+export const handleManualClear = (
     setSelectedValues,
     setTextInputs,
     setRangeInputs,
     onFilterChange,
-    databaseTable,
-    setOptionsData
+    setOptionFilters
 ) => {
     setSelectedValues({});
     setTextInputs({});
     setRangeInputs({});
     onFilterChange({});
-    await updateMultiSelectOptions(databaseTable, {}, setOptionsData);
+    setOptionFilters({});
 };
 
-export const handleManualFilter = async (
+export const handleManualFilter = (
     selectedValues,
     textInputs,
     rangeInputs,
     onFilterChange,
-    databaseTable,
-    setOptionsData
+    setOptionFilters
 ) => {
     const flattenedRangeInputs = {};
     for (const key in rangeInputs) {
@@ -82,38 +77,18 @@ export const handleManualFilter = async (
     };
 
     onFilterChange(filters);
-    await updateMultiSelectOptions(databaseTable, filters, setOptionsData);
+    setOptionFilters(Object.fromEntries(Object.entries(filters).filter(([, value]) => value)));
 };
 
-export const updateMultiSelectOptions = async (
-    databaseTable,
-    filters,
-    setOptionsData
-) => {
-    try {
-        const queryParams = Object.fromEntries(
-            Object.entries(filters).filter(([, value]) => value)
-        );
-        
-        const response = await axios.get(databaseTable.endpoint, {
-            params: queryParams,
-            paramsSerializer: params => qs.stringify(params, { arrayFormat: "repeat" })
-        });
-
-        databaseTable.filters.inputId.forEach((inputId, index) => {
-            const inputType = databaseTable.filters.inputType[index];
-            if (inputType === "select") {
-                const uniqueOptions = filterOptions(response, inputId);
-                const options = uniqueOptions.map(value => ({
-                    value,
-                    label: value,
-                }));
-                setOptionsData(prev => ({ ...prev, [inputId]: options }));
-            }
-        });
-    } catch (error) {
-        console.error("Error loading options:", error.response ? error.response.data : error);
-    }
+export const buildSelectOptions = (rows, databaseTable) => {
+    const options = {};
+    if (!rows) return options;
+    databaseTable.filters.inputId.forEach((inputId, index) => {
+        if (databaseTable.filters.inputType[index] === "select") {
+            options[inputId] = filterOptions(rows, inputId).map(value => ({ value, label: value }));
+        }
+    });
+    return options;
 };
 
 export function updateSelectOptions(DATABASE_TABLE, setOptionsData) {

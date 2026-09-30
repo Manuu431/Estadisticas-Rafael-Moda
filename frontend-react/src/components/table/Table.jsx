@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { DATABASE_TABLES } from "../../config/database.js";
 import HeaderTable from '../HeaderTable.jsx';
 import Pagination from '../Pagination.jsx';
-import { getSortedData, serializeParams } from '../../utils/tableUtils.js';
+import { getSortedData } from '../../utils/tableUtils.js';
 import ModalComponent from '../ModalComponent.jsx';
 import { DesktopTable, MobileTable } from './componentsTable.jsx';
 import { useIsMobile } from '../../utils/useIsMobile.js'
-
+import { useFetch } from '../../hooks/useFetch.js';
+const itemsPerPage = 10;
 function Table({ type, filters = {}, external = null, setExternal }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -18,8 +19,8 @@ function Table({ type, filters = {}, external = null, setExternal }) {
     const [modalData, setModalData] = useState(null);
     const [modalMode, setModalMode] = useState('view');
 
-    const itemsPerPage = 10;
     const DATABASE_TABLE = DATABASE_TABLES[type];
+    const { data: fetched, refetch } = useFetch(DATABASE_TABLE.endpoint, filters);
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
     const haveHeader = type === "campaigns" || type === "seasons" || isCreateType;
     const types = { campaigns: "campañas", seasons: "temporadas", seasonTypes: "temporadas", campaignTypes: "campañas" };
@@ -30,30 +31,19 @@ function Table({ type, filters = {}, external = null, setExternal }) {
     const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
     const isMobile = useIsMobile();
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(DATABASE_TABLE.endpoint, {
-                params: filters,
-                paramsSerializer: serializeParams
-            });
-
-            let result = response.data;
-
-            if (isCreateType) {
-                result = result.map(item => ({
-                    ...item,
-                    start_date_formatted: `${item.start_day}/${item.start_month}`,
-                    end_date_formatted: `${item.end_day}/${item.end_month}`,
-                }));
-            }
-
-            setData(result);
-            setCurrentPage(1);
-            setTotalPages(Math.ceil(result.length / itemsPerPage));
-        } catch (error) {
-            console.error(`Error obtaining ${type} data:`, error.response ? error.response.data : error);
-        }
-    };
+    useEffect(() => {
+        if (!fetched) return;
+        const result = isCreateType
+            ? fetched.map(item => ({
+                ...item,
+                start_date_formatted: `${item.start_day}/${item.start_month}`,
+                end_date_formatted: `${item.end_day}/${item.end_month}`,
+            }))
+            : fetched;
+        setData(result);
+        setCurrentPage(1);
+        setTotalPages(Math.ceil(result.length / itemsPerPage));
+    }, [fetched, isCreateType]);
 
     const reloadTable = async () => {
         try {
@@ -66,8 +56,8 @@ function Table({ type, filters = {}, external = null, setExternal }) {
             }
 
             await axios.post(endpointType);
-            await fetchData();
-            
+            await refetch();
+
             alert(`Se han sincronizado los datos de las ${types[type]}.`);
         } catch (error) {
             console.error(`Error reloading ${type} data:`, error.response ? error.response.data : error);
@@ -76,26 +66,22 @@ function Table({ type, filters = {}, external = null, setExternal }) {
 
     const onRefreshTable = async() => {
         try {
-            await fetchData();
+            await refetch();
             alert('Tabla actualizada correctamente.');
         } catch (error) {
             console.error(`Error reloading ${type} data:`, error.response ? error.response.data : error);
         }
     }
 
-    useEffect(() => {
-        fetchData();
-    }, [DATABASE_TABLE.endpoint, filters]);
-
-    const openModal = ({ item, modalMode }) => {
+    const openModal = useCallback(({ item, modalMode }) => {
         setModalData(item);
         setModalMode(modalMode);
         setModalVisible(true);
-    };
+    }, []);
 
-    const handleVisualize = (item) => {
+    const handleVisualize = useCallback((item) => {
         openModal({ item, modalMode: 'view' });
-    };
+    }, [openModal]);
 
     const handleEdit = (item) => {
         openModal({ item, modalMode: 'edit' });
@@ -141,7 +127,7 @@ function Table({ type, filters = {}, external = null, setExternal }) {
                 handleVisualize(itemToOpen);
             }
         }
-    }, [external, data]);
+    }, [external, data, handleVisualize]);
 
     return (
         <>

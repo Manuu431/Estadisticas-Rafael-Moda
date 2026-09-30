@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DATABASE_TABLES } from "../config/database.js"
-
+import { useFetch } from "../hooks/useFetch.js";
 import { MultiSelectFilter, RangeFilter, TextInputFilter, FilterButton } from "./FiltersComponents.jsx";
 import {
     handleSelectChange,
@@ -8,19 +8,17 @@ import {
     handleTextInputChange,
     handleManualClear,
     handleManualFilter,
-    updateMultiSelectOptions
+    buildSelectOptions
 } from "../utils/filterUtils.js";
 
 function Filters({ type, onFilterChange, classCols }) {
     const DATABASE_TABLE = DATABASE_TABLES[type];
-    const [optionsData, setOptionsData] = useState({});
+    const [optionFilters, setOptionFilters] = useState({});
     const [selectedValues, setSelectedValues] = useState({});
     const [rangeInputs, setRangeInputs] = useState({});
     const [textInputs, setTextInputs] = useState({});
-
-    useEffect(() => {
-        updateMultiSelectOptions(DATABASE_TABLE, {}, setOptionsData);
-    }, [DATABASE_TABLE.endpoint]);
+    const { data: optionsSource } = useFetch(DATABASE_TABLE.endpoint, optionFilters);
+    const optionsData = useMemo(() => buildSelectOptions(optionsSource, DATABASE_TABLE), [optionsSource, DATABASE_TABLE]);
 
     return (
         <>
@@ -83,8 +81,7 @@ function Filters({ type, onFilterChange, classCols }) {
                             setTextInputs,
                             setRangeInputs,
                             onFilterChange,
-                            DATABASE_TABLE,
-                            setOptionsData
+                            setOptionFilters
                         )
                     }
                     iconClasses="bi bi-trash"
@@ -100,8 +97,7 @@ function Filters({ type, onFilterChange, classCols }) {
                             textInputs,
                             rangeInputs,
                             onFilterChange,
-                            DATABASE_TABLE,
-                            setOptionsData
+                            setOptionFilters
                         )
                     }
                     iconClasses="bi bi-funnel"
