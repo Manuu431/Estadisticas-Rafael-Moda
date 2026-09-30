@@ -85,6 +85,10 @@
     border-radius: 0.5em !important;
 }
 
+.react-select-container:focus-within {
+    z-index: 3 !important;
+}
+
 .react-select__multi-value {
     background-color: var(--gray) !important;
     border-radius: 0.25rem !important;
