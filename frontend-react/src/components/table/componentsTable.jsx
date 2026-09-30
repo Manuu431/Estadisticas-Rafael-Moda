@@ -1,4 +1,4 @@
-import { TableIconButton } from '../../utils/smallComponents.jsx';
+import { TableIconButton } from '../smallComponents.jsx';
 import { formatDate, handleSort, getSortIconClass } from '../../utils/tableUtils.js';
 
 export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete, sortConfig, setSortConfig }) {

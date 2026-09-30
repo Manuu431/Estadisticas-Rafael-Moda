@@ -1,4 +1,4 @@
-import { Button } from '../utils/smallComponents';
+import { Button } from './smallComponents';
 
 function HeaderTable({ onCreate, onRefresh, type, reloadTable }) {
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';

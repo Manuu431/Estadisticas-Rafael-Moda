@@ -1,4 +1,4 @@
-import { CustomStackedBarChart } from "../../utils/StatisticsComponents";
+import { CustomStackedBarChart } from "../../components/StatisticsComponents";
 
 function getMaxStackedValue(data, keys) {
   return Math.max(...data.map(item =>

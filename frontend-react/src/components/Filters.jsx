@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DATABASE_TABLES } from "../config/database.js"
 
-import { MultiSelectFilter, RangeFilter, TextInputFilter, FilterButton } from "../utils/FiltersComponents.jsx";
+import { MultiSelectFilter, RangeFilter, TextInputFilter, FilterButton } from "./FiltersComponents.jsx";
 import {
     handleSelectChange,
     handleRangeInputChange,

@@ -1,4 +1,4 @@
-import { ExpensesChart } from "../../utils/StatisticsComponents"
+import { ExpensesChart } from "../../components/StatisticsComponents"
 
 function MainExpenses({ allData, filters }) {
     const date = `${normalizeDate(filters.start_date) || "Elegir fecha"} - ${normalizeDate(filters.end_date) || "Elegir fecha"}`;

@@ -1,5 +1,5 @@
 import Select from 'react-select';
-import { Button } from '../utils/smallComponents';
+import { Button } from './smallComponents';
 
 export function MultiSelectFilter(props) {
     return (
