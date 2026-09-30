@@ -85,7 +85,7 @@ export function PieChart({ salesData, selectedMonth, groupBy }) {
     );
 }
 
-export function getOptions () {
+function getOptions () {
     const now = new Date();
     const options = [];
 
