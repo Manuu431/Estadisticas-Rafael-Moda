@@ -1,7 +1,7 @@
 const allowedTables = ['campaigns', 'seasons', 'season_types', 'campaign_types'];
 
 const allowedColumns = {
-  sales: ['id', 'model', 'family', 'color', 'size', 'brand', 'pvd', 'pvp', 'units', 'discount', 'profit', 'sale_date'],
+  sales: ['id', 'model', 'family', 'color', 'size', 'brand', 'pvd', 'pvp', 'units', 'discount', 'profit', 'sale_date', 'section'],
   clients: ['id', 'name', 'postal_code', 'province', 'city'],
   campaigns: ['id', 'name', 'start_date', 'end_date', 'expenses', 'profits', 'campaign_type_id'],
   seasons: ['id', 'name', 'start_date', 'end_date', 'expenses', 'profits', 'season_type_id'],
