@@ -25,4 +25,10 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { login };
+const enterDemo = (req, res) => {
+  if (process.env.DEMO_MODE !== 'true') return res.status(404).json({ error: 'Demo mode is disabled' });
+  const token = jwt.sign({ id: 0, email: 'demo', demo: true }, process.env.JWT_SECRET, { expiresIn: '12h' });
+  res.json({ token, user: { id: 0, username: 'Demo' } });
+};
+
+module.exports = { login, enterDemo };
