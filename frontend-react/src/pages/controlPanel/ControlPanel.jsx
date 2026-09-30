@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react';
 import {
-    PanelCard,
     MonthSummary,
     StackedBarChart,
     Select,
     GroupBySelector,
     PieChart,
-    SectionBreakdown,
     UpcomingCampaigns,
     CampaignButtons
 } from './ControlPanelComponents.jsx';
+import PanelCard from '../../components/PanelCard.jsx';
+import SectionBreakdown from '../../components/SectionBreakdown.jsx';
 import { getUniqueBrands, groupSalesByMonthAndBrand } from '../../utils/statisticsData.js';
 import { DATABASE_TABLES } from "../../config/database.js";
 import { useFetch } from '../../hooks/useFetch.js';

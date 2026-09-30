@@ -15,8 +15,8 @@ import {
 import { subMonths, startOfMonth, format, differenceInCalendarDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { groupSalesByFieldForMonth, summarizeBySection } from '../../utils/statisticsData';
-import { SECTION_LABELS } from '../../config/labels.js';
 import { GROUP_BY_OPTIONS } from '../../config/info.js';
+import { formatNumber, formatMoney, formatShare, barWidth } from '../../utils/format.js';
 
 const SERIES_COLORS = ['#DD6C10', '#1176A6', '#5E8C2A', '#4A3AA7', '#1E9E86', '#A3261B', '#B3308A'];
 const REST_COLOR = '#8C8178';
@@ -26,10 +26,6 @@ const GRID_COLOR = '#F2ECE5';
 const AXIS_COLOR = '#756D66';
 
 const seriesColor = (index) => SERIES_COLORS[index] ?? REST_COLOR;
-const formatNumber = (value) => value.toLocaleString('es-ES');
-const formatMoney = (cents) => `${(cents / 100).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
-const formatShare = (value, total) => `${(total > 0 ? (value / total) * 100 : 0).toLocaleString('es-ES', { maximumFractionDigits: 1 })} %`;
-const barWidth = (value, total) => ({ width: `${total > 0 ? (value / total) * 100 : 0}%` });
 
 function foldBrands(data, brands) {
   const totals = brands
@@ -89,20 +85,6 @@ function ChartLegend({ items }) {
   );
 }
 
-export function PanelCard({ title, note, action, children }) {
-  return (
-    <section className="panel-card h-100 d-flex flex-column gap-3">
-      <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-        <div className="d-flex flex-column">
-          <h2 className="panel-card-title m-0">{title}</h2>
-          {note ? <span className="panel-muted">{note}</span> : null}
-        </div>
-        {action}
-      </div>
-      {children}
-    </section>
-  );
-}
 
 export function StackedBarChart({ data, brands }) {
   const { series, rows } = useMemo(() => foldBrands(data, brands), [data, brands]);
@@ -196,61 +178,6 @@ export function PieChart({ salesData, selectedMonth, groupBy }) {
           ))}
         </ol>
       </div>
-    </div>
-  );
-}
-
-const SECTION_ROWS = [...Object.entries(SECTION_LABELS), ['total', 'Total']];
-
-const METRICS = [
-  { key: 'units', label: 'Prendas vendidas', format: (summary) => formatNumber(summary.units) },
-  { key: 'sales', label: 'Ventas', format: (summary) => formatNumber(summary.sales) },
-  { key: 'profit', label: 'Beneficio', format: (summary) => formatMoney(summary.profitCents) }
-];
-
-function BreakdownRow({ dataKey, label, summary, total, isTotal }) {
-  return (
-    <>
-      <span className={`d-flex flex-column gap-2 pt-3${isTotal ? ' panel-divider' : ''}`} data-cy={`summary-${dataKey}`}>
-        <span className="fw-semibold">{label}</span>
-        {isTotal ? null : (
-          <span className="panel-track">
-            <span className="panel-fill d-block" style={barWidth(summary.units, total.units)} />
-          </span>
-        )}
-      </span>
-      {METRICS.map((metric) => (
-        <span
-          className={`panel-stat text-end pt-3${isTotal ? ' panel-divider' : ''}`}
-          key={metric.key}
-          data-cy={`summary-${dataKey}-${metric.key}`}
-        >
-          {metric.format(summary)}
-        </span>
-      ))}
-    </>
-  );
-}
-
-export function SectionBreakdown({ sales }) {
-  const summary = useMemo(() => summarizeBySection(sales ?? []), [sales]);
-
-  return (
-    <div className="panel-breakdown">
-      <span className="panel-label">Sección</span>
-      {METRICS.map((metric) => (
-        <span className="panel-label text-end" key={metric.key}>{metric.label}</span>
-      ))}
-      {SECTION_ROWS.map(([key, label], index) => (
-        <BreakdownRow
-          key={key}
-          dataKey={key}
-          label={label}
-          summary={summary[key]}
-          total={summary.total}
-          isTotal={index === SECTION_ROWS.length - 1}
-        />
-      ))}
     </div>
   );
 }

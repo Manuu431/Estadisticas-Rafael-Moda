@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DATABASE_TABLES } from "../config/database.js"
 import { useFetch } from "../hooks/useFetch.js";
-import { MultiSelectFilter, RangeFilter, TextInputFilter, FilterButton } from "./FiltersComponents.jsx";
+import { MultiSelectFilter, RangeFilter, TextInputFilter, SectionSegments } from "./FiltersComponents.jsx";
 import {
     handleSelectChange,
     handleRangeInputChange,
@@ -11,100 +11,126 @@ import {
     buildSelectOptions
 } from "../utils/filterUtils.js";
 
-function Filters({ type, onFilterChange, classCols }) {
+function Filters({ type, onFilterChange }) {
     const DATABASE_TABLE = DATABASE_TABLES[type];
     const [optionFilters, setOptionFilters] = useState({});
     const [selectedValues, setSelectedValues] = useState({});
     const [rangeInputs, setRangeInputs] = useState({});
     const [textInputs, setTextInputs] = useState({});
+    const [showMore, setShowMore] = useState(false);
     const { data: optionsSource } = useFetch(DATABASE_TABLE.endpoint, optionFilters);
     const optionsData = useMemo(() => buildSelectOptions(optionsSource, DATABASE_TABLE), [optionsSource, DATABASE_TABLE]);
+    const { segment, primary = [] } = DATABASE_TABLE.filters;
+
+    const fields = DATABASE_TABLE.filters.label
+        .map((label, index) => ({
+            label,
+            inputId: DATABASE_TABLE.filters.inputId[index],
+            inputType: DATABASE_TABLE.filters.inputType[index]
+        }))
+        .filter((field) => field.inputId !== segment);
+    const primaryFields = fields.filter((field) => primary.includes(field.inputId));
+    const moreFields = fields.filter((field) => !primary.includes(field.inputId));
+
+    const renderField = (field) => {
+        if (field.inputType === "select") {
+            return (
+                <MultiSelectFilter
+                    inputId={field.inputId}
+                    label={field.label}
+                    optionsData={optionsData}
+                    selectedValues={selectedValues}
+                    handleSelectChange={(id, options) => handleSelectChange(id, options, setSelectedValues)}
+                />
+            );
+        }
+
+        if (field.inputType === "range") {
+            return (
+                <RangeFilter
+                    inputId={field.inputId}
+                    label={field.label}
+                    rangeInputs={rangeInputs}
+                    handleRangeInputChange={(id, values) => handleRangeInputChange(id, values, setRangeInputs)}
+                    minPrice={DATABASE_TABLE.tables.minPrice}
+                    maxPrice={DATABASE_TABLE.tables.maxPrice}
+                />
+            );
+        }
+
+        return (
+            <TextInputFilter
+                inputId={field.inputId}
+                label={field.label}
+                inputType={field.inputType}
+                textInputs={textInputs}
+                handleTextInputChange={(e) => handleTextInputChange(e, setTextInputs)}
+            />
+        );
+    };
 
     return (
-        <>
-            <div className="row bg-gray py-2">
-                {DATABASE_TABLE.filters.label.map((label, index) => {
-                    const inputId = DATABASE_TABLE.filters.inputId[index];
-                    const inputType = DATABASE_TABLE.filters.inputType[index];
-
-                    return (
-                        <div className={`${classCols} col-xl-4`} key={index}>
-                            <div className="mb-3 gap-3">
-                                {inputType === "select" ? (
-                                    <MultiSelectFilter
-                                        inputId={inputId}
-                                        label={label}
-                                        optionsData={optionsData}
-                                        selectedValues={selectedValues}
-                                        handleSelectChange={(id, options) =>
-                                            handleSelectChange(id, options, setSelectedValues)
-                                        }
-                                    />
-                                ) : inputType === "range" ? (
-                                    <RangeFilter
-                                        inputId={inputId}
-                                        label={label}
-                                        rangeInputs={rangeInputs}
-                                        handleRangeInputChange={(id, values) =>
-                                            handleRangeInputChange(id, values, setRangeInputs)
-                                        }
-                                        minPrice={DATABASE_TABLE.tables.minPrice}
-                                        maxPrice={DATABASE_TABLE.tables.maxPrice}
-                                    />
-                                ) : (
-                                    <TextInputFilter
-                                        inputId={inputId}
-                                        label={label}
-                                        inputType={inputType}
-                                        textInputs={textInputs}
-                                        handleTextInputChange={(e) =>
-                                            handleTextInputChange(e, setTextInputs)
-                                        }
-                                    />
-                                )}
+        <div className="d-flex flex-column gap-3">
+            <div className="filters-bar d-flex flex-wrap align-items-end">
+                {segment && (
+                    <SectionSegments
+                        inputId={segment}
+                        label={DATABASE_TABLE.filters.label[DATABASE_TABLE.filters.inputId.indexOf(segment)]}
+                        options={optionsData[segment] || []}
+                        selectedValues={selectedValues}
+                        handleSelectChange={(id, options) => handleSelectChange(id, options, setSelectedValues)}
+                    />
+                )}
+                {primaryFields.map((field) => (
+                    <div className="filters-field" key={field.inputId}>
+                        {renderField(field)}
+                    </div>
+                ))}
+                <div className="flex-grow-1 d-none d-xl-block" />
+                {moreFields.length > 0 && (
+                    <button
+                        type="button"
+                        className={`panel-btn${showMore ? ' is-open' : ''}`}
+                        aria-expanded={showMore}
+                        aria-controls="more-filters"
+                        onClick={() => setShowMore(!showMore)}
+                    >
+                        <i className="bi bi-sliders" aria-hidden="true" />
+                        Más filtros
+                        <i className="bi bi-chevron-down panel-chevron" aria-hidden="true" />
+                    </button>
+                )}
+                <button
+                    type="button"
+                    className="panel-ghost"
+                    onClick={() =>
+                        handleManualClear(setSelectedValues, setTextInputs, setRangeInputs, onFilterChange, setOptionFilters)
+                    }
+                >
+                    Limpiar
+                </button>
+                <button
+                    type="button"
+                    className="panel-primary"
+                    onClick={() =>
+                        handleManualFilter(selectedValues, textInputs, rangeInputs, onFilterChange, setOptionFilters)
+                    }
+                >
+                    Filtrar
+                </button>
+            </div>
+            {showMore && moreFields.length > 0 && (
+                <div className="filters-panel" id="more-filters">
+                    <div className="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                        {moreFields.map((field) => (
+                            <div className="col" key={field.inputId}>
+                                {renderField(field)}
                             </div>
-                        </div>
-                    );
-                })}
-            </div>
-
-            <div className='row bg-gray py-2'>
-                <div className="col-xl-4"></div>
-                <div className="col-xl-4"></div>
-                <FilterButton
-                    classCols={classCols}
-                    divClasses="justify-content-lg-start"
-                    buttonClasses="btn-secondary"
-                    onClickFunction={() =>
-                        handleManualClear(
-                            setSelectedValues,
-                            setTextInputs,
-                            setRangeInputs,
-                            onFilterChange,
-                            setOptionFilters
-                        )
-                    }
-                    iconClasses="bi bi-trash"
-                    text="Limpiar"
-                />
-                <FilterButton
-                    classCols={classCols}
-                    divClasses="justify-content-lg-end"
-                    buttonClasses="bg-primary"
-                    onClickFunction={() =>
-                        handleManualFilter(
-                            selectedValues,
-                            textInputs,
-                            rangeInputs,
-                            onFilterChange,
-                            setOptionFilters
-                        )
-                    }
-                    iconClasses="bi bi-funnel"
-                    text="Filtrar"
-                />
-            </div>
-        </>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 

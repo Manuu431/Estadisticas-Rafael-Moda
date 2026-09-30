@@ -1,16 +1,37 @@
 import Select from 'react-select';
 import { Button } from './smallComponents';
+import { SECTION_LABELS } from '../config/labels.js';
+
+const SECTION_OPTIONS = Object.entries(SECTION_LABELS).map(([value, label]) => ({ value, label }));
+
+export function SectionSegments({ inputId, label, options, selectedValues, handleSelectChange }) {
+    const selected = selectedValues[inputId] ?? [];
+    const current = selected.length === 1 ? selected[0] : '';
+    const pick = (value) => handleSelectChange(inputId, value ? [{ value }] : []);
+    const known = options.filter((option) => option.value);
+    const segments = [{ value: '', label: 'Todo' }, ...(known.length > 0 ? known : SECTION_OPTIONS)];
+
+    return (
+        <div className="panel-segs d-inline-flex" role="group" aria-label={label}>
+            {segments.map((segment) => (
+                <button
+                    key={segment.value || 'all'}
+                    type="button"
+                    className={`panel-seg${segment.value === current ? ' is-on' : ''}`}
+                    aria-pressed={segment.value === current}
+                    onClick={() => pick(segment.value)}
+                >
+                    {segment.label}
+                </button>
+            ))}
+        </div>
+    );
+}
 
 export function MultiSelectFilter(props) {
     return (
-        <div className="position-relative m-3">
-            <label
-                className="position-absolute top-0 start-0 ms-3 mt-1 text-secondary small"
-                htmlFor={props.inputId}
-                style={{ zIndex: 2 }}
-            >
-                {props.label}
-            </label>
+        <div className="d-flex flex-column gap-2">
+            <label className="filters-label" htmlFor={props.inputId}>{props.label}</label>
             <Select
                 isMulti
                 inputId={props.inputId}
@@ -18,7 +39,8 @@ export function MultiSelectFilter(props) {
                 options={props.optionsData[props.inputId] || []}
                 classNamePrefix="react-select"
                 className="react-select-container z-2"
-                placeholder={`Seleccionar ${props.label.toLowerCase()}`}
+                placeholder="Todas"
+                noOptionsMessage={() => 'Sin opciones'}
                 value={(props.optionsData[props.inputId] || []).filter(option =>
                     props.selectedValues[props.inputId]?.includes(option.value)
                 )}
@@ -31,7 +53,6 @@ export function MultiSelectFilter(props) {
 export function RangeFilter(props) {
     const minValue = props.minPrice || 0;
     const maxValue = props.maxPrice || 999999;
-
     const currentMin = props.rangeInputs[props.inputId]?.min ?? "";
     const currentMax = props.rangeInputs[props.inputId]?.max ?? "";
 
@@ -44,28 +65,28 @@ export function RangeFilter(props) {
         props.handleRangeInputChange(props.inputId, [updatedValues.min, updatedValues.max]);
     };
 
-    const createRangeForm = (formProps) => (
-        <div className="form-floating w-100">
+    const createRangeInput = (name, value, placeholder, ariaLabel) => (
+        <span className="panel-field flex-grow-1">
             <input
                 type="number"
-                name={formProps.name}
-                id={`${props.inputId}-${formProps.name}`}
-                className="form-control"
-                placeholder={formProps.label}
-                value={formProps.value}
+                name={name}
+                id={`${props.inputId}-${name}`}
+                placeholder={placeholder}
+                aria-label={ariaLabel}
+                value={value}
                 onChange={handleChange}
                 min={minValue}
                 max={maxValue}
             />
-            <label className="z-0" htmlFor={`${props.inputId}-${formProps.name}`}>{formProps.label}</label>
-        </div>
+        </span>
     );
 
     return (
-        <div className="m-3">
+        <div className="d-flex flex-column gap-2">
+            <span className="filters-label">{props.label}</span>
             <div className="d-flex gap-2">
-                {createRangeForm({ name: "min", value: currentMin, label: `Mín ${props.label.toLowerCase()}` })}
-                {createRangeForm({ name: "max", value: currentMax, label: `Máx ${props.label.toLowerCase()}` })}
+                {createRangeInput("min", currentMin, "Desde", `${props.label} desde`)}
+                {createRangeInput("max", currentMax, "Hasta", `${props.label} hasta`)}
             </div>
         </div>
     );
@@ -73,17 +94,18 @@ export function RangeFilter(props) {
 
 export function TextInputFilter(props) {
     return (
-        <div className="form-floating m-3">
-            <input
-                type={props.inputType}
-                id={props.inputId}
-                name={props.inputId}
-                className="form-control"
-                placeholder={props.label}
-                value={props.textInputs[props.inputId] || ""}
-                onChange={props.handleTextInputChange}
-            />
-            <label className="z-0" htmlFor={props.inputId}>{props.label}</label>
+        <div className="d-flex flex-column gap-2">
+            <label className="filters-label" htmlFor={props.inputId}>{props.label}</label>
+            <span className="panel-field">
+                <input
+                    type={props.inputType}
+                    id={props.inputId}
+                    name={props.inputId}
+                    placeholder={props.label}
+                    value={props.textInputs[props.inputId] || ""}
+                    onChange={props.handleTextInputChange}
+                />
+            </span>
         </div>
     );
 }

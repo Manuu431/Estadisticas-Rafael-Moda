@@ -12,6 +12,8 @@ export const DATABASE_TABLES = {
         },
         filters: {
             label: ["ID", "Sección", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio"],
+            segment: "section",
+            primary: ["brand", "family"],
             inputId: ["id", "section", "family", "size", "brand", "pvd", "pvp", "discount", "profit"],
             inputType: ["text", "select", "select", "select", "select", "range", "range", "range", "range"]
         }
@@ -24,6 +26,7 @@ export const DATABASE_TABLES = {
         },
         filters: {
             label: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
+            primary: ["name", "province"],
             inputId: ["id", "name", "postal_code", "province", "city"],
             inputType: ["text", "text", "text", "select", "select"]
         }
@@ -36,6 +39,7 @@ export const DATABASE_TABLES = {
         },
         filters: {
             label: ["ID", "Nombre", "Fecha de Inicio", "Fecha de Fin", "Gastos", "Beneficios"],
+            primary: ["name", "start_date"],
             inputId: ["id", "name", "start_date", "end_date", "expenses", "profits"],
             inputType: ["text", "text", "date", "date", "range", "range"]
         }
@@ -48,6 +52,7 @@ export const DATABASE_TABLES = {
         },
         filters: {
             label: ["ID", "Nombre", "Fecha de inicio", "Fecha de fin", "Gastos", "Beneficios"],
+            primary: ["name", "start_date"],
             inputId: ["id", "name", "start_date", "end_date", "expenses", "profits"],
             inputType: ["text", "text", "date", "date", "range", "range"]
         }
@@ -61,6 +66,7 @@ export const DATABASE_TABLES = {
         },
         filters: {
             label: ["ID", "Nombre", "Año de inicio"],
+            primary: ["name", "start_year"],
             inputId: ["id", "name", "start_year"],
             inputType: ["text", "text", "select"]
         }
@@ -74,6 +80,7 @@ export const DATABASE_TABLES = {
         },
         filters: {
             label: ["ID", "Nombre", "Año de inicio"],
+            primary: ["name", "start_year"],
             inputId: ["id", "name", "start_year"],
             inputType: ["text", "text", "select"]
         }

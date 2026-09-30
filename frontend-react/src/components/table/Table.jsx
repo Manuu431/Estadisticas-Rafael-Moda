@@ -9,6 +9,7 @@ import { DesktopTable, MobileTable } from './componentsTable.jsx';
 import { useIsMobile } from '../../utils/useIsMobile.js'
 import { useFetch } from '../../hooks/useFetch.js';
 const itemsPerPage = 10;
+const ITEM_LABELS = { sales: 'líneas', clients: 'clientes', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
 function Table({ type, filters = {}, external = null, setExternal }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -131,38 +132,41 @@ function Table({ type, filters = {}, external = null, setExternal }) {
 
     return (
         <>
-            {haveHeader && <HeaderTable onCreate={handleCreate} onRefresh={onRefreshTable} type={type} reloadTable={reloadTable} />}
-            <div className={`row ${!haveHeader ? 'mt-3' : ''}`}>
-                <div className="col-12">
-                    <div className={`${!haveHeader ? 'rounded-top-3 overflow-hidden' : ''}`}>
-                        {isMobile ? (
-                            <MobileTable
-                                data={currentData}
-                                DATABASE_TABLE={DATABASE_TABLE}
-                                type={type}
-                                isCreateType={isCreateType}
-                                handleVisualize={handleVisualize}
-                                handleEdit={handleEdit}
-                                handleDelete={handleDelete}
-                            />
-                        ) : (
-                            <DesktopTable
-                                data={currentData}
-                                DATABASE_TABLE={DATABASE_TABLE}
-                                type={type}
-                                isCreateType={isCreateType}
-                                handleVisualize={handleVisualize}
-                                handleEdit={handleEdit}
-                                handleDelete={handleDelete}
-                                sortConfig={sortConfig}
-                                setSortConfig={setSortConfig}
-                            />
-                        )}
-                    </div>
+            <div className="d-flex flex-column gap-3">
+                {haveHeader && <HeaderTable onCreate={handleCreate} onRefresh={onRefreshTable} type={type} reloadTable={reloadTable} />}
+                <div className="data-card">
+                    {currentData.length === 0 ? (
+                        <p className="data-empty text-center m-0">No hay resultados con estos filtros.</p>
+                    ) : isMobile ? (
+                        <MobileTable
+                            data={currentData}
+                            DATABASE_TABLE={DATABASE_TABLE}
+                            type={type}
+                            isCreateType={isCreateType}
+                            handleVisualize={handleVisualize}
+                            handleEdit={handleEdit}
+                            handleDelete={handleDelete}
+                        />
+                    ) : (
+                        <DesktopTable
+                            data={currentData}
+                            DATABASE_TABLE={DATABASE_TABLE}
+                            type={type}
+                            isCreateType={isCreateType}
+                            handleVisualize={handleVisualize}
+                            handleEdit={handleEdit}
+                            handleDelete={handleDelete}
+                            sortConfig={sortConfig}
+                            setSortConfig={setSortConfig}
+                        />
+                    )}
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={setCurrentPage}
+                        totalItems={sortedData.length}
+                        pageSize={itemsPerPage}
+                        itemLabel={ITEM_LABELS[type] ?? 'registros'}
                     />
                 </div>
             </div>
