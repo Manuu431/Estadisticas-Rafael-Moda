@@ -1,11 +1,11 @@
 const express = require('express');
-const { getAll, create, update, remove, syncType } = require('../controllers/crudController');
+const { listTypes, createType, updateType, removeType, syncTypes } = require('../controllers/periodController');
 
 const router = express.Router();
-router.get('/', getAll('campaign_types'));
-router.post('/', create('campaign_types'));
-router.post('/sync', syncType({ typeTable: 'campaign_types', targetTable: 'campaigns', foreignKey: 'campaign_type_id' }));
-router.put('/:id', update('campaign_types'));
-router.delete('/:id', remove('campaign_types'));
+router.get('/', listTypes('campaign'));
+router.post('/', createType('campaign'));
+router.post('/sync', syncTypes('campaign'));
+router.put('/:id', updateType('campaign'));
+router.delete('/:id', removeType('campaign'));
 
 module.exports = router;

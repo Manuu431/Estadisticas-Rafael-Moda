@@ -1,10 +1,10 @@
 const express = require('express');
-const { getAll, create, update, remove } = require('../controllers/crudController');
+const { listPeriods, createPeriod, updatePeriod, removePeriod } = require('../controllers/periodController');
 
 const router = express.Router();
-router.get('/', getAll('seasons'));
-router.post('/', create('seasons'));
-router.put('/:id', update('seasons'));
-router.delete('/:id', remove('seasons'));
+router.get('/', listPeriods('season'));
+router.post('/', createPeriod('season'));
+router.put('/:id', updatePeriod('season'));
+router.delete('/:id', removePeriod('season'));
 
 module.exports = router;

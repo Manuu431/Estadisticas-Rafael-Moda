@@ -1,18 +1,25 @@
-const allowedTables = ['campaigns', 'seasons', 'season_types', 'campaign_types'];
-
-const allowedColumns = {
-  sales: ['id', 'model', 'family', 'color', 'size', 'brand', 'pvd', 'pvp', 'units', 'discount', 'profit', 'sale_date', 'section'],
-  clients: ['id', 'name', 'postal_code', 'province', 'city'],
-  campaigns: ['id', 'name', 'start_date', 'end_date', 'expenses', 'profits', 'campaign_type_id'],
-  seasons: ['id', 'name', 'start_date', 'end_date', 'expenses', 'profits', 'season_type_id'],
-  season_types: ['id', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year'],
-  campaign_types: ['id', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year']
+const sources = {
+  sales: 'v_sales',
+  clients: 'clients',
+  brands: 'brands',
+  families: 'families',
+  products: 'products'
 };
 
-const numericColumns = ['id', 'pvd', 'pvp', 'units', 'discount', 'profit', 'expenses', 'profits', 'campaign_type_id', 'season_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'start_year'];
+const allowedColumns = {
+  sales: ['id', 'ticket_id', 'sold_at', 'sale_date', 'product_id', 'product', 'color', 'section', 'brand', 'family', 'family_category', 'size', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit'],
+  clients: ['id', 'name', 'postal_code', 'province', 'city'],
+  brands: ['id', 'name'],
+  families: ['id', 'name', 'category'],
+  products: ['id', 'name', 'brand_id', 'family_id', 'section', 'color'],
+  periods: ['id', 'period_type_id', 'start_date', 'end_date', 'expenses'],
+  period_types: ['id', 'kind', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats']
+};
 
-const filterColumns = (data, endpoint) => {
-  const columns = allowedColumns[endpoint] || [];
+const numericColumns = ['id', 'ticket_id', 'product_id', 'brand_id', 'family_id', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit', 'expenses', 'period_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats'];
+
+const filterColumns = (data, resource) => {
+  const columns = allowedColumns[resource] || [];
   const filtered = {};
   for (const key in data) {
     if (key !== 'id' && columns.includes(key)) filtered[key] = data[key];
@@ -24,7 +31,7 @@ const normalizeDecimalFields = (data, fields) => {
   const newData = { ...data };
   fields.forEach((field) => {
     if (newData[field] === '' || newData[field] === undefined || newData[field] === null) {
-      newData[field] = null;
+      newData[field] = 0;
     } else {
       newData[field] = parseFloat(newData[field]);
     }
@@ -32,4 +39,4 @@ const normalizeDecimalFields = (data, fields) => {
   return newData;
 };
 
-module.exports = { allowedTables, allowedColumns, numericColumns, filterColumns, normalizeDecimalFields };
+module.exports = { sources, allowedColumns, numericColumns, filterColumns, normalizeDecimalFields };
