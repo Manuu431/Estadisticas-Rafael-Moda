@@ -1,5 +1,6 @@
 import { TableIconButton } from '../smallComponents.jsx';
 import { formatDate, handleSort, getSortIconClass } from '../../utils/tableUtils.js';
+import { getValueLabel } from '../../config/labels.js';
 
 export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete, sortConfig, setSortConfig }) {
     return (
@@ -31,7 +32,7 @@ export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleV
                 {data.map((item, index) => (
                     <tr className="text-center" key={index}>
                         {DATABASE_TABLE.tables.values.map((columnKey, colIndex) => {
-                            let value = item[columnKey];
+                            let value = getValueLabel(columnKey, item[columnKey]);
                             if (!isCreateType && columnKey.toLowerCase().includes("date") && value) {
                                 value = formatDate(value);
                             }
@@ -107,7 +108,7 @@ export function MobileTable({ data, DATABASE_TABLE, type, isCreateType, handleVi
                 <div key={index} className="border p-3 rounded shadow-sm bg-light">
                     {DATABASE_TABLE.tables.values.map((key, i) => (
                         <div key={i} className="mb-1">
-                            <span className='ms-3 fw-bold'>{DATABASE_TABLE.tables.columns[i]}: </span>{item[key]}
+                            <span className='ms-3 fw-bold'>{DATABASE_TABLE.tables.columns[i]}: </span>{getValueLabel(key, item[key])}
                         </div>
                     ))}
                     {(type === "campaigns" || type === "seasons") && (

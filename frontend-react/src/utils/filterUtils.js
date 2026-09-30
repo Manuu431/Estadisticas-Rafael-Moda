@@ -1,3 +1,5 @@
+import { getValueLabel } from "../config/labels.js";
+
 export const filterOptions = (rows, inputId) => {
     const uniqueOptions = [...new Set(rows.map(item => item[inputId]))];
 
@@ -85,7 +87,7 @@ export const buildSelectOptions = (rows, databaseTable) => {
     if (!rows) return options;
     databaseTable.filters.inputId.forEach((inputId, index) => {
         if (databaseTable.filters.inputType[index] === "select") {
-            options[inputId] = filterOptions(rows, inputId).map(value => ({ value, label: value }));
+            options[inputId] = filterOptions(rows, inputId).map(value => ({ value, label: getValueLabel(inputId, value) }));
         }
     });
     return options;

@@ -6,13 +6,13 @@ export const DATABASE_TABLES = {
     sales: {
         endpoint: `${API_BASE}/sales`,
         tables: {
-            columns: ["ID", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio", "Unidades"],
-            values: ["id", "family", "size", "brand", "pvd", "pvp", "discount", "profit", "units"],
+            columns: ["ID", "Sección", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio", "Unidades"],
+            values: ["id", "section", "family", "size", "brand", "pvd", "pvp", "discount", "profit", "units"],
         },
         filters: {
-            label: ["ID", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio"],
-            inputId: ["id", "family", "size", "brand", "pvd", "pvp", "discount", "profit"],
-            inputType: ["text", "select", "select", "select", "range", "range", "range", "range"]
+            label: ["ID", "Sección", "Familia", "Talla", "Marca", "PVD", "PVP", "Descuento", "Beneficio"],
+            inputId: ["id", "section", "family", "size", "brand", "pvd", "pvp", "discount", "profit"],
+            inputType: ["text", "select", "select", "select", "select", "range", "range", "range", "range"]
         }
     },
     clients: {
@@ -91,6 +91,7 @@ export const DATABASE_TABLES = {
                 ],
                 groupBy: [
                     { label: "Ninguno", value: "none" },
+                    { label: "Sección", value: "section" },
                     { label: "Familia", value: "family" },
                     { label: "Marca", value: "brand" },
                     { label: "Color", value: "color" },
