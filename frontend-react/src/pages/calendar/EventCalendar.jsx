@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import { Calendar as BigCalendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useNavigate } from 'react-router-dom';
-import { CustomToolbar } from './CustomToolBar.jsx';
+import { buildEvents, openItem } from './calendarEvents.js';
 
 const locales = { es };
 
@@ -15,95 +16,45 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
-function EventCalendar({ campaigns = [], seasons = [] }) {
+const eventPropGetter = (event) => ({ className: event.type === 'season' ? 'is-season' : '' });
+
+const dayPropGetter = (date) => {
+    const day = getDay(date);
+    return day === 0 || day === 6 ? { className: 'is-weekend' } : {};
+};
+
+const messages = {
+    showMore: (count) => `+${count} más`,
+    noEventsInRange: 'No hay campañas ni cambios de temporada este mes.',
+};
+
+const formats = {
+    dateFormat: 'd',
+    weekdayFormat: (date, culture, localizerInstance) => localizerInstance.format(date, 'EEE', culture),
+};
+
+function EventCalendar({ campaigns = [], seasons = [], date, onNavigate }) {
     const navigate = useNavigate();
-
-    const handleClick = (event) => {
-        localStorage.setItem(
-            'temporalItem',
-            JSON.stringify(event.original)
-        );
-        navigate(event.type === 'campaign' ? '/campañas' : '/temporadas');
-    };
-
-    const events = [];
-
-    campaigns.forEach((c) => {
-        events.push({
-            title: `🎯${c.name}`,
-            start: new Date(c.start_date),
-            end: new Date(c.end_date),
-            type: 'campaign',
-            original: c,
-        });
-    });
-
-    seasons.forEach((s) => {
-        events.push({
-            title: `📅Inicio: ${s.name}`,
-            start: new Date(s.start_date),
-            end: new Date(s.start_date),
-            type: 'season',
-            original: s,
-        });
-        events.push({
-            title: `📅Fin: ${s.name}`,
-            start: new Date(s.end_date),
-            end: new Date(s.end_date),
-            type: 'season',
-            original: s,
-        });
-    });
-
-    const getColorFromName = (name) => {
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) {
-            hash = name.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const color = `hsl(${hash % 360}, 70%, 50%)`;
-        return color;
-    };
-
-    const getTextColor = (bgColor) => {
-        const hsl = bgColor.match(/\d+/g);
-        const lightness = parseInt(hsl[2], 10);
-        return lightness > 60 ? 'black' : 'white';
-    };
-
-    const eventPropGetter = (event) => {
-        const backgroundColor = getColorFromName(event.original.name);
-        const color = getTextColor(backgroundColor);
-        return {
-            style: {
-                backgroundColor,
-                color,
-                borderRadius: '0.5em',
-                padding: '0.5em 0.75em',
-                fontSize: '1em',
-                border: `1px solid black`
-            }
-        };
-    };
+    const events = useMemo(() => buildEvents(campaigns, seasons), [campaigns, seasons]);
 
     return (
-        <div className="row px-2 py-3" style={{ height: '56em', width: '100%' }}>
+        <div className="data-card calendar-card">
             <BigCalendar
                 localizer={localizer}
+                culture="es"
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: '100%' }}
-                onSelectEvent={handleClick}
+                date={date}
+                onNavigate={onNavigate}
+                toolbar={false}
+                popup
                 views={['month']}
-                components={{ toolbar: CustomToolbar }}
-                messages={{
-                    month: 'Mes',
-                    day: 'Día',
-                    today: 'Hoy',
-                    previous: 'Anterior',
-                    next: 'Siguiente',
-                }}
+                onSelectEvent={(event) => openItem(navigate, event)}
                 eventPropGetter={eventPropGetter}
+                dayPropGetter={dayPropGetter}
+                messages={messages}
+                formats={formats}
             />
         </div>
     );

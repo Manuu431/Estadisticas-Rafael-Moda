@@ -1,27 +1,33 @@
-import { format, isSameMonth  } from 'date-fns';
+import { addMonths, subMonths, startOfMonth, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
+const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
-export function CustomToolbar({ onNavigate, date }) {
-    const today = new Date();
-
-    const isCurrentMonth = isSameMonth(date, today);
-
-    const formatted = isCurrentMonth
-        ? capitalize(format(date, "EEEE, dd 'de' MMMM yyyy", { locale: es }))
-        : capitalize(format(date, "MMMM yyyy", { locale: es }));
-
+export function CustomToolbar({ date, onNavigate }) {
     return (
-        <div className="rbc-toolbar">
-            <span className="rbc-btn-group">
-                <button onClick={() => onNavigate('PREV')}>Anterior</button>
-                <button onClick={() => onNavigate('TODAY')}>Hoy</button>
-                <button onClick={() => onNavigate('NEXT')}>Siguiente</button>
+        <div className="d-flex align-items-center gap-2">
+            <button type="button" className="panel-btn" onClick={() => onNavigate(startOfMonth(new Date()))}>
+                Hoy
+            </button>
+            <button
+                type="button"
+                className="calendar-arrow"
+                onClick={() => onNavigate(subMonths(date, 1))}
+                aria-label="Mes anterior"
+            >
+                <i className="bi bi-chevron-left" aria-hidden="true" />
+            </button>
+            <span className="calendar-title text-center" aria-live="polite">
+                {capitalize(format(date, 'MMMM yyyy', { locale: es }))}
             </span>
-            <span className="rbc-toolbar-label">{formatted}</span>
+            <button
+                type="button"
+                className="calendar-arrow"
+                onClick={() => onNavigate(addMonths(date, 1))}
+                aria-label="Mes siguiente"
+            >
+                <i className="bi bi-chevron-right" aria-hidden="true" />
+            </button>
         </div>
     );
 }
