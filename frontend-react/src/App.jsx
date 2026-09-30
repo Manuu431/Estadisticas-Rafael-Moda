@@ -25,8 +25,8 @@ function App() {
                             <Layout>
                                 <Routes>
                                 <Route path="/" element={<ControlPanel title="Panel de control" />} />
-                                <Route path="/ventas" element={<Sales title="Ventas" classCols={classFilterCols} />} />
-                                <Route path="/clientes" element={<Clients title="Clientes" classCols={classFilterCols} />} />
+                                <Route path="/ventas" element={<Sales title="Ventas" />} />
+                                <Route path="/clientes" element={<Clients title="Clientes" />} />
                                 <Route path="/comparativa" element={<Comparative title="Comparativa" classCols={classFilterCols} />} />
                                 <Route path="/calendario" element={<Calendar title="Calendario" />} />
                                 <Route path="/planificacion" element={<Planning title="Campañas y temporadas" />} />

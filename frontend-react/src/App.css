@@ -40,6 +40,22 @@
     --rm-radius-sm: 10px;
     --rm-radius: 12px;
     --rm-radius-lg: 18px;
+    --rm-on-accent: #FFFFFF;
+    --rm-nav-hover: rgba(255, 255, 255, .65);
+    --rm-shadow-raised: 0 1px 2px rgba(60, 40, 20, .08), 0 2px 8px rgba(60, 40, 20, .06);
+    --rm-text-xs: 0.75rem;
+    --rm-text-sm: 0.8125rem;
+    --rm-text-md: 0.875rem;
+    --rm-text-lg: 0.9375rem;
+    --rm-text-base: 1rem;
+    --rm-text-icon: 1.0625rem;
+    --rm-text-xl: 1.25rem;
+    --rm-display-2xs: 1.5rem;
+    --rm-display-xs: 1.75rem;
+    --rm-display-sm: 2.25rem;
+    --rm-display-md: 2.5rem;
+    --rm-display-lg: 2.875rem;
+    --rm-display-xl: 3.25rem;
     --rm-font: 'Figtree', system-ui, sans-serif;
     --rm-font-display: 'Instrument Serif', Georgia, serif;
     --bs-primary: var(--rm-orange);
@@ -50,32 +66,11 @@
  * LEGACY COLORS
  */
 :root {
-    --orange: var(--rm-orange);
-    --darkOrange: #b15f01;
     --gray: #aaaaaa;
-    --darkGray: #858383;
-    --lightGray: #e0dede;
-    --hoverGray: #d0d0d0;
-}
-
-.border-orange {
-    border-color: var(--orange) !important;
 }
 
 .bg-gray {
     background-color: var(--gray) !important;
-}
-
-.bg-dark-gray {
-    background-color: var(--darkGray) !important;
-}
-
-.color-dark-gray {
-    color: var(--darkGray) !important;
-}
-
-.bg-light-gray {
-    background-color: var(--lightGray) !important;
 }
 
 /**
@@ -101,7 +96,7 @@
 }
 
 .login-kicker {
-    font-size: 0.8125rem;
+    font-size: var(--rm-text-sm);
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -148,13 +143,13 @@
 .login-title {
     font-family: var(--rm-font-display);
     font-weight: 400;
-    font-size: 3rem;
+    font-size: var(--rm-display-lg);
     line-height: 1.05;
 }
 
 .login-input {
     height: 3rem;
-    font-size: 0.9375rem;
+    font-size: var(--rm-text-lg);
 }
 
 .login-input::placeholder {
@@ -180,20 +175,20 @@
 .btn-brand-outline {
     --bs-btn-font-weight: 600;
     height: 3.125rem;
-    font-size: 0.97rem;
+    font-size: var(--rm-text-lg);
 }
 
 .btn-brand {
-    --bs-btn-color: #fff;
+    --bs-btn-color: var(--rm-on-accent);
     --bs-btn-bg: var(--rm-orange-strong);
     --bs-btn-border-color: var(--rm-orange-strong);
-    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-color: var(--rm-on-accent);
     --bs-btn-hover-bg: var(--rm-orange-strong-hover);
     --bs-btn-hover-border-color: var(--rm-orange-strong-hover);
-    --bs-btn-active-color: #fff;
+    --bs-btn-active-color: var(--rm-on-accent);
     --bs-btn-active-bg: var(--rm-orange-strong-hover);
     --bs-btn-active-border-color: var(--rm-orange-strong-hover);
-    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-color: var(--rm-on-accent);
     --bs-btn-disabled-bg: var(--rm-orange-strong);
     --bs-btn-disabled-border-color: var(--rm-orange-strong);
     --bs-btn-focus-shadow-rgb: var(--rm-orange-rgb);
@@ -299,7 +294,7 @@
 }
 
 .app-nav-group {
-    font-size: 0.72rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -312,13 +307,13 @@
     padding: 0.5rem 0.75rem;
     border-radius: var(--rm-radius-sm);
     color: var(--rm-nav);
-    font-size: 0.9rem;
+    font-size: var(--rm-text-md);
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .app-nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.65);
+    background-color: var(--rm-nav-hover);
     color: var(--rm-ink);
 }
 
@@ -326,7 +321,7 @@
     background-color: var(--rm-surface);
     color: var(--rm-ink);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgba(60, 40, 20, 0.06), 0 4px 14px rgba(60, 40, 20, 0.05);
+    box-shadow: var(--rm-shadow-raised);
 }
 
 .app-nav-link.is-active i {
@@ -334,7 +329,7 @@
 }
 
 .app-nav-link i {
-    font-size: 1.05rem;
+    font-size: var(--rm-text-icon);
     line-height: 1;
 }
 
@@ -343,11 +338,11 @@
     border: 1px solid var(--rm-line);
     border-radius: 0.875rem;
     background-color: var(--rm-surface);
-    font-size: 0.85rem;
+    font-size: var(--rm-text-sm);
 }
 
 .app-session-note {
-    font-size: 0.75rem;
+    font-size: var(--rm-text-xs);
     color: var(--rm-ink-2);
 }
 
@@ -357,7 +352,7 @@
     border-radius: 50%;
     background-color: var(--rm-orange-tint);
     color: var(--rm-orange-ink);
-    font-size: 0.78rem;
+    font-size: var(--rm-text-xs);
     font-weight: 700;
 }
 
@@ -414,7 +409,7 @@
 }
 
 .filters-label {
-    font-size: 0.78rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     color: var(--rm-nav);
 }
@@ -429,7 +424,7 @@
     background-color: var(--rm-surface);
     border: 1px solid var(--rm-line-strong);
     color: var(--rm-ink-2);
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
 }
 
 .panel-field:focus-within {
@@ -442,7 +437,7 @@
     outline: 0;
     background-color: transparent;
     color: var(--rm-ink);
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
     min-width: 0;
     flex-grow: 1;
 }
@@ -460,7 +455,7 @@
     border-radius: var(--rm-radius);
     background-color: var(--rm-surface);
     border: 1px solid var(--rm-line-strong);
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
     font-weight: 600;
     color: var(--rm-ink);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
@@ -490,14 +485,14 @@
     padding: 0 1.125rem;
     border: 0;
     border-radius: var(--rm-radius);
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
     font-weight: 600;
     transition: background-color 0.2s ease;
 }
 
 .panel-primary {
     background-color: var(--rm-orange-strong);
-    color: #fff;
+    color: var(--rm-on-accent);
 }
 
 .panel-primary:hover {
@@ -528,7 +523,7 @@
     border-radius: var(--rm-radius) !important;
     background-color: var(--rm-surface) !important;
     box-shadow: none !important;
-    font-size: 0.875rem !important;
+    font-size: var(--rm-text-md) !important;
 }
 
 .react-select__control--is-focused {
@@ -557,7 +552,7 @@
     border: 1px solid var(--rm-line) !important;
     border-radius: var(--rm-radius) !important;
     box-shadow: var(--rm-shadow) !important;
-    font-size: 0.875rem !important;
+    font-size: var(--rm-text-md) !important;
     overflow: hidden !important;
 }
 
@@ -567,7 +562,7 @@
 
 .react-select__option--is-selected {
     background-color: var(--rm-orange) !important;
-    color: #fff !important;
+    color: var(--rm-on-accent) !important;
 }
 
 @keyframes filters-drop {
@@ -595,14 +590,14 @@
 .data-table {
     width: 100%;
     margin: 0;
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
     color: var(--rm-ink);
 }
 
 .data-table thead th {
     background-color: var(--rm-cream-light);
     padding: 0.75rem;
-    font-size: 0.78rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     color: var(--rm-ink-2);
     white-space: nowrap;
@@ -654,7 +649,7 @@
 }
 
 .data-sort i {
-    font-size: 0.85rem;
+    font-size: var(--rm-text-sm);
     color: var(--rm-line-dashed);
 }
 
@@ -672,7 +667,7 @@
     height: 1.5rem;
     padding: 0 0.625rem;
     border-radius: 99px;
-    font-size: 0.75rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     background-color: var(--rm-tint);
     color: var(--rm-nav);
@@ -686,7 +681,7 @@
 .data-foot {
     padding: 0.875rem 1.5rem;
     border-top: 1px solid var(--rm-line-soft);
-    font-size: 0.84rem;
+    font-size: var(--rm-text-sm);
     color: var(--rm-ink-2);
 }
 
@@ -726,7 +721,7 @@
 }
 
 .data-row-label {
-    font-size: 0.78rem;
+    font-size: var(--rm-text-xs);
     color: var(--rm-ink-3);
 }
 
@@ -739,88 +734,14 @@
 }
 
 .tableIcon:active {
-    color: var(--darkOrange) !important;
-}
-
-.icon {
-    cursor: pointer !important;
-}
-
-/**
- * MODAL BUTTONS
- */
-.btn-modal {
-    border: 1px solid black !important;
-    padding: 0.5rem 1.5rem !important;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.btn-create-modify {
-    background-color: var(--orange) !important;
-}
-
-.btn-create-modify:hover {
-    background-color: var(--darkOrange) !important;
-    color: black !important;
-}
-
-.btn-close-custom {
-    background-color: transparent !important;
-    color: var(--darkGray) !important;
-}
-
-.btn-close-custom:hover {
-    background-color: var(--darkGray) !important;
-    color: white !important;
-}
-
-
-/**
- * PAGINATION
- */
-.pagination {
-    display: flex !important;
-    justify-content: center !important;
-    margin-top: 1rem !important;
-}
-
-.pagination .page-item .page-link {
-    background-color: var(--lightGray) !important;
-    border: 1px solid var(--gray) !important;
-    color: var(--darkGray) !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s ease !important;
-}
-
-.pagination .page-item:not(.active):not(.disabled) .page-link:hover {
-    background-color: var(--hoverGray) !important;
-    color: var(--orange) !important;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: var(--orange) !important;
-    border-color: var(--darkOrange) !important;
-    color: white !important;
-    cursor: default !important;
-}
-
-.pagination .page-item.disabled .page-link {
-    background-color: var(--lightGray) !important;
-    border: 1px solid var(--gray) !important;
-    color: var(--gray) !important;
-    cursor: not-allowed !important;
-    pointer-events: none !important;
-}
-
-.pagination .page-item:not(.disabled) .page-link {
-    cursor: pointer !important;
+    color: var(--rm-orange-strong) !important;
 }
 
 /**
  * PANEL
  */
 .panel-kicker {
-    font-size: 0.84rem;
+    font-size: var(--rm-text-sm);
     font-weight: 500;
     color: var(--rm-ink-2);
 }
@@ -828,14 +749,14 @@
 .panel-title {
     font-family: var(--rm-font-display);
     font-weight: 400;
-    font-size: 2.875rem;
+    font-size: var(--rm-display-lg);
     line-height: 1.05;
 }
 
 .panel-display {
     font-family: var(--rm-font-display);
     font-weight: 400;
-    font-size: 3.25rem;
+    font-size: var(--rm-display-xl);
     line-height: 0.95;
 }
 
@@ -848,17 +769,17 @@
 }
 
 .panel-card-title {
-    font-size: 0.94rem;
+    font-size: var(--rm-text-lg);
     font-weight: 600;
 }
 
 .panel-muted {
-    font-size: 0.78rem;
+    font-size: var(--rm-text-xs);
     color: var(--rm-ink-3);
 }
 
 .panel-label {
-    font-size: 0.75rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -866,7 +787,7 @@
 }
 
 .panel-stat {
-    font-size: 1.25rem;
+    font-size: var(--rm-text-xl);
     font-weight: 600;
 }
 
@@ -884,7 +805,7 @@
 .panel-seg {
     border: 0;
     background-color: transparent;
-    font-size: 0.84rem;
+    font-size: var(--rm-text-sm);
     font-weight: 500;
     color: var(--rm-ink-2);
     height: 2.125rem;
@@ -901,14 +822,14 @@
     background-color: var(--rm-surface);
     color: var(--rm-ink);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgba(60, 40, 20, 0.08), 0 2px 8px rgba(60, 40, 20, 0.06);
+    box-shadow: var(--rm-shadow-raised);
 }
 
 .panel-select {
     width: auto;
     height: 2.625rem;
     padding-block: 0;
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
     font-weight: 500;
     color: var(--rm-ink);
     background-color: var(--rm-surface);
@@ -951,7 +872,7 @@
     grid-template-columns: 1.125rem minmax(6rem, 1fr) minmax(0, 1.4fr) auto;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.875rem;
+    font-size: var(--rm-text-md);
 }
 
 .panel-breakdown {
@@ -975,7 +896,7 @@
     border-radius: var(--rm-radius-sm);
     box-shadow: var(--rm-shadow);
     padding: 0.625rem 0.75rem;
-    font-size: 0.8125rem;
+    font-size: var(--rm-text-sm);
 }
 
 .campaign-card {
@@ -998,20 +919,16 @@
         gap: 0.625rem 0.5rem;
     }
 
-    .panel-label {
-        font-size: 0.65rem;
-    }
-
     .panel-stat {
-        font-size: 1rem;
+        font-size: var(--rm-text-base);
     }
 
     .panel-title {
-        font-size: 2.25rem;
+        font-size: var(--rm-display-sm);
     }
 
     .panel-display {
-        font-size: 2.5rem;
+        font-size: var(--rm-display-md);
     }
 }
 
@@ -1044,7 +961,7 @@
     border: 0;
     border-bottom: 2.5px solid transparent;
     background-color: transparent;
-    font-size: 0.94rem;
+    font-size: var(--rm-text-lg);
     font-weight: 500;
     color: var(--rm-ink-2);
     white-space: nowrap;
@@ -1071,7 +988,7 @@
     border-radius: 99px;
     background-color: var(--rm-line-strong);
     color: var(--rm-nav);
-    font-size: 0.72rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
 }
 
@@ -1109,7 +1026,7 @@
     width: 12.5rem;
     font-family: var(--rm-font-display);
     font-weight: 400;
-    font-size: 1.75rem;
+    font-size: var(--rm-display-xs);
     line-height: 1;
 }
 
@@ -1149,7 +1066,7 @@
 }
 
 .calendar-chip-month {
-    font-size: 0.66rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1162,7 +1079,7 @@
 
 .calendar-legend {
     border-top: 1px solid var(--rm-line-soft);
-    font-size: 0.78rem;
+    font-size: var(--rm-text-xs);
     color: var(--rm-ink-2);
 }
 
@@ -1203,7 +1120,7 @@
     align-items: center;
     padding: 0 0 0 1rem;
     border: 0;
-    font-size: 0.75rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1244,7 +1161,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    font-size: 0.8125rem;
+    font-size: var(--rm-text-sm);
     font-weight: 600;
     color: var(--rm-ink);
 }
@@ -1260,7 +1177,7 @@
 
 .calendar-card .rbc-date-cell.rbc-now .rbc-button-link {
     background-color: var(--rm-orange-strong);
-    color: #fff;
+    color: var(--rm-on-accent);
 }
 
 .calendar-card .rbc-row-segment {
@@ -1274,7 +1191,7 @@
     border-radius: 0.375rem;
     background-color: var(--rm-event);
     color: var(--rm-event-ink);
-    font-size: 0.75rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     line-height: 1.5rem;
     transition: background-color 0.2s ease;
@@ -1319,7 +1236,7 @@
     padding: 0;
     border-radius: 0;
     background-color: transparent;
-    font-size: 0.72rem;
+    font-size: var(--rm-text-xs);
     color: var(--rm-nav);
 }
 
@@ -1339,7 +1256,7 @@
 .calendar-card .rbc-show-more {
     margin-left: 0.5rem;
     background-color: transparent;
-    font-size: 0.72rem;
+    font-size: var(--rm-text-xs);
     font-weight: 600;
     color: var(--rm-orange-strong);
 }
@@ -1360,7 +1277,7 @@
     border-bottom: 1px solid var(--rm-line-soft);
     padding: 0 0 0.5rem;
     margin-bottom: 0.5rem;
-    font-size: 0.8rem;
+    font-size: var(--rm-text-sm);
     font-weight: 600;
 }
 
@@ -1368,16 +1285,12 @@
     .calendar-title {
         width: auto;
         flex-grow: 1;
-        font-size: 1.5rem;
+        font-size: var(--rm-display-2xs);
     }
 }
 
 @media (max-width: 991.98px) {
     .calendar-card .rbc-calendar {
         height: 34rem;
-    }
-
-    .calendar-card .rbc-event {
-        font-size: 0.68rem;
     }
 }

@@ -98,6 +98,16 @@ export function updateSelectOptions(DATABASE_TABLE, setOptionsData) {
     setOptionsData(staticOptions);
 }
 
+
+export const countActiveFilters = (filters) =>
+    Object.values(filters).filter((value) => (Array.isArray(value) ? value.length > 0 : value !== '' && value != null)).length;
+
+export const activeFiltersLabel = (filters) => {
+    const total = countActiveFilters(filters);
+    if (total === 0) return 'Sin filtros aplicados';
+    return `${total} ${total === 1 ? 'filtro aplicado' : 'filtros aplicados'}`;
+};
+
 /**
  * COMPARATIVE AND EXPENSES FILTERS
  */

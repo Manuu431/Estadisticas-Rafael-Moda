@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { Modal, Form, Row, Col } from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -198,8 +198,8 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
             </Modal.Body>
 
             <Modal.Footer className="bg-secondary-subtle px-4">
-              <Button className="btn btn-modal btn-close-custom" onClick={onHide}>Cerrar</Button>
-              {!isView && <Button className='btn btn-modal btn-create-modify' type="submit" variant="primary">{isCreate ? 'Crear' : 'Guardar'}</Button>}
+              <button type="button" className="panel-ghost" onClick={onHide}>Cerrar</button>
+              {!isView && <button type="submit" className="panel-primary">{isCreate ? 'Crear' : 'Guardar'}</button>}
             </Modal.Footer>
           </FormikForm>
         )}
