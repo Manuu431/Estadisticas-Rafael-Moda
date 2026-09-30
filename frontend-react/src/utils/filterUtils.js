@@ -126,17 +126,6 @@ export function updateSelectOptions(DATABASE_TABLE, setOptionsData) {
  */
 
 import { groupSales } from "./statisticsData.js";
-import { DATABASE_TABLES } from "../config/database.js";
-
-export const fetchSalesData = async () => {
-  try {
-    const res = await axios.get(DATABASE_TABLES["sales"].endpoint);
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching sales data:", error);
-    return [];
-  }
-};
 
 export const applyFiltersComparative = (allSales, filters) => {
   const { start_date_1, end_date_1, start_date_2, end_date_2, showBy, groupBy } = filters;
