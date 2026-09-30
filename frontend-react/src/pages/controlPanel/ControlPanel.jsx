@@ -1,14 +1,16 @@
 import { useMemo, useState } from 'react';
 import Title from '../../components/Title.jsx';
 import Card from '../../components/Card.jsx';
+import SectionSummary from '../../components/SectionSummary.jsx';
 import { StackedBarChart, Select, GroupBySelector, PieChart, UpcomingCampaigns, CampaignButtons } from './ControlPanelComponents.jsx';
 import { getUniqueBrands, groupSalesByMonthAndBrand } from '../../utils/statisticsData.js';
 import { DATABASE_TABLES } from "../../config/database.js";
 import { useFetch } from '../../hooks/useFetch.js';
-import { startOfMonth, format } from 'date-fns';
+import { startOfMonth, format, isSameMonth, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const groupByLabels = {
+    section: "sección",
     brand: "marca",
     family: "familia",
     size: "talla",
@@ -29,6 +31,7 @@ function ControlPanel(props) {
     const [campaignIndex, setCampaignIndex] = useState(0);
     const initialMonth = startOfMonth(new Date());
     const [selectedMonth, setSelectedMonth] = useState(initialMonth);
+    const monthSales = useMemo(() => (sales ?? []).filter(sale => isSameMonth(parseISO(sale.sale_date), selectedMonth)), [sales, selectedMonth]);
 
     return (
         <>
@@ -50,6 +53,10 @@ function ControlPanel(props) {
                             </>
                         }
                         title={`Ventas por ${groupByLabels[groupBy]} de ${format(selectedMonth, 'MMMM', { locale: es })}`}
+                    />
+                    <Card
+                        element={<SectionSummary sales={monthSales} />}
+                        title={`Ventas por sección de ${format(selectedMonth, 'MMMM', { locale: es })}`}
                     />
                 </div>
                 <div className="col-lg-5 mt-3 mt-xl-0">

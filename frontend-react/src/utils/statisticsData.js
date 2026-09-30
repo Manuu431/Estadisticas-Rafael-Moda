@@ -1,5 +1,6 @@
 import { parseISO, format, subMonths, isSameMonth, startOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { SECTION_LABELS, getValueLabel } from '../config/labels.js';
 
 export function getUniqueBrands(data) {
   const brandSet = new Set();
@@ -86,12 +87,28 @@ export function groupSalesByFieldForMonth(salesData, selectedMonth, field) {
         const saleDate = typeof sale.sale_date === 'string' ? parseISO(sale.sale_date) : new Date(sale.sale_date);
 
         if (isSameMonth(saleDate, selectedMonth)) {
-            const key = sale[field] || 'Desconocido';
+            const key = getValueLabel(field, sale[field]) || 'Desconocido';
             result[key] = (result[key] || 0) + (sale.amount ?? sale.units ?? 0);
         }
     }
 
     return Object.entries(result).map(([name, value]) => ({ name, value }));
+}
+
+export function summarizeBySection(sales) {
+    const empty = () => ({ sales: 0, units: 0, profitCents: 0 });
+    const summary = { total: empty() };
+    Object.keys(SECTION_LABELS).forEach(section => { summary[section] = empty(); });
+    sales.forEach(sale => {
+        const profitCents = Math.round(parseFloat(sale.profit || 0) * 100);
+        [summary.total, summary[sale.section]].forEach(bucket => {
+            if (!bucket) return;
+            bucket.sales += 1;
+            bucket.units += sale.units || 0;
+            bucket.profitCents += profitCents;
+        });
+    });
+    return summary;
 }
 
 export function groupSales(sales, showBy, groupBy) {
@@ -122,7 +139,7 @@ export function groupSales(sales, showBy, groupBy) {
                 timeKey = "Unknown";
         }
 
-        const groupKey = sale[groupBy] || "Sin categoría";
+        const groupKey = getValueLabel(groupBy, sale[groupBy]) || "Sin categoría";
 
         if (!grouped[timeKey]) grouped[timeKey] = {};
         if (!grouped[timeKey][groupKey]) grouped[timeKey][groupKey] = 0;
