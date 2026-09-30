@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const families = ['Pantalón', 'Camiseta', 'Vestido', 'Falda', 'Abrigo', 'Sudadera', 'Chaqueta'];
+const womenOnlyFamilies = ['Vestido', 'Falda'];
 const models = ['Vaquero', 'Slim', 'Casual', 'Formal', 'Deportiva', 'Elegante', 'Básica', 'Corta'];
 const colors = ['Azul', 'Negro', 'Blanco', 'Rojo', 'Gris', 'Verde', 'Beige', 'Amarillo'];
 const sizes = ['XXS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -34,10 +35,11 @@ sql += `CREATE TABLE sales (
     units INT,
     discount DECIMAL(10,2),
     profit DECIMAL(10,2),
-    sale_date DATE
+    sale_date DATE,
+    section ENUM('mujer','hombre') NOT NULL DEFAULT 'mujer'
 );\n\n`;
 
-sql += `INSERT INTO sales (id, model, family, color, size, brand, pvd, pvp, units, discount, profit, sale_date) VALUES\n`;
+sql += `INSERT INTO sales (id, model, family, color, size, brand, pvd, pvp, units, discount, profit, sale_date, section) VALUES\n`;
 
 const startDate = new Date('2020-01-01');
 const endDate = new Date('2025-05-17');
@@ -55,8 +57,9 @@ for (let i = 1; i <= numSales; i++) {
     const discount = getRandomNumber(0, 10);
     const profit = ((pvp - pvd - discount) * units).toFixed(2);
     const sale_date = getRandomDate(startDate, endDate);
+    const section = womenOnlyFamilies.includes(family) ? 'mujer' : getRandom(['mujer', 'hombre']);
 
-    sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}')${i < numSales ? ',' : ';'}\n`;
+    sql += `(${i}, '${model}', '${family}', '${color}', '${size}', '${brand}', ${pvd}, ${pvp}, ${units}, ${discount}, ${profit}, '${sale_date}', '${section}')${i < numSales ? ',' : ';'}\n`;
 }
 
 fs.mkdirSync(`${__dirname}/../inserts`, { recursive: true });

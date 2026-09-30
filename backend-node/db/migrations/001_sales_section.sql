@@ -1,0 +1,2 @@
+ALTER TABLE sales ADD COLUMN section ENUM('mujer','hombre') NOT NULL DEFAULT 'mujer';
+UPDATE sales SET section = CASE WHEN family IN ('Vestido', 'Falda') THEN 'mujer' WHEN id % 2 = 0 THEN 'hombre' ELSE 'mujer' END WHERE id > 0;
