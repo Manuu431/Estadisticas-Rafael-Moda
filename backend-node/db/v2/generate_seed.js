@@ -233,13 +233,12 @@ for (const [kind, name, startDay, startMonth, endDay, endMonth, firstYear, repea
   const crosses = endMonth < startMonth || (endMonth === startMonth && endDay < startDay);
   for (let year = firstYear; year <= lastYear; year++) {
     const startDate = new Date(year, startMonth - 1, startDay);
-    if (startDate > END) continue;
     const endDate = new Date(crosses ? year + 1 : year, endMonth - 1, endDay);
     periods.push({
       typeId,
       startDate,
       endDate,
-      expenses: Math.round((baseExpenses * (YEAR_FACTOR[year] || 1.2) * between(0.85, 1.15)) / 10) * 10
+      expenses: startDate > END ? 0 : Math.round((baseExpenses * (YEAR_FACTOR[year] || 1.33) * between(0.85, 1.15)) / 10) * 10
     });
   }
 }
