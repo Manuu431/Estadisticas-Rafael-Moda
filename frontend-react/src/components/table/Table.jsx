@@ -10,7 +10,7 @@ import { useIsMobile } from '../../utils/useIsMobile.js'
 import { useFetch } from '../../hooks/useFetch.js';
 const itemsPerPage = 10;
 const ITEM_LABELS = { sales: 'líneas', clients: 'clientes', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
-function Table({ type, filters = {}, external = null, setExternal }) {
+function Table({ type, filters = {}, external = null, setExternal, onChanged }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -97,6 +97,7 @@ function Table({ type, filters = {}, external = null, setExternal }) {
             const updatedData = data.filter((d) => d.id !== item.id);
             setData(updatedData);
             setTotalPages(Math.ceil(updatedData.length / itemsPerPage));
+            if (onChanged) onChanged();
         } catch (error) {
             console.error("Error al eliminar el elemento:", error.response ? error.response.data : error);
             alert(`No se pudo eliminar "${item.name || 'este elemento'}", tienes que eliminar primero las ${types[type]} asociadas.`);
@@ -111,7 +112,8 @@ function Table({ type, filters = {}, external = null, setExternal }) {
         openModal({ item: emptyItem, modalMode: 'create' });
     };
     
-    const handleCloseModal = () => {
+    const handleCloseModal = async () => {
+        const changed = modalMode !== 'view';
         localStorage.removeItem("temporalItem");
         if(setExternal){
             setExternal(null);
@@ -119,6 +121,10 @@ function Table({ type, filters = {}, external = null, setExternal }) {
         setModalVisible(false);
         setModalData(null);
         setModalMode('view');
+        if (changed) {
+            await refetch();
+            if (onChanged) onChanged();
+        }
     };
 
     useEffect(() => {
@@ -129,6 +135,7 @@ function Table({ type, filters = {}, external = null, setExternal }) {
             }
         }
     }, [external, data, handleVisualize]);
+
 
     return (
         <>

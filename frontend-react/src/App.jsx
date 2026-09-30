@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
@@ -8,11 +8,8 @@ import Sales from './pages/Sales';
 import Clients from './pages/Clients';
 import Comparative from './pages/comparative/Comparative';
 import Calendar from './pages/calendar/Calendar';
-import Campaigns from './pages/Campaigns';
 import Expenses from './pages/expenses/Expenses';
-import Seasons from './pages/Seasons';
-import SeasonTypes from './pages/SeasonTypes';
-import CampaignTypes from './pages/CampaignTypes';
+import Planning from './pages/Planning';
 
 const classFilterCols = "col-12 col-md-6";
 
@@ -32,11 +29,13 @@ function App() {
                                 <Route path="/clientes" element={<Clients title="Clientes" classCols={classFilterCols} />} />
                                 <Route path="/comparativa" element={<Comparative title="Comparativa" classCols={classFilterCols} />} />
                                 <Route path="/calendario" element={<Calendar title="Calendario" />} />
-                                <Route path="/temporadas" element={<Seasons title="Temporadas" classCols={classFilterCols} />} />
-                                <Route path="/campañas" element={<Campaigns title="Campañas" classCols={classFilterCols} />} />
+                                <Route path="/planificacion" element={<Planning title="Campañas y temporadas" />} />
+                                <Route path="/planificacion/:tab" element={<Planning title="Campañas y temporadas" />} />
                                 <Route path="/gastos" element={<Expenses title="Gastos" classCols={classFilterCols} />} />
-                                <Route path="/tipos-temporadas" element={<SeasonTypes title="Tipos de temporada" classCols={classFilterCols} />} />
-                                <Route path="/tipos-campañas" element={<CampaignTypes title="Tipos de campañas" classCols={classFilterCols} />} />
+                                <Route path="/campañas" element={<Navigate to="/planificacion/campanas" replace />} />
+                                <Route path="/temporadas" element={<Navigate to="/planificacion/temporadas" replace />} />
+                                <Route path="/tipos-campañas" element={<Navigate to="/planificacion/tipos-campanas" replace />} />
+                                <Route path="/tipos-temporadas" element={<Navigate to="/planificacion/tipos-temporadas" replace />} />
                                 </Routes>
                             </Layout>
                         </PrivateRoute>

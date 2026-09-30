@@ -1022,6 +1022,65 @@
 }
 
 /**
+ * PLANNING TABS
+ */
+.planning-tabs {
+    border-bottom: 1px solid var(--rm-line-strong);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.planning-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.planning-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    height: 2.875rem;
+    padding: 0 0.25rem;
+    border: 0;
+    border-bottom: 2.5px solid transparent;
+    background-color: transparent;
+    font-size: 0.94rem;
+    font-weight: 500;
+    color: var(--rm-ink-2);
+    white-space: nowrap;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.planning-tab:hover {
+    color: var(--rm-ink);
+}
+
+.planning-tab.is-on {
+    color: var(--rm-ink);
+    font-weight: 600;
+    border-bottom-color: var(--rm-orange);
+}
+
+.planning-tab:focus-visible {
+    outline: 2px solid var(--rm-orange-strong);
+    outline-offset: 2px;
+}
+
+.planning-count {
+    padding: 0.0625rem 0.5rem;
+    border-radius: 99px;
+    background-color: var(--rm-line-strong);
+    color: var(--rm-nav);
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.planning-tab.is-on .planning-count {
+    background-color: var(--rm-orange-tint);
+    color: var(--rm-orange-ink);
+}
+
+/**
  * CALENDAR
  */
 .calendar-arrow {

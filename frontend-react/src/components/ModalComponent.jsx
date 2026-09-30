@@ -48,7 +48,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
 
   const getDays = (month, year) => (month === '' ? [] : Array.from({ length: new Date(Number(year) || 2001, month, 0).getDate() }, (_, i) => i + 1));
 
-  const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campañas" };
+  const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campaña" };
   const title = isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear';
 
   const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';

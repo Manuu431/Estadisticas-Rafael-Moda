@@ -1,6 +1,6 @@
 function HeaderTable({ onCreate, onRefresh, type, reloadTable }) {
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
-    const types = { campaigns: "campañas", seasons: "temporadas", seasonTypes: "temporada", campaignTypes: "campaña" };
+    const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campaña" };
 
     return (
         <div className="d-flex flex-wrap align-items-center gap-2">
