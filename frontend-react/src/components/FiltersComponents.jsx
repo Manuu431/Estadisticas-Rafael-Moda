@@ -1,5 +1,4 @@
 import Select from 'react-select';
-import { Button } from './smallComponents';
 import { SECTION_LABELS } from '../config/labels.js';
 
 const SECTION_OPTIONS = Object.entries(SECTION_LABELS).map(([value, label]) => ({ value, label }));
@@ -106,45 +105,6 @@ export function TextInputFilter(props) {
                     onChange={props.handleTextInputChange}
                 />
             </span>
-        </div>
-    );
-}
-
-export function FilterButton(props) {
-    return (
-        <div className={`${props.classCols} col-xl-2`}>
-            <div className={`d-flex justify-content-center m-3 ${props.divClasses}`}>
-                <Button
-                     buttonClasses={props.buttonClasses}
-                     onClickFunction={props.onClickFunction}
-                     iconClasses={props.iconClasses}
-                     text={props.text}
-                />
-            </div>
-        </div>
-    );
-};
-
-export function SelectFilter(props) {
-    return (
-        <div className="position-relative m-3">
-            <Select
-                isMulti={false}
-                inputId={props.inputId}
-                name={props.inputId}
-                options={props.optionsData[props.inputId] || []}
-                classNamePrefix="react-select"
-                className="react-select-container"
-                placeholder={`Seleccionar ${props.label.toLowerCase()}`}
-                value={
-                    (props.optionsData[props.inputId] || []).find(
-                        option => option.value === props.selectedValues[props.inputId]
-                    ) || null
-                }
-                onChange={(selectedOption) =>
-                    props.handleSelectChange(props.inputId, selectedOption?.value || "")
-                }
-            />
         </div>
     );
 }

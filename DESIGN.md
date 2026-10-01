@@ -28,6 +28,8 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Fondo seleccionado | `--rm-orange-tint` / `-soft` | #FBEBDD / #FDF3EA |
 | Positivo (ingresos, subidas) | `--rm-positive` + `-tint` | #1E6B45 / #E7F3EC |
 | Negativo (gastos, bajadas) | `--rm-negative` + `-tint` | #A3261B / #FBE9E7 |
+| Coste de la mercancía (serie) | `--rm-cost` | #5E534A |
+| Periodo comparado (serie) | `--rm-compare` | #CFC3B5 |
 | Bordes | `--rm-line` · `-strong` · `-soft` · `-dashed` | |
 
 - El naranja es el **único** acento: acción principal, elemento activo, foco. No usarlo para decorar.
@@ -41,6 +43,11 @@ Serie categórica, en este orden: `#DD6C10, #1176A6, #5E8C2A, #4A3AA7, #1E9E86, 
 el resto agrupado como "Otras" en `#8C8178`. Rejilla `#F2ECE5` (= `--rm-line-soft`), solo horizontal.
 Separador entre barras/porciones: `#FFFFFF`. Fuente única de verdad: `SERIES_COLORS` en
 `pages/controlPanel/ControlPanelComponents.jsx` — reutilizarla, no crear paletas nuevas.
+
+**Comparación de dos series** (no categórica): la serie principal en `--rm-orange` y la de contraste
+en `--rm-cost` (ingresos frente a coste, en Gastos) o `--rm-compare` (periodo A frente a B, en
+Comparativa). Se dibujan con `components/PairedBarChart.jsx`, que pasa los tokens como `var(--rm-*)`
+a Recharts; no escribir hex en las gráficas de comparación.
 
 ## Tipografía
 
@@ -95,5 +102,8 @@ apiladas a ancho completo. El corte vive en cinco sitios y se mueven juntos: `us
 
 ## Deuda conocida (migrar al sistema)
 
-- `components/StatisticsComponents.jsx`: barras con `#ff0000` / `#008000` y paleta `COLORS` propia → usar tokens positivo/negativo y `SERIES_COLORS`.
-- `--gray` / `.bg-gray` en App.css (sección LEGACY COLORS) → sustituir por tokens `--rm-*` y eliminar.
+- `components/ModalComponent.jsx`: el diálogo de escritorio sigue con la cabecera `bg-primary`, el pie
+  `bg-secondary-subtle` y los campos cuadrados de Bootstrap → migrar al diálogo del prototipo
+  (`Campanas.dc.html`: radio 20px, título en serif, campos `rm-input`). Los `alert()` y `confirm()` del
+  navegador caen con ello.
+- Los mensajes de validación de Yup salen en inglés («name must be at most 30 characters»).

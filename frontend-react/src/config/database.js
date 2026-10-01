@@ -89,53 +89,5 @@ export const DATABASE_TABLES = {
             inputId: ["id", "name", "start_year"],
             inputType: ["text", "text", "select"]
         }
-    },
-    comparative: {
-        filters: {
-            label: ["Fecha de inicio 1", "Fecha de fin 1", "Fecha de inicio 2", "Fecha de fin 2", "Mostrar por", "Segmentar por"],
-            inputId: ["start_date_1", "end_date_1", "start_date_2", "end_date_2", "showBy", "groupBy"],
-            inputType: ["date", "date", "date", "date", "select", "select"],
-            options: {
-                showBy: [
-                    { label: "Por día", value: "day" },
-                    { label: "Por mes", value: "month" },
-                    { label: "Por año", value: "year" },
-                    { label: "Todo", value: "all" }
-                ],
-                groupBy: [
-                    { label: "Ninguno", value: "none" },
-                    { label: "Sección", value: "section" },
-                    { label: "Familia", value: "family" },
-                    { label: "Marca", value: "brand" },
-                    { label: "Color", value: "color" },
-                    { label: "Talla", value: "size" }
-                ],
-                selectDateBy: [
-                    { label: "Fecha exacta", value: "exact_date" },
-                    { label: "Campañas", value: "campaigns" },
-                    { label: "Temporadas", value: "seasons" }
-                ]
-            }
-        }
-    },
-    expenses: {
-        filters: {
-            label: ["Fecha de inicio", "Fecha de fin", "Mostrar por"],
-            inputId: ["start_date", "end_date", "showBy"],
-            inputType: ["date", "date", "date", "date", "select"],
-            options: {
-                showBy: [
-                    { label: "Por día", value: "day" },
-                    { label: "Por mes", value: "month" },
-                    { label: "Por año", value: "year" },
-                    { label: "Todo", value: "all" }
-                ],
-                selectDateBy: [
-                    { label: "Fecha exacta", value: "exact_date" },
-                    { label: "Campañas", value: "campaigns" },
-                    { label: "Temporadas", value: "seasons" }
-                ]
-            }
-        }
     }
 }
