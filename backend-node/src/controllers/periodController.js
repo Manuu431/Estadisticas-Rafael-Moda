@@ -2,7 +2,12 @@ const pool = require('../config/db');
 const { filterColumns, normalizeDecimalFields } = require('../utils/columns');
 const { periodLabel, buildPeriodInserts } = require('../utils/dates');
 
-const PROFIT_SUM = `ROUND(COALESCE((SELECT SUM(v.profit) FROM v_sales v WHERE v.sold_at >= p.start_date AND v.sold_at < DATE_ADD(p.end_date, INTERVAL 1 DAY)), 0), 2)`;
+const SECTIONS = ['mujer', 'hombre'];
+const WINDOW = 'v.sold_at >= p.start_date AND v.sold_at < DATE_ADD(p.end_date, INTERVAL 1 DAY)';
+const PROFIT_SUM = `ROUND(COALESCE((SELECT SUM(v.profit) FROM v_sales v WHERE ${WINDOW}), 0), 2)`;
+const SECTION_PROFIT_SUM = `ROUND(COALESCE((SELECT SUM(v.profit) FROM v_sales v WHERE ${WINDOW} AND v.section = ?), 0), 2)`;
+const SECTION_SHARE = `COALESCE((SELECT SUM(CASE WHEN v.section = ? THEN v.amount END) / NULLIF(SUM(v.amount), 0) FROM v_sales v WHERE ${WINDOW}), 0)`;
+const round2 = (value) => Math.round(value * 100) / 100;
 
 const matchesFilters = (row, filters) => {
   for (const key in filters) {
@@ -49,27 +54,32 @@ const generateEditions = async (type, existingKeys) => {
 };
 
 const listPeriods = (kind) => async (req, res, next) => {
+  const section = req.query.section ?? '';
+  if (section !== '' && !SECTIONS.includes(section)) return res.status(400).json({ error: 'Unknown section' });
   try {
     const [rows] = await pool.query(
-      `SELECT p.id, p.period_type_id, p.start_date, p.end_date, p.expenses, t.name AS type_name, ${PROFIT_SUM} AS profits
+      `SELECT p.id, p.period_type_id, p.start_date, p.end_date, p.expenses, t.name AS type_name,
+              ${section ? SECTION_PROFIT_SUM : PROFIT_SUM} AS profits,
+              ${section ? SECTION_SHARE : 1} AS expense_share
        FROM periods p
        JOIN period_types t ON t.id = p.period_type_id
        WHERE t.kind = ?
        ORDER BY p.start_date DESC`,
-      [kind]
+      section ? [section, section, kind] : [kind]
     );
     const periods = rows.map((row) => {
       const profits = Number(row.profits);
-      const expenses = Number(row.expenses);
+      const expenses = round2(Number(row.expenses) * Number(row.expense_share));
       return {
         id: row.id,
         period_type_id: row.period_type_id,
         name: periodLabel(row.type_name, row.start_date, row.end_date),
+        type_name: row.type_name,
         start_date: row.start_date,
         end_date: row.end_date,
         expenses,
         profits,
-        balance: Math.round((profits - expenses) * 100) / 100
+        balance: round2(profits - expenses)
       };
     });
     res.json(periods.filter((period) => matchesFilters(period, req.query)));

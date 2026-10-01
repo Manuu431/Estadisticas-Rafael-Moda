@@ -1,5 +1,5 @@
 export const MENU_ITEMS = [
-  { name: 'Panel de control', path: '/', element: 'ControlPanel', icon: 'bi bi-grid' },
+  { name: 'Inicio', path: '/', element: 'ControlPanel', icon: 'bi bi-grid' },
   { name: 'Ventas', path: '/ventas', element: 'Sales', icon: 'bi bi-bag', group: 'Análisis' },
   { name: 'Clientes', path: '/clientes', element: 'Clients', icon: 'bi bi-people', group: 'Análisis' },
   { name: 'Comparativa', path: '/comparativa', element: 'Comparative', icon: 'bi bi-arrow-left-right', group: 'Análisis' },

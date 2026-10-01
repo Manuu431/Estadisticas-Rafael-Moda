@@ -4,6 +4,11 @@ export const DATABASE_TABLES = {
         endpoint: `${API_BASE}/users`,
         endpointDemo: `${API_BASE}/users/demo`
     },
+    statistics: {
+        summary: `${API_BASE}/statistics/summary`,
+        daily: `${API_BASE}/statistics/daily`,
+        brands: `${API_BASE}/statistics/brands`
+    },
     sales: {
         endpoint: `${API_BASE}/sales`,
         tables: {

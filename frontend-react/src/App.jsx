@@ -23,7 +23,7 @@ function App() {
                         <PrivateRoute>
                             <Layout>
                                 <Routes>
-                                <Route path="/" element={<ControlPanel title="Panel de control" />} />
+                                <Route path="/" element={<ControlPanel title="Hoy en la tienda" />} />
                                 <Route path="/ventas" element={<Sales title="Ventas" />} />
                                 <Route path="/clientes" element={<Clients title="Clientes" />} />
                                 <Route path="/comparativa" element={<Comparative title="Comparativa" />} />

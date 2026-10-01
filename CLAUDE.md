@@ -5,6 +5,10 @@ Panel de estadísticas (ventas, gastos, clientes, planificación) para una tiend
 - `frontend-react/`: React 19 + Vite + React Bootstrap + Recharts. `npm run dev`
 - `backend-node/`: Express 5 + MySQL (`mysql2`) + JWT + bcrypt. `npm run dev`. Esquema actual en `db/v2/`.
 
+Inicio no se baja las ventas: pide agregados ya calculados a `/api/statistics/{summary,daily,brands}`, que
+reciben el rango (`from`, `to`, `comparedFrom`, `comparedTo`) y la sección opcional. Las fechas se calculan en el
+navegador (`utils/dates.js`, con tests) y el SQL solo suma.
+
 ## Diseño
 
 @DESIGN.md
