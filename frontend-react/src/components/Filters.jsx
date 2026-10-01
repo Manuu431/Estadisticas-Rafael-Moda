@@ -13,7 +13,7 @@ import {
     buildSelectOptions
 } from "../utils/filterUtils.js";
 
-function Filters({ type, onFilterChange }) {
+function Filters({ type, onFilterChange, options = null }) {
     const DATABASE_TABLE = DATABASE_TABLES[type];
     const [optionFilters, setOptionFilters] = useState({});
     const [selectedValues, setSelectedValues] = useState({});
@@ -22,8 +22,8 @@ function Filters({ type, onFilterChange }) {
     const [showMore, setShowMore] = useState(false);
     const [sheetOpen, setSheetOpen] = useState(false);
     const isMobile = useIsMobile();
-    const { data: optionsSource } = useFetch(DATABASE_TABLE.endpoint, optionFilters);
-    const optionsData = useMemo(() => buildSelectOptions(optionsSource, DATABASE_TABLE), [optionsSource, DATABASE_TABLE]);
+    const { data: optionsSource } = useFetch(options ? null : DATABASE_TABLE.endpoint, optionFilters);
+    const optionsData = useMemo(() => options ?? buildSelectOptions(optionsSource, DATABASE_TABLE), [options, optionsSource, DATABASE_TABLE]);
     const { segment, primary = [] } = DATABASE_TABLE.filters;
 
     const fields = DATABASE_TABLE.filters.label

@@ -1,18 +1,19 @@
 import { useMemo, useState } from 'react';
 import Filters from "../components/Filters.jsx";
 import Table from "../components/table/Table.jsx";
-import PanelCard from "../components/PanelCard.jsx";
-import SectionBreakdown from "../components/SectionBreakdown.jsx";
 import { DATABASE_TABLES } from "../config/database.js";
 import { useFetch } from "../hooks/useFetch.js";
 import { summarizeBySection } from "../utils/statisticsData.js";
 import { formatNumber, formatMoney } from "../utils/format.js";
 import { activeFiltersLabel } from "../utils/filterUtils.js";
 
+const NO_OPTIONS = {};
+const NO_ROWS = [];
+
 function Sales(props) {
     const [filters, setFilters] = useState({});
     const { data } = useFetch(DATABASE_TABLES["sales"].endpoint, filters);
-    const summary = useMemo(() => summarizeBySection(data ?? []), [data]);
+    const summary = useMemo(() => summarizeBySection(data ?? NO_ROWS), [data]);
 
     return (
         <>
@@ -29,11 +30,8 @@ function Sales(props) {
                 </p>
             </header>
             <div className="d-flex flex-column gap-4">
-                <Filters type="sales" onFilterChange={setFilters} />
-                <PanelCard title="Ventas por sección" note="Sobre el resultado filtrado">
-                    <SectionBreakdown sales={data} />
-                </PanelCard>
-                <Table type="sales" filters={filters} />
+                <Filters type="sales" onFilterChange={setFilters} options={NO_OPTIONS} />
+                <Table type="sales" rows={data ?? NO_ROWS} />
             </div>
         </>
     );

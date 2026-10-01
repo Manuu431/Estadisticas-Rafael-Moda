@@ -11,7 +11,7 @@ import { useFetch } from '../../hooks/useFetch.js';
 const itemsPerPage = 10;
 const ITEM_LABELS = { sales: 'líneas', clients: 'clientes', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
 const DEFAULT_SORT = { sales: { key: 'sold_at', direction: 'desc' } };
-function Table({ type, filters = {}, external = null, setExternal, onChanged }) {
+function Table({ type, filters = {}, rows = null, external = null, setExternal, onChanged }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -22,7 +22,8 @@ function Table({ type, filters = {}, external = null, setExternal, onChanged }) 
     const [modalMode, setModalMode] = useState('view');
 
     const DATABASE_TABLE = DATABASE_TABLES[type];
-    const { data: fetched, refetch } = useFetch(DATABASE_TABLE.endpoint, filters);
+    const { data: ownData, refetch } = useFetch(rows ? null : DATABASE_TABLE.endpoint, filters);
+    const fetched = rows ?? ownData;
     const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
     const haveHeader = type === "campaigns" || type === "seasons" || isCreateType;
     const types = { campaigns: "campañas", seasons: "temporadas", seasonTypes: "temporadas", campaignTypes: "campañas" };
