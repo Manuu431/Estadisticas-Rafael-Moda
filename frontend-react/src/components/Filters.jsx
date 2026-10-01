@@ -138,7 +138,7 @@ function Filters({ type, onFilterChange }) {
                         {renderField(field)}
                     </div>
                 ))}
-                <div className="flex-grow-1 d-none d-xl-block" />
+                <div className="flex-grow-1 d-none d-lg-block" />
                 {moreFields.length > 0 && (
                     <button
                         type="button"

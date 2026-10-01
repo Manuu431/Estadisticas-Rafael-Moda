@@ -7,7 +7,7 @@ function Layout({ children }) {
     const isMobile = useIsMobile();
 
     return (
-        <div className="app-shell d-flex flex-column flex-xl-row min-vh-100">
+        <div className="app-shell d-flex flex-column flex-lg-row min-vh-100">
             {isMobile ? <MobileHeader /> : <Sidebar />}
             <main className="app-main flex-grow-1">
                 <div className="container-fluid px-0">

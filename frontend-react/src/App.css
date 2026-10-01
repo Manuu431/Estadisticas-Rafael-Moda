@@ -254,7 +254,7 @@
     padding: 2.25rem 2.75rem 2.75rem 1.25rem;
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: 991.98px) {
     .app-main {
         padding: 1.5rem 1rem 2rem;
     }
@@ -269,7 +269,7 @@
     padding: 1.75rem 1.125rem 1.5rem;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
     .app-sidebar {
         width: 15.5rem;
     }
@@ -1576,7 +1576,7 @@
     padding-top: 0.875rem;
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: 991.98px) {
     .filters-mobile .panel-segs {
         flex-grow: 1;
     }
