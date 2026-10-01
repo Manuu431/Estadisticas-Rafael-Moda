@@ -191,12 +191,8 @@ export function groupExpenses(sales, showBy) {
             };
         }
 
-        const units = exp.units || 0;
-        const pvd = exp.pvd || 0;
-        const pvp = exp.pvp || 0;
-
-        grouped[timeKey].expenses += pvd * units;
-        grouped[timeKey].revenue += pvp * units;
+        grouped[timeKey].expenses += Number(exp.cost || 0);
+        grouped[timeKey].revenue += Number(exp.amount || 0);
     });
 
     const result = Object.entries(grouped).map(([timeKey, values]) => ({

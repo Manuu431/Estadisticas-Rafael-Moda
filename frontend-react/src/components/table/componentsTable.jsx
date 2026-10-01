@@ -14,9 +14,15 @@ const isNumericKey = (data, key) => {
 const cellClass = (columnKey, isNumeric) =>
     `${isNumeric ? 'data-numeric' : ''}${columnKey === 'profit' || columnKey === 'profits' ? ' data-positive' : ''}`.trim();
 
+const MONEY_KEYS = ['amount', 'cost', 'profit', 'profits', 'expenses', 'balance', 'unit_price', 'unit_cost'];
+
+const isMoney = (columnKey, value) =>
+    MONEY_KEYS.includes(columnKey) && value !== null && value !== undefined && value !== '';
+
 const cellText = (item, columnKey, isCreateType) => {
     const value = getValueLabel(columnKey, item[columnKey]);
     if (value === null || value === undefined || value === '') return '';
+    if (isMoney(columnKey, value)) return formatEuros(value);
     if (!isCreateType && columnKey.toLowerCase().includes('date')) return formatDate(value);
     return String(value);
 };
@@ -26,6 +32,10 @@ function CellValue({ item, columnKey, isCreateType }) {
 
     if (columnKey === 'section' && item[columnKey]) {
         return <span className={`data-pill${item[columnKey] === 'mujer' ? ' is-mujer' : ''}`}>{value}</span>;
+    }
+
+    if (isMoney(columnKey, value)) {
+        return formatEuros(value);
     }
 
     if (!isCreateType && columnKey.toLowerCase().includes('date') && value) {
