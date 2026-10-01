@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { DATABASE_TABLES } from "../config/database.js"
 import { useFetch } from "../hooks/useFetch.js";
+import { useIsMobile } from "../utils/useIsMobile.js";
+import BottomSheet from "./BottomSheet.jsx";
 import { MultiSelectFilter, RangeFilter, TextInputFilter, SectionSegments } from "./FiltersComponents.jsx";
 import {
     handleSelectChange,
@@ -18,6 +20,8 @@ function Filters({ type, onFilterChange }) {
     const [rangeInputs, setRangeInputs] = useState({});
     const [textInputs, setTextInputs] = useState({});
     const [showMore, setShowMore] = useState(false);
+    const [sheetOpen, setSheetOpen] = useState(false);
+    const isMobile = useIsMobile();
     const { data: optionsSource } = useFetch(DATABASE_TABLE.endpoint, optionFilters);
     const optionsData = useMemo(() => buildSelectOptions(optionsSource, DATABASE_TABLE), [optionsSource, DATABASE_TABLE]);
     const { segment, primary = [] } = DATABASE_TABLE.filters;
@@ -69,18 +73,66 @@ function Filters({ type, onFilterChange }) {
         );
     };
 
+    const applyFilters = () => handleManualFilter(selectedValues, textInputs, rangeInputs, onFilterChange, setOptionFilters);
+    const clearFilters = () => handleManualClear(setSelectedValues, setTextInputs, setRangeInputs, onFilterChange, setOptionFilters);
+
+    const segmentControl = segment ? (
+        <SectionSegments
+            inputId={segment}
+            label={DATABASE_TABLE.filters.label[DATABASE_TABLE.filters.inputId.indexOf(segment)]}
+            options={optionsData[segment] || []}
+            selectedValues={selectedValues}
+            handleSelectChange={(id, options) => handleSelectChange(id, options, setSelectedValues)}
+        />
+    ) : null;
+
+    if (isMobile) {
+        return (
+            <div className="filters-mobile d-flex align-items-stretch gap-2">
+                {segmentControl}
+                <button
+                    type="button"
+                    className="m-btn flex-shrink-0 d-inline-flex align-items-center gap-2"
+                    aria-haspopup="dialog"
+                    onClick={() => setSheetOpen(true)}
+                >
+                    <i className="bi bi-sliders" aria-hidden="true" />
+                    Filtros
+                </button>
+                <BottomSheet
+                    show={sheetOpen}
+                    onHide={() => setSheetOpen(false)}
+                    title="Filtros"
+                    footer={
+                        <>
+                            <button type="button" className="m-ghost" onClick={clearFilters}>Limpiar</button>
+                            <button
+                                type="button"
+                                className="m-primary"
+                                onClick={() => {
+                                    applyFilters();
+                                    setSheetOpen(false);
+                                }}
+                            >
+                                Ver resultados
+                            </button>
+                        </>
+                    }
+                >
+                    <div className="d-flex flex-column gap-3">
+                        {fields.map((field) => (
+                            <div key={field.inputId}>{renderField(field)}</div>
+                        ))}
+                    </div>
+                </BottomSheet>
+            </div>
+        );
+    }
+
     return (
         <div className="d-flex flex-column gap-3">
             <div className="filters-bar d-flex flex-wrap align-items-end">
-                {segment && (
-                    <SectionSegments
-                        inputId={segment}
-                        label={DATABASE_TABLE.filters.label[DATABASE_TABLE.filters.inputId.indexOf(segment)]}
-                        options={optionsData[segment] || []}
-                        selectedValues={selectedValues}
-                        handleSelectChange={(id, options) => handleSelectChange(id, options, setSelectedValues)}
-                    />
-                )}
+                {segmentControl}
                 {primaryFields.map((field) => (
                     <div className="filters-field" key={field.inputId}>
                         {renderField(field)}
@@ -100,22 +152,10 @@ function Filters({ type, onFilterChange }) {
                         <i className="bi bi-chevron-down panel-chevron" aria-hidden="true" />
                     </button>
                 )}
-                <button
-                    type="button"
-                    className="panel-ghost"
-                    onClick={() =>
-                        handleManualClear(setSelectedValues, setTextInputs, setRangeInputs, onFilterChange, setOptionFilters)
-                    }
-                >
+                <button type="button" className="panel-ghost" onClick={clearFilters}>
                     Limpiar
                 </button>
-                <button
-                    type="button"
-                    className="panel-primary"
-                    onClick={() =>
-                        handleManualFilter(selectedValues, textInputs, rangeInputs, onFilterChange, setOptionFilters)
-                    }
-                >
+                <button type="button" className="panel-primary" onClick={applyFilters}>
                     Filtrar
                 </button>
             </div>

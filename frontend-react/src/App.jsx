@@ -10,6 +10,7 @@ import Comparative from './pages/comparative/Comparative';
 import Calendar from './pages/calendar/Calendar';
 import Expenses from './pages/expenses/Expenses';
 import Planning from './pages/Planning';
+import More from './pages/More';
 
 const classFilterCols = "col-12 col-md-6";
 
@@ -32,6 +33,7 @@ function App() {
                                 <Route path="/planificacion" element={<Planning title="Campañas y temporadas" />} />
                                 <Route path="/planificacion/:tab" element={<Planning title="Campañas y temporadas" />} />
                                 <Route path="/gastos" element={<Expenses title="Gastos" classCols={classFilterCols} />} />
+                                <Route path="/mas" element={<More title="Más" />} />
                                 <Route path="/campañas" element={<Navigate to="/planificacion/campanas" replace />} />
                                 <Route path="/temporadas" element={<Navigate to="/planificacion/temporadas" replace />} />
                                 <Route path="/tipos-campañas" element={<Navigate to="/planificacion/tipos-campanas" replace />} />

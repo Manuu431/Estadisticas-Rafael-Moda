@@ -5,7 +5,7 @@ const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
 export function CustomToolbar({ date, onNavigate }) {
     return (
-        <div className="d-flex align-items-center gap-2">
+        <div className="calendar-toolbar d-flex align-items-center gap-2">
             <button type="button" className="panel-btn" onClick={() => onNavigate(startOfMonth(new Date()))}>
                 Hoy
             </button>

@@ -8,6 +8,18 @@ export const MENU_ITEMS = [
   { name: 'Campañas y temporadas', path: '/planificacion', element: 'Planning', icon: 'bi bi-megaphone', group: 'Planificación' }
 ];
 
+export const MOBILE_TABS = [
+  { name: 'Inicio', path: '/', icon: 'bi bi-grid' },
+  { name: 'Ventas', path: '/ventas', icon: 'bi bi-bag' },
+  { name: 'Calendario', path: '/calendario', icon: 'bi bi-calendar' },
+  { name: 'Campañas', path: '/planificacion', icon: 'bi bi-megaphone' },
+  { name: 'Más', path: '/mas', icon: 'bi bi-three-dots' }
+];
+
+const TAB_PATHS = MOBILE_TABS.map((tab) => tab.path);
+
+export const MORE_ITEMS = MENU_ITEMS.filter((item) => !TAB_PATHS.includes(item.path));
+
 export const GROUP_BY_OPTIONS = [
   { value: 'section', label: 'sección' },
   { value: 'family', label: 'familia' },

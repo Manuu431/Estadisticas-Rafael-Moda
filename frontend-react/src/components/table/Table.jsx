@@ -10,11 +10,12 @@ import { useIsMobile } from '../../utils/useIsMobile.js'
 import { useFetch } from '../../hooks/useFetch.js';
 const itemsPerPage = 10;
 const ITEM_LABELS = { sales: 'líneas', clients: 'clientes', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
+const DEFAULT_SORT = { sales: { key: 'sold_at', direction: 'desc' } };
 function Table({ type, filters = {}, external = null, setExternal, onChanged }) {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState(DEFAULT_SORT[type] ?? { key: null, direction: 'asc' });
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState(null);
@@ -141,10 +142,12 @@ function Table({ type, filters = {}, external = null, setExternal, onChanged }) 
         <>
             <div className="d-flex flex-column gap-3">
                 {haveHeader && <HeaderTable onCreate={handleCreate} onRefresh={onRefreshTable} type={type} reloadTable={reloadTable} />}
-                <div className="data-card">
-                    {currentData.length === 0 ? (
+                {currentData.length === 0 ? (
+                    <div className="data-card">
                         <p className="data-empty text-center m-0">No hay resultados con estos filtros.</p>
-                    ) : isMobile ? (
+                    </div>
+                ) : isMobile ? (
+                    <div className="d-flex flex-column gap-3">
                         <MobileTable
                             data={currentData}
                             DATABASE_TABLE={DATABASE_TABLE}
@@ -154,7 +157,19 @@ function Table({ type, filters = {}, external = null, setExternal, onChanged }) 
                             handleEdit={handleEdit}
                             handleDelete={handleDelete}
                         />
-                    ) : (
+                        <div className="data-card">
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                                totalItems={sortedData.length}
+                                pageSize={itemsPerPage}
+                                itemLabel={ITEM_LABELS[type] ?? 'registros'}
+                            />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="data-card">
                         <DesktopTable
                             data={currentData}
                             DATABASE_TABLE={DATABASE_TABLE}
@@ -166,16 +181,16 @@ function Table({ type, filters = {}, external = null, setExternal, onChanged }) 
                             sortConfig={sortConfig}
                             setSortConfig={setSortConfig}
                         />
-                    )}
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                        totalItems={sortedData.length}
-                        pageSize={itemsPerPage}
-                        itemLabel={ITEM_LABELS[type] ?? 'registros'}
-                    />
-                </div>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                            totalItems={sortedData.length}
+                            pageSize={itemsPerPage}
+                            itemLabel={ITEM_LABELS[type] ?? 'registros'}
+                        />
+                    </div>
+                )}
             </div>
 
             {modalVisible && (

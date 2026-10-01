@@ -1,4 +1,44 @@
+import { endOfMonth, format, startOfMonth } from 'date-fns';
+import { es } from 'date-fns/locale';
+
 const seasonLabel = (name, isStart) => `${isStart ? 'Empieza' : 'Termina'} ${name}`;
+
+const shortDate = (date) => format(date, 'd MMM', { locale: es });
+
+export function getMonthEvents(campaigns, seasons, month) {
+    const from = startOfMonth(month);
+    const to = endOfMonth(month);
+    const events = [];
+
+    campaigns.forEach((campaign) => {
+        const start = new Date(campaign.start_date);
+        const end = new Date(campaign.end_date);
+        if (end < from || start > to) return;
+        events.push({
+            name: campaign.name,
+            kind: 'Campaña',
+            when: `${shortDate(start)} – ${shortDate(end)}`,
+            type: 'campaign',
+            sort: start < from ? from : start
+        });
+    });
+
+    seasons.forEach((season) => {
+        [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
+            const date = new Date(value);
+            if (date < from || date > to) return;
+            events.push({
+                name: seasonLabel(season.name, isStart),
+                kind: 'Temporada',
+                when: shortDate(date),
+                type: 'season',
+                sort: date
+            });
+        });
+    });
+
+    return events.sort((a, b) => a.sort - b.sort);
+}
 
 export const openItem = (navigate, item) => {
     localStorage.setItem('temporalItem', JSON.stringify(item.original));

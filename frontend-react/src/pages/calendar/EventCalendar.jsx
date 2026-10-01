@@ -28,17 +28,22 @@ const messages = {
     noEventsInRange: 'No hay campañas ni cambios de temporada este mes.',
 };
 
-const formats = {
-    dateFormat: 'd',
-    weekdayFormat: (date, culture, localizerInstance) => localizerInstance.format(date, 'EEE', culture),
-};
+const COMPACT_WEEKDAYS = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
 
-function EventCalendar({ campaigns = [], seasons = [], date, onNavigate }) {
+const buildFormats = (compact) => ({
+    dateFormat: 'd',
+    weekdayFormat: compact
+        ? (date) => COMPACT_WEEKDAYS[getDay(date)]
+        : (date, culture, localizerInstance) => localizerInstance.format(date, 'EEE', culture),
+});
+
+function EventCalendar({ campaigns = [], seasons = [], date, onNavigate, compact = false }) {
     const navigate = useNavigate();
     const events = useMemo(() => buildEvents(campaigns, seasons), [campaigns, seasons]);
+    const formats = useMemo(() => buildFormats(compact), [compact]);
 
     return (
-        <div className="data-card calendar-card">
+        <div className={`data-card calendar-card${compact ? ' is-compact' : ''}`}>
             <BigCalendar
                 localizer={localizer}
                 culture="es"

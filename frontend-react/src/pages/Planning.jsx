@@ -73,7 +73,7 @@ function Planning(props) {
                 <span className="panel-kicker">Planificación del año</span>
                 <h1 className="panel-title m-0">{props.title}</h1>
             </header>
-            <div className="planning-tabs d-flex gap-4 mb-4" role="tablist" aria-label="Campañas o temporadas">
+            <div className="planning-tabs mb-4" role="tablist" aria-label="Campañas o temporadas">
                 {TABS.map((item) => {
                     const total = countFor(item.type);
                     const isActive = item.type === active.type;
