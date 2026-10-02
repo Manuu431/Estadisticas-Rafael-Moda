@@ -1,5 +1,8 @@
 const pool = require('../config/db');
-const { sources, allowedColumns, numericColumns } = require('../utils/columns');
+const { sources, allowedColumns, searchColumns, exactColumns, numericColumns } = require('../utils/columns');
+const { likeSearch } = require('../utils/search');
+
+const isText = (item) => typeof item === 'string';
 
 const getAll = (resource) => async (req, res, next) => {
   const filters = req.query;
@@ -10,6 +13,7 @@ const getAll = (resource) => async (req, res, next) => {
   for (const key in filters) {
     const value = filters[key];
     if (value === undefined || value === null || value === '') continue;
+    if (!(Array.isArray(value) ? value.every(isText) : isText(value))) continue;
 
     const column = key.replace(/_(min|max)$/, '');
     if (!columns.includes(column)) continue;
@@ -27,13 +31,19 @@ const getAll = (resource) => async (req, res, next) => {
     } else if (numericColumns.includes(column)) {
       conditions.push(`\`${column}\` = ?`);
       values.push(parseFloat(value));
-    } else if (column === 'size' || column === 'section') {
+    } else if (exactColumns.includes(column)) {
       conditions.push(`\`${column}\` = ?`);
       values.push(value);
     } else {
       conditions.push(`\`${column}\` LIKE ?`);
       values.push(`%${value}%`);
     }
+  }
+
+  const search = likeSearch(filters.search, searchColumns[resource] || []);
+  if (search) {
+    conditions.push(search.sql);
+    values.push(...search.values);
   }
 
   let query = `SELECT * FROM ${sources[resource]}`;

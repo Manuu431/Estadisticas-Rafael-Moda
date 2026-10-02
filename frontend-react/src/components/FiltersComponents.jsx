@@ -3,7 +3,7 @@ import { SECTION_LABELS } from '../config/labels.js';
 
 const SECTION_OPTIONS = Object.entries(SECTION_LABELS).map(([value, label]) => ({ value, label }));
 
-export function SectionSegments({ inputId, label, options, selectedValues, handleSelectChange }) {
+export function SectionSegments({ inputId, label, options, selectedValues, handleSelectChange, className = '' }) {
     const selected = selectedValues[inputId] ?? [];
     const current = selected.length === 1 ? selected[0] : '';
     const pick = (value) => handleSelectChange(inputId, value ? [{ value }] : []);
@@ -11,7 +11,7 @@ export function SectionSegments({ inputId, label, options, selectedValues, handl
     const segments = [{ value: '', label: 'Todo' }, ...(known.length > 0 ? known : SECTION_OPTIONS)];
 
     return (
-        <div className="panel-segs d-inline-flex" role="group" aria-label={label}>
+        <div className={`panel-segs d-inline-flex ${className}`} role="group" aria-label={label}>
             {segments.map((segment) => (
                 <button
                     key={segment.value || 'all'}

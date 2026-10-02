@@ -27,6 +27,7 @@
     --rm-orange-tint: #FBEBDD;
     --rm-orange-tint-soft: #FDF3EA;
     --rm-orange-border: #E7C3A2;
+    --rm-orange-line: #F1CFB0;
     --rm-event: #FBE3CF;
     --rm-event-hover: #F8D2B1;
     --rm-event-ink: #7A3A06;
@@ -1986,8 +1987,42 @@
     width: 12.25rem;
 }
 
+.panel-field-brand {
+    width: 12.5rem;
+}
+
+.panel-field-search {
+    width: 18.75rem;
+}
+
+.panel-field > .bi-search {
+    font-size: var(--rm-text-icon);
+}
+
+.panel-field.is-labelled > .bi-chevron-down {
+    font-size: var(--rm-text-base);
+}
+
+.panel-segs.is-plus .panel-seg {
+    font-size: var(--rm-text-sm-plus);
+}
+
+.panel-btn.is-soft .bi-sliders {
+    font-size: var(--rm-text-icon);
+}
+
+.panel-btn.is-soft .panel-chevron {
+    font-size: var(--rm-text-base);
+}
+
+.panel-btn.is-soft.is-open {
+    border-color: var(--rm-orange-line);
+}
+
 @media (max-width: 991.98px) {
-    .panel-field-period {
+    .panel-field-period,
+    .panel-field-brand,
+    .panel-field-search {
         width: 100%;
     }
 }

@@ -16,7 +16,13 @@ const allowedColumns = {
   period_types: ['id', 'kind', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats']
 };
 
-const numericColumns = ['id', 'ticket_id', 'product_id', 'brand_id', 'family_id', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit', 'expenses', 'period_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats'];
+const searchColumns = {
+  sales: ['product', 'brand', 'color']
+};
+
+const exactColumns = ['size', 'section', 'brand', 'family', 'color'];
+
+const numericColumns =['id', 'ticket_id', 'product_id', 'brand_id', 'family_id', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit', 'expenses', 'period_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats'];
 
 const filterColumns = (data, resource) => {
   const columns = allowedColumns[resource] || [];
@@ -39,4 +45,4 @@ const normalizeDecimalFields = (data, fields) => {
   return newData;
 };
 
-module.exports = { sources, allowedColumns, numericColumns, filterColumns, normalizeDecimalFields };
+module.exports = { sources, allowedColumns, searchColumns, exactColumns, numericColumns,filterColumns, normalizeDecimalFields };

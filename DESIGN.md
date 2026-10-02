@@ -27,6 +27,7 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Acento en botones (contraste AA) | `--rm-orange-strong` / `-hover` | #B85A0D / #9C4C0B |
 | Texto sobre tinte naranja | `--rm-orange-ink` | #8F4509 |
 | Fondo seleccionado | `--rm-orange-tint` / `-soft` | #FBEBDD / #FDF3EA |
+| Borde del botón abierto (Ventas) | `--rm-orange-line` | #F1CFB0 |
 | Positivo (ingresos, subidas) | `--rm-positive` + `-tint` | #1E6B45 / #E7F3EC |
 | Negativo (gastos, bajadas) | `--rm-negative` + `-tint` | #A3261B / #FBE9E7 |
 | Coste de la mercancía (serie) | `--rm-cost` | #5E534A |
@@ -99,6 +100,11 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   dentro (`.panel-field-label`, `text-sm`, `ink-2`), el desplegable en peso normal y `bi-chevron-down`. Con «Personalizado…»
   salen «Desde» y «Hasta» con el mismo campo, en una fila propia bajo la barra; si «Desde» es posterior a «Hasta» no se aplica y
   `.panel-note.text-negative` lo avisa.
+- **Barra de filtros de Ventas**: una línea con 10 px de separación: buscador (`.panel-field-search`, 300 px, lupa de `text-icon`),
+  Periodo (196 px) y Marca (200 px), los dos `.panel-field.is-labelled` con la etiqueta dentro y flecha de `text-base`;
+  después Todo / Mujer / Hombre con `.panel-segs.is-plus` (`text-sm-plus`), un hueco y «Más filtros» (`.panel-btn.is-soft`: icono de
+  deslizadores de `text-icon`, flecha de `text-base` que gira; abierto, `--rm-orange-tint`, borde `--rm-orange-line`, texto
+  `--rm-orange-ink`). El buscador se aplica a los 300 ms; Periodo, Marca y sección, al momento; el panel, con «Aplicar».
 - **Resumen de Ventas** (`.panel-summary`): a la derecha del titular, `text-md`, `ink-2`, `line-height` 1,5, alineado a la derecha, con
   las cifras en `<strong>` (`ink`, 600). Dos líneas: «X € vendidos · Y € de beneficio» y «N líneas de venta · N prendas» (singular
   con 1). Suma todas las líneas que cumplen los filtros, no solo la página visible. La cabecera alinea por abajo (`align-items-end`).
