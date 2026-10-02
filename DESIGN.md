@@ -70,7 +70,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-xs` 12 · `sm` 13 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-xs` 12 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -94,6 +94,11 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   progreso, resumen) se baja con `mt-auto`, así que el espacio sobrante queda **encima** de él, no repartido.
   Por debajo de 992 px cada tarjeta ocupa su línea y mide lo que necesita.
 - **Encabezado de página**: `.panel-kicker` (`text-sm`, `ink-2`) encima de `.panel-title` (serif `display-lg`).
+- **Periodo de Ventas** (`.panel-period`): en lugar del kicker, el texto del periodo en `text-sm-plus` (13,5 px), 500, `ink-2`,
+  a 6 px del titular (`.panel-heading`). El selector es un campo `.panel-field.is-labelled` de 12,25 rem con la palabra «Periodo»
+  dentro (`.panel-field-label`, `text-sm`, `ink-2`), el desplegable en peso normal y `bi-chevron-down`. Con «Personalizado…»
+  salen «Desde» y «Hasta» con el mismo campo, en una fila propia bajo la barra; si «Desde» es posterior a «Hasta» no se aplica y
+  `.panel-note.text-negative` lo avisa.
 - **KPI**: etiqueta `.panel-label` + valor `.panel-stat` (`text-xl`, 600) o `.panel-display` (serif) para el principal;
   `.panel-display-hero` (`display-2xl`) para la cifra que manda en la tarjeta.
 - **Comparativa bajo una cifra**: `DeltaPill` (pastilla positiva/negativa con flecha) seguida de la frase
