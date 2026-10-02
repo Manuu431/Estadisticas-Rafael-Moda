@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { accumulate, fillDays, monthComparison } from './statisticsData.js';
+import { accumulate, fillDays, monthComparison, summarizeSales } from './statisticsData.js';
 
 const from = new Date(2026, 8, 25);
 const to = new Date(2026, 9, 1);
@@ -97,5 +97,31 @@ describe('monthComparison', () => {
 
     it('con los dos meses a cero deja la barra vacía', () => {
         expect(monthComparison(0, 0).progress).toBe(0);
+    });
+});
+
+
+describe('summarizeSales', () => {
+    const sales = [
+        { amount: '79.00', profit: '43.00', units: 1 },
+        { amount: '119.80', profit: '65.80', units: 2 },
+        { amount: '0.10', profit: '0.20', units: 1 }
+    ];
+
+    it('suma importes y beneficios en céntimos, y cuenta líneas y prendas', () => {
+        expect(summarizeSales(sales)).toEqual({ lines: 3, units: 4, amountCents: 19890, profitCents: 10900 });
+    });
+
+    it('no arrastra errores de coma flotante', () => {
+        const rows = [{ amount: '0.10', profit: '0.10', units: 1 }, { amount: '0.20', profit: '0.20', units: 1 }];
+        expect(summarizeSales(rows)).toEqual({ lines: 2, units: 2, amountCents: 30, profitCents: 30 });
+    });
+
+    it('acepta importes numéricos', () => {
+        expect(summarizeSales([{ amount: 70.74, profit: 37.39, units: 1 }])).toEqual({ lines: 1, units: 1, amountCents: 7074, profitCents: 3739 });
+    });
+
+    it('sin ventas devuelve todo a cero', () => {
+        expect(summarizeSales([])).toEqual({ lines: 0, units: 0, amountCents: 0, profitCents: 0 });
     });
 });

@@ -753,6 +753,18 @@
     color: var(--rm-ink-2);
 }
 
+.panel-summary {
+    font-size: var(--rm-text-md);
+    line-height: 1.5;
+    text-align: right;
+    color: var(--rm-ink-2);
+}
+
+.panel-summary strong {
+    font-weight: 600;
+    color: var(--rm-ink);
+}
+
 .panel-title {
     font-family: var(--rm-font-display);
     font-weight: 400;

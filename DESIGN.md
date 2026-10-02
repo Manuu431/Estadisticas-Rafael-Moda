@@ -99,6 +99,9 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   dentro (`.panel-field-label`, `text-sm`, `ink-2`), el desplegable en peso normal y `bi-chevron-down`. Con «Personalizado…»
   salen «Desde» y «Hasta» con el mismo campo, en una fila propia bajo la barra; si «Desde» es posterior a «Hasta» no se aplica y
   `.panel-note.text-negative` lo avisa.
+- **Resumen de Ventas** (`.panel-summary`): a la derecha del titular, `text-md`, `ink-2`, `line-height` 1,5, alineado a la derecha, con
+  las cifras en `<strong>` (`ink`, 600). Dos líneas: «X € vendidos · Y € de beneficio» y «N líneas de venta · N prendas» (singular
+  con 1). Suma todas las líneas que cumplen los filtros, no solo la página visible. La cabecera alinea por abajo (`align-items-end`).
 - **KPI**: etiqueta `.panel-label` + valor `.panel-stat` (`text-xl`, 600) o `.panel-display` (serif) para el principal;
   `.panel-display-hero` (`display-2xl`) para la cifra que manda en la tarjeta.
 - **Comparativa bajo una cifra**: `DeltaPill` (pastilla positiva/negativa con flecha) seguida de la frase

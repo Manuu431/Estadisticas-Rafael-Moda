@@ -1,5 +1,4 @@
 import { parseISO, startOfDay, eachDayOfInterval } from 'date-fns';
-import { SECTION_LABELS } from '../config/labels.js';
 
 const round = (value) => Math.round(value * 100) / 100;
 const dayKey = (date) => `${date.getMonth()}-${date.getDate()}`;
@@ -13,20 +12,15 @@ const groupByDay = (rows) => {
     return totals;
 };
 
-export function summarizeBySection(sales) {
-    const empty = () => ({ sales: 0, units: 0, profitCents: 0 });
-    const summary = { total: empty() };
-    Object.keys(SECTION_LABELS).forEach(section => { summary[section] = empty(); });
-    sales.forEach(sale => {
-        const profitCents = Math.round(parseFloat(sale.profit || 0) * 100);
-        [summary.total, summary[sale.section]].forEach(bucket => {
-            if (!bucket) return;
-            bucket.sales += 1;
-            bucket.units += sale.units || 0;
-            bucket.profitCents += profitCents;
-        });
-    });
-    return summary;
+const cents = (value) => Math.round(parseFloat(value || 0) * 100);
+
+export function summarizeSales(sales) {
+    return sales.reduce((total, sale) => ({
+        lines: total.lines + 1,
+        units: total.units + (sale.units || 0),
+        amountCents: total.amountCents + cents(sale.amount),
+        profitCents: total.profitCents + cents(sale.profit)
+    }), { lines: 0, units: 0, amountCents: 0, profitCents: 0 });
 }
 
 export function fillDays(rows, from, to) {

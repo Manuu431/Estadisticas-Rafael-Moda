@@ -7,6 +7,7 @@ const PERCENT = { minimumFractionDigits: 1, maximumFractionDigits: 1, useGroupin
 export const formatShare = (value, total) => `${(total > 0 ? (value / total) * 100 : 0).toLocaleString('es-ES', PERCENT)} %`;
 export const formatPercent = (value) => `${value >= 0 ? '+' : '−'}${Math.abs(value).toLocaleString('es-ES', PERCENT)} %`;
 export const formatEurosSigned = (value, { round = false } = {}) => (value < 0 ? '\u2212' : '+') + (round ? formatEurosRound : formatEuros)(Math.abs(value));
+export const formatSalesLines = (lines) => formatNumber(lines) + (lines === 1 ? ' línea' : ' líneas') + ' de venta';
 export const formatUnits = (units) => formatNumber(units) + ' prenda' + (units === 1 ? '' : 's');
 export const barWidth = (value, total) => ({ width: `${total > 0 ? (value / total) * 100 : 0}%` });
 export const barHeight = (value, peak, slot = 4.75) => ({ height: `${peak > 0 && value > 0 ? Math.max(0.25, Math.round((value / peak) * slot * 16) / 16) : 0.1875}rem` });
