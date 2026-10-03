@@ -16,13 +16,6 @@ export const DATABASE_TABLES = {
             columns: ["ID", "Sección", "Familia", "Talla", "Marca", "Unidades", "Importe", "Beneficio"],
             values: ["id", "section", "family", "size", "brand", "units", "amount", "profit"],
         },
-        filters: {
-            label: ["ID", "Sección", "Familia", "Talla", "Marca", "Precio de venta", "Beneficio"],
-            segment: "section",
-            primary: ["brand", "family"],
-            inputId: ["id", "section", "family", "size", "brand", "unit_price", "profit"],
-            inputType: ["text", "select", "select", "select", "select", "range", "range"]
-        }
     },
     clients: {
         endpoint: `${API_BASE}/clients`,

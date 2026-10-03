@@ -71,7 +71,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-xs` 12 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -81,7 +81,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 ## Forma, sombra y espacio
 
-- Radios: `--rm-radius-sm` 10 · `--rm-radius` 12 · `--rm-radius-lg` 18 px (tarjetas = `lg`).
+- Radios: `--rm-radius-sm` 10 · `--rm-radius-btn` 11 · `--rm-radius` 12 · `--rm-radius-lg` 18 px (tarjetas = `lg`).
 - Sombras: `--rm-shadow` (tarjetas en reposo), `--rm-shadow-raised` (elementos flotantes). Tonos marrones, nunca negro.
 - Espaciado en múltiplos de 0.125rem (2 px); los habituales: 0.375, 0.5, 0.875, 1, 1.25, 1.5, 1.75 rem.
 - Contenido principal: `padding: 2.25rem 2.75rem 2.75rem 1.25rem` (escritorio), `1.5rem 1rem 2rem` (<992px).
@@ -105,6 +105,13 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   después Todo / Mujer / Hombre con `.panel-segs.is-plus` (`text-sm-plus`), un hueco y «Más filtros» (`.panel-btn.is-soft`: icono de
   deslizadores de `text-icon`, flecha de `text-base` que gira; abierto, `--rm-orange-tint`, borde `--rm-orange-line`, texto
   `--rm-orange-ink`). El buscador se aplica a los 300 ms; Periodo, Marca y sección, al momento; el panel, con «Aplicar».
+- **Panel «Más filtros» de Ventas** (`.filters-panel.sales-panel`): tarjeta blanca de radio 16 px y padding 20 × 22 px, a 12 px de la barra,
+  con 18 px entre la rejilla y los botones y la animación de bajada de 0,25 s. La rejilla (`.sales-panel-grid`) tiene 5 columnas iguales
+  con 14 px de separación desde 1200 px y 3 por debajo (sin diseño de tablet, se reflúe): Familia, Talla y Color (desplegables
+  `.panel-field.is-plain`, con «Todas» / «Todos» como primera opción) y Precio de venta (€) y Beneficio (€), cada uno con «Desde» y «Hasta»
+  separados 6 px. La etiqueta (`.sales-panel-label`, `text-xs-plus`, 600, `--rm-nav`) va a 7 px del campo. Abajo a la derecha, a 8 px,
+  «Limpiar filtros» y «Aplicar» con `.is-compact` (40 px, radio `--rm-radius-btn`, `text-md`). «Aplicar» manda los cinco filtros;
+  «Limpiar filtros» vacía solo esos cinco y deja los de la barra. En móvil los mismos campos van en la hoja «Filtros», uno por línea.
 - **Resumen de Ventas** (`.panel-summary`): a la derecha del titular, `text-md`, `ink-2`, `line-height` 1,5, alineado a la derecha, con
   las cifras en `<strong>` (`ink`, 600). Dos líneas: «X € vendidos · Y € de beneficio» y «N líneas de venta · N prendas» (singular
   con 1). Suma todas las líneas que cumplen los filtros, no solo la página visible. La cabecera alinea por abajo (`align-items-end`).
