@@ -57,6 +57,8 @@
     --rm-on-accent: #FFFFFF;
     --rm-nav-hover: rgba(255, 255, 255, .65);
     --rm-shadow-raised: 0 1px 2px rgba(60, 40, 20, .08), 0 2px 8px rgba(60, 40, 20, .06);
+    --rm-text-2xs: 0.6875rem;
+    --rm-text-2xs-plus: 0.71875rem;
     --rm-text-xs: 0.75rem;
     --rm-text-xs-plus: 0.78125rem;
     --rm-text-sm: 0.8125rem;
@@ -3398,6 +3400,67 @@
     font-size: var(--rm-text-xs-plus);
     line-height: normal;
     color: var(--rm-ink-3);
+}
+
+.expenses-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 1440px) {
+    .expenses-main {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .expenses-main > :first-child {
+        grid-column: span 7;
+    }
+
+    .expenses-main > :last-child {
+        grid-column: span 5;
+    }
+}
+
+.expenses-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.375rem;
+    padding: 1.5rem 1.625rem;
+}
+
+.expenses-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.expenses-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: var(--rm-text-xs-plus);
+    color: var(--rm-ink-2);
+}
+
+.expenses-legend > span {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.expenses-chart {
+    margin-top: auto;
+}
+
+.expenses-chart .recharts-yAxis .recharts-cartesian-axis-tick-value {
+    fill: var(--rm-ink-3);
+    font-size: var(--rm-text-2xs);
+}
+
+.expenses-chart .recharts-xAxis .recharts-cartesian-axis-tick-value {
+    fill: var(--rm-ink-3);
+    font-size: var(--rm-text-2xs-plus);
 }
 
 .panel-select-toggle:disabled {

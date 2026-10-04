@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chosenPeriod, expensesKpis, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yearsText } from './expenses.js';
+import { axisLabel, chartPeak, chosenPeriod, expensesBuckets, expensesKpis, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yAxisScale, yearsText } from './expenses.js';
 
 const today = new Date(2026, 8, 28, 12, 30);
 const custom = (from, to) => ({ key: 'custom', from, to, bad: [] });
@@ -195,5 +195,104 @@ describe('expensesKpis', () => {
         const kpis = expensesKpis({ amount: 100, cost: 120, profit: -20 });
         expect(kpis.profit).toBe('-20,00 €');
         expect(kpis.profitShare).toBe('-20,0 %');
+    });
+});
+
+describe('yAxisScale', () => {
+    it('con el mayor ingreso de 30.120 el paso es 10.000 y el tope 40.000', () => {
+        expect(yAxisScale(30120)).toEqual({ step: 10000, top: 40000, ticks: [0, 10000, 20000, 30000, 40000] });
+    });
+
+    it('con 251.470 el paso es 100.000 y el tope 300.000', () => {
+        expect(yAxisScale(251470)).toEqual({ step: 100000, top: 300000, ticks: [0, 100000, 200000, 300000] });
+    });
+
+    it('elige el primer paso para el que el mayor cabe en cuatro tramos o menos', () => {
+        expect(yAxisScale(20000).step).toBe(5000);
+        expect(yAxisScale(20001).step).toBe(10000);
+        expect(yAxisScale(40000).step).toBe(10000);
+        expect(yAxisScale(40001).step).toBe(20000);
+        expect(yAxisScale(100000).step).toBe(25000);
+        expect(yAxisScale(200000).step).toBe(50000);
+    });
+
+    it('el tope es el múltiplo del paso por encima del mayor, y si coincide se queda', () => {
+        expect(yAxisScale(40000).top).toBe(40000);
+        expect(yAxisScale(41000).top).toBe(60000);
+    });
+
+    it('sigue con 200.000, 250.000 y 500.000 con importes grandes, sin llenar de marcas', () => {
+        expect(yAxisScale(800000).step).toBe(200000);
+        expect(yAxisScale(1000000).step).toBe(250000);
+        expect(yAxisScale(2000000).step).toBe(500000);
+        expect(yAxisScale(8000000).ticks.length).toBeLessThanOrEqual(6);
+    });
+
+    it('con todo a cero deja una escala mínima: 0 y el primer paso', () => {
+        expect(yAxisScale(0)).toEqual({ step: 5000, top: 5000, ticks: [0, 5000] });
+    });
+});
+
+describe('axisLabel', () => {
+    it('escribe los miles con «mil» y el separador de miles', () => {
+        expect(axisLabel(0)).toBe('0');
+        expect(axisLabel(10000)).toBe('10 mil');
+        expect(axisLabel(40000)).toBe('40 mil');
+        expect(axisLabel(250000)).toBe('250 mil');
+        expect(axisLabel(1500000)).toBe('1.500 mil');
+    });
+});
+
+describe('chartPeak', () => {
+    it('es el mayor de ingresos y gastos de todas las barras', () => {
+        expect(chartPeak([{ amount: 100, cost: 40 }, { amount: 50, cost: 120 }])).toBe(120);
+    });
+
+    it('sin barras es 0', () => {
+        expect(chartPeak([])).toBe(0);
+    });
+});
+
+describe('expensesBuckets', () => {
+    const row = (key, amount, cost) => ({ key, amount, cost, profit: amount - cost });
+
+    it('rellena con ceros los meses sin ventas, seguidos y en orden', () => {
+        const data = { range: { from: '2026-01-01', to: '2026-04-15' }, rows: [row('2026-01', 100, 40), row('2026-03', 200, 120)] };
+        const buckets = expensesBuckets('month', data, today);
+        expect(buckets.map((bucket) => bucket.key)).toEqual(['2026-01', '2026-02', '2026-03', '2026-04']);
+        expect(buckets[1]).toMatchObject({ amount: 0, cost: 0, profit: 0, margin: null });
+        expect(buckets[2]).toMatchObject({ amount: 200, cost: 120, profit: 80, margin: 40 });
+    });
+
+    it('en meses, las etiquetas son cortas y el nombre completo, con inicial mayúscula', () => {
+        const data = { range: { from: '2026-08-01', to: '2026-09-28' }, rows: [] };
+        const buckets = expensesBuckets('month', data, today);
+        expect(buckets.map((bucket) => bucket.label)).toEqual(['Ago', 'Sep']);
+        expect(buckets.map((bucket) => bucket.name)).toEqual(['Agosto', 'Septiembre']);
+    });
+
+    it('si el periodo cruza de año, la etiqueta y el nombre llevan el año', () => {
+        const data = { range: { from: '2025-11-10', to: '2026-01-20' }, rows: [] };
+        const buckets = expensesBuckets('month', data, today);
+        expect(buckets.map((bucket) => bucket.label)).toEqual(['Nov 25', 'Dic 25', 'Ene 26']);
+        expect(buckets.map((bucket) => bucket.name)).toEqual(['Noviembre 2025', 'Diciembre 2025', 'Enero 2026']);
+    });
+
+    it('un periodo de un solo mes da una sola barra', () => {
+        const data = { range: { from: '2026-09-05', to: '2026-09-20' }, rows: [row('2026-09', 10, 5)] };
+        expect(expensesBuckets('month', data, today)).toHaveLength(1);
+    });
+
+    it('en años va del año de la primera venta al año en curso, aunque no haya ventas este año', () => {
+        const data = { range: { from: '2023-02-03', to: '2024-05-01' }, rows: [row('2023', 100, 50), row('2024', 80, 30)] };
+        const buckets = expensesBuckets('year', data, today);
+        expect(buckets.map((bucket) => bucket.key)).toEqual(['2023', '2024', '2025', '2026']);
+        expect(buckets.map((bucket) => bucket.label)).toEqual(['2023', '2024', '2025', '2026']);
+        expect(buckets[3]).toMatchObject({ amount: 0, name: '2026' });
+    });
+
+    it('sin datos o sin ventas devuelve una lista vacía', () => {
+        expect(expensesBuckets('month', null, today)).toEqual([]);
+        expect(expensesBuckets('year', { range: null, rows: [] }, today)).toEqual([]);
     });
 });

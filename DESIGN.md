@@ -59,7 +59,7 @@ se copia la paleta en cada pantalla.
 
 **Comparación de dos series** (no categórica): la serie principal en `--rm-orange` y la de contraste
 en `--rm-cost` (ingresos frente a coste, en Gastos) o `--rm-compare` (periodo A frente a B, en
-Comparativa). Gastos se dibuja con `components/PairedBarChart.jsx` y Comparativa con
+Comparativa). Gastos se dibuja con `pages/expenses/ExpensesChart.jsx` y Comparativa con
 `pages/comparative/CompareChart.jsx`; los dos pasan los tokens como `var(--rm-*)` a Recharts, no escribir
 hex en las gráficas de comparación. Los textos de los ejes de Comparativa se estilan por CSS
 (`.compare-chart .recharts-cartesian-axis-tick-value`), porque `var()` no vale en un atributo SVG.
@@ -76,7 +76,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-2xs` 11 · `2xs-plus` 11,5 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -286,6 +286,16 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   naranja y `.is-cost` marrón, 10 px, radio 3; Beneficio no lleva), cifra `.expenses-kpi-value` (serif `display-lg`, `line-height` 1; Beneficio en `--rm-positive`)
   y nota `.expenses-kpi-note` (`text-xs-plus`, `ink-3`). Etiqueta y nota llevan `line-height: normal`, como el artboard (con el 1,5 de Bootstrap la tarjeta crecía 10 px).
   Los totales vienen del servidor (no se suman las filas redondeadas) y los porcentajes son gastos / ingresos y beneficio / ingresos con un decimal («0,0 %» sin ingresos).
+- **Gastos, gráfica «Ingresos y gastos por mes»** (`ExpensesChart`, `.expenses-card`): tarjeta con padding 24 × 26 px y 22 px entre bloques. Gráfica y tabla comparten
+  fila (`.expenses-main`): en 7/12 y 5/12 desde 1440 px y apiladas por debajo (con menos, la tabla no cabe en 402 px); las dos miden lo mismo. Cabecera con el título («por año» con
+  Años) y la leyenda a la derecha (16 px, `text-xs-plus`, `ink-2`, cuadraditos `.panel-dot`). La gráfica (`.expenses-chart`) va pegada abajo (`mt-auto`): 300 px de dibujo,
+  Ingresos (`--rm-orange`) y Gastos (`--rm-cost`) agrupados con 4 px entre las dos, esquinas 5/5/2/2, máximo 30 px, `barCategoryGap="10%"` (en Recharts el porcentaje
+  cuenta por cada lado, así que 10 % deja las barras en el 80 % del hueco del mes), rejilla horizontal `--rm-line-soft`. Eje Y de 52 px + 12 de separación
+  (`tickSize={0}`: Recharts suma 6 px de marca aunque no se dibuje), letras `text-2xs` en `ink-3`; eje X con una etiqueta por barra en `text-2xs-plus` (por encima de
+  12 barras, automáticas y sin pisarse). Los textos de los ejes, por CSS. Escala del eje Y (`yAxisScale`): el paso es el primero de 5.000, 10.000, 20.000, 25.000, 50.000,
+  100.000, 200.000, 250.000, 500.000… (1, 2, 2,5 y 5 por una potencia de diez, mínimo 5.000) para el que mayor ÷ paso ≤ 4, y el tope el múltiplo del paso por encima del mayor.
+  «Mayor» es el mayor entre ingresos y gastos: nada impide un coste superior al precio. Etiquetas «0», «10 mil», «1.500 mil». Los meses sin ventas del periodo salen con las barras
+  a 0 (y los años, hasta el año en curso). Tooltip de Recharts con el nombre completo («Septiembre», con el año si el periodo cruza años) y los dos importes con dos decimales.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

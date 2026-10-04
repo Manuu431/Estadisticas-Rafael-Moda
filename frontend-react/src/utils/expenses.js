@@ -1,7 +1,7 @@
 import { startOfDay } from 'date-fns';
 import { apiDate } from './dates.js';
 import { defaultPair, formatBucketRange } from './compare.js';
-import { formatEuros, formatShare } from './format.js';
+import { formatEuros, formatNumber, formatShare } from './format.js';
 import { salesPeriodRange } from './salesPeriod.js';
 
 const PROMPTS = { campaign: 'Una campaña…', season: 'Una temporada…', dates: 'Fechas concretas…' };
@@ -66,4 +66,61 @@ export function expensesKpis({ amount, cost, profit }) {
         costShare: formatShare(cost, amount),
         profitShare: formatShare(profit, amount)
     };
+}
+
+const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const SCALE_BASES = [1, 2, 2.5, 5];
+const MIN_STEP = 5000;
+const MAX_INTERVALS = 4;
+
+export function yAxisScale(peak) {
+    let step = 0;
+    for (let power = 3; step === 0; power++) {
+        step = SCALE_BASES.map((base) => base * 10 ** power).find((size) => size >= MIN_STEP && peak / size <= MAX_INTERVALS) ?? 0;
+    }
+    const top = Math.max(step, Math.ceil(peak / step) * step);
+    return { step, top, ticks: Array.from({ length: top / step + 1 }, (_, index) => index * step) };
+}
+
+export function axisLabel(value) {
+    return value >= 1000 ? `${formatNumber(Math.round(value / 1000))} mil` : formatNumber(value);
+}
+
+export const chartPeak = (buckets) => Math.max(0, ...buckets.flatMap((bucket) => [bucket.amount, bucket.cost]));
+
+const bucket = (key, label, name, found) => {
+    const amount = found?.amount ?? 0;
+    const profit = found?.profit ?? 0;
+    return { key, label, name, amount, cost: found?.cost ?? 0, profit, margin: amount > 0 ? (profit / amount) * 100 : null };
+};
+
+function monthKeys(from, to) {
+    const keys = [];
+    let year = Number(from.slice(0, 4));
+    let month = Number(from.slice(5, 7));
+    const last = to.slice(0, 7);
+    for (;;) {
+        const key = `${year}-${String(month).padStart(2, '0')}`;
+        if (key > last) return keys;
+        keys.push(key);
+        year += month === 12 ? 1 : 0;
+        month = month === 12 ? 1 : month + 1;
+    }
+}
+
+export function expensesBuckets(grain, data, today) {
+    if (!data?.range) return [];
+    const found = new Map(data.rows.map((row) => [row.key, row]));
+    if (grain === 'year') {
+        const first = Number(data.range.from.slice(0, 4));
+        const last = Math.max(Number(data.range.to.slice(0, 4)), today.getFullYear());
+        return Array.from({ length: last - first + 1 }, (_, index) => String(first + index)).map((key) => bucket(key, key, key, found.get(key)));
+    }
+    const spansYears = data.range.from.slice(0, 4) !== data.range.to.slice(0, 4);
+    return monthKeys(data.range.from, data.range.to).map((key) => {
+        const name = MONTH_NAMES[Number(key.slice(5, 7)) - 1];
+        return spansYears
+            ? bucket(key, `${name.slice(0, 3)} ${key.slice(2, 4)}`, `${name} ${key.slice(0, 4)}`, found.get(key))
+            : bucket(key, name.slice(0, 3), name, found.get(key));
+    });
 }
