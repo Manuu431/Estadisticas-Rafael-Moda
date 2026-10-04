@@ -1,8 +1,12 @@
+import FieldDropdown from '../../components/FieldDropdown.jsx';
 import { CustomDates } from '../../components/SalesFields.jsx';
 import { COMPARE_MODES } from '../../utils/compare.js';
 
-function PeriodChoice({ label, tone, value, options, onChange }) {
-    const selected = options.find((option) => option.value === value);
+const NO_CHOICE = { value: '', label: 'Elige un periodo' };
+
+function PeriodChoice({ label, tone, value, options, onChange, alignEnd }) {
+    const choices = options.some((option) => option.value === value) ? options : [NO_CHOICE, ...options];
+    const items = choices.map((option) => ({ ...option, detail: option.range }));
 
     return (
         <div className="compare-slot">
@@ -10,17 +14,15 @@ function PeriodChoice({ label, tone, value, options, onChange }) {
                 <span className={`panel-dot is-${tone}`} aria-hidden="true" />
                 {label}
             </span>
-            <label className="panel-field is-plain compare-select">
-                <span className="compare-select-name">{selected?.label ?? 'Elige un periodo'}</span>
-                {selected && <span className="compare-select-range">{selected.range}</span>}
-                <i className="bi bi-chevron-down" aria-hidden="true" />
-                <select aria-label={label} value={selected ? value : ''} onChange={(event) => onChange(event.target.value)}>
-                    {!selected && <option value="" disabled>Elige un periodo</option>}
-                    {options.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label} ({option.range})</option>
-                    ))}
-                </select>
-            </label>
+            <FieldDropdown
+                label={label}
+                showLabel={false}
+                value={value}
+                options={items}
+                onChange={onChange}
+                className="compare-select"
+                alignEnd={alignEnd}
+            />
         </div>
     );
 }
@@ -66,7 +68,7 @@ function ComparePeriods({ mode, onModeChange, options, a, b, onChoose, dates, on
                 <>
                     <PeriodChoice label="Periodo A" tone="a" value={a} options={options} onChange={(value) => onChoose('a', value)} />
                     <span className="compare-vs" aria-hidden="true">vs.</span>
-                    <PeriodChoice label="Periodo B" tone="b" value={b} options={options} onChange={(value) => onChoose('b', value)} />
+                    <PeriodChoice label="Periodo B" tone="b" value={b} options={options} onChange={(value) => onChoose('b', value)} alignEnd />
                 </>
             )}
         </section>

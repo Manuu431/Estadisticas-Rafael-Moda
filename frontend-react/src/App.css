@@ -2749,6 +2749,28 @@
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.panel-select-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.panel-select-option {
+    min-width: 0;
+}
+
+.panel-select-detail {
+    flex-shrink: 0;
+    font-size: var(--rm-text-sm);
+    font-weight: 400;
+    color: var(--rm-ink-2);
+}
+
+.panel-select-menu .dropdown-item.active .panel-select-detail {
+    color: var(--rm-orange-ink);
+}
+
 .panel-select-menu .dropdown-item:hover,
 .panel-select-menu .dropdown-item:focus {
     background-color: var(--rm-tint);
@@ -2818,32 +2840,12 @@
     color: var(--rm-ink-2);
 }
 
-.compare-select {
-    position: relative;
+.compare-select .panel-select-toggle {
     height: 2.75rem;
 }
 
-.compare-select-name {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.compare-select .panel-select-value {
     font-weight: 600;
-    color: var(--rm-ink);
-}
-
-.compare-select-range {
-    margin-left: auto;
-    flex-shrink: 0;
-    font-size: var(--rm-text-sm);
-    color: var(--rm-ink-2);
-}
-
-.compare-select > select {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    opacity: 0;
 }
 
 .compare-slot .panel-field-period {
@@ -3138,8 +3140,12 @@
         width: 100%;
     }
 
-    .compare-select-range {
+    .compare-select .panel-select-toggle .panel-select-detail {
         display: none;
+    }
+
+    .compare-select .dropdown-item {
+        min-height: 2.75rem;
     }
 
     .compare-kpis {

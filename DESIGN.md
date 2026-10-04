@@ -224,7 +224,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   igual que la ciudad («Pego (Alicante) · 03780», «Oliva · 46780», «Madrid · 28014»). Sin paginación de flechas: 12 clientes y un `.m-btn`
   a ancho completo «Ver más clientes (N)» con los que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
   filtro vuelve a los 12 primeros. Cargando, sin resultados y error: los mensajes del escritorio, sin cabecera de tabla, en una tarjeta blanca.
-- **Desplegable de campo** (`FieldDropdown`, `.panel-select`; hoy solo en Clientes): sustituye al `<select>` nativo, cuya lista emergente
+- **Desplegable de campo** (`FieldDropdown`, `.panel-select`; en Clientes y en los periodos de Comparativa): sustituye al `<select>` nativo, cuya lista emergente
   la dibuja el navegador, no se puede estilar y solo se abre al pulsar sobre el propio `select`. Todo el campo (`.panel-select-toggle`, con la
   misma forma que `.panel-field.is-labelled`) es el botón: la palabra, el valor y la flecha abren la lista. Al abrir, borde y anillo
   naranjas y la flecha gira. Lista (`.panel-select-menu`): superficie blanca, borde `--rm-line`, radio `--rm-radius`, `--rm-shadow-raised`,
@@ -240,8 +240,9 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   en el navegador (`utils/compare.js`), así que cambiar Días/Semanas/Meses/Años o Marca/Familia/Sección/Talla/Color no pide nada al servidor.
   Barra de periodos (`.compare-controls`, tarjeta con la rejilla `auto · 1fr · vs. · 1fr`, 20 px): «Comparar» con Fechas / Campañas /
   Temporadas (`.panel-segs`) y dos campos con punto naranja (A) o `--rm-compare` (B) y su etiqueta encima. En Campañas y Temporadas el
-  campo (`.compare-select`) enseña el nombre en 600 y, a la derecha, el rango («1 jul – 31 ago», oculto en móvil); es un `<select>`
-  transparente encima, así que el desplegable es el nativo. Solo salen las que ya han empezado. Por defecto A es la última que ya
+  campo (`.compare-select`, 44 px) es un `FieldDropdown` sin palabra interior (`showLabel={false}`): enseña el nombre en 600 y, a la derecha,
+  el rango («1 jul – 31 ago», oculto en móvil), y la lista es la de Clientes con el rango en `.panel-select-detail` (`text-sm`, `ink-2`) a la
+  derecha de cada opción; la de B se abre hacia la izquierda (`alignEnd`). Solo salen las que ya han empezado. Por defecto A es la última que ya
   terminó (o la que está en curso) y B su edición anterior; al elegir otra A, B vuelve a su edición anterior. En Fechas, los campos
   Desde / Hasta de Ventas (`CustomDates`) con sus avisos; empieza en el último mes cerrado frente al mismo mes del año anterior.
   KPI (`.compare-kpi`, 4 en fila desde 1200 px y 2 por debajo): etiqueta en `text-md` 600 con `DeltaPill` a la derecha, cifra en serif

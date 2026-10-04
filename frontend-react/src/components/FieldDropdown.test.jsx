@@ -70,4 +70,14 @@ describe('FieldDropdown', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Uno' }));
         expect(onChange).toHaveBeenCalledWith('1');
     });
+
+    it('sin palabra interior y con detalle: enseña el nombre y el rango, y el rango también en la lista', () => {
+        const options = [{ value: 'a', label: 'Rebajas', detail: '1 jul – 31 ago' }, { value: 'b', label: 'Otoño', detail: '15 sep – 12 oct' }];
+        render(<FieldDropdown label="Periodo A" showLabel={false} value="b" options={options} onChange={vi.fn()} />);
+        const toggle = screen.getByRole('button', { name: 'Periodo A: Otoño' });
+        expect(within(toggle).queryByText('Periodo A')).not.toBeInTheDocument();
+        expect(within(toggle).getByText('15 sep – 12 oct')).toBeInTheDocument();
+        fireEvent.click(toggle);
+        expect(screen.getByText('1 jul – 31 ago')).toBeInTheDocument();
+    });
 });
