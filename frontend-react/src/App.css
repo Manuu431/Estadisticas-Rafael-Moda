@@ -2916,6 +2916,21 @@
     row-gap: 0.25rem;
 }
 
+.compare-card-head.is-breakdown {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "title" "note" "segs";
+    row-gap: 0.25rem;
+}
+
+.compare-card-head.is-breakdown .compare-segs {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.compare-card-head.is-breakdown .panel-seg {
+    flex: 1;
+}
+
 .compare-head-title {
     grid-area: title;
 }
@@ -2955,6 +2970,18 @@
 .compare-table {
     display: flex;
     flex-direction: column;
+}
+
+.compare-body {
+    min-height: 16.9375rem;
+}
+
+.compare-foot {
+    margin-top: auto;
+}
+
+.compare-foot .data-foot {
+    padding: 0.875rem 0 0;
 }
 
 .compare-row {
@@ -3161,6 +3188,10 @@
 
     .compare-card-head .compare-segs {
         width: 100%;
+    }
+
+    .compare-body {
+        min-height: 17.5rem;
     }
 
     .compare-segs .panel-seg {

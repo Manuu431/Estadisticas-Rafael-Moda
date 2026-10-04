@@ -35,6 +35,20 @@ describe('bucketStarts', () => {
     });
 });
 
+describe('bucketStarts por día y por año', () => {
+    it('días: una barra por cada día del periodo', () => {
+        expect(bucketStarts('2026-07-30', '2026-08-02', 'day')).toEqual(['2026-07-30', '2026-07-31', '2026-08-01', '2026-08-02']);
+    });
+
+    it('años: el primero empieza el primer día del periodo y los demás el 1 de enero', () => {
+        expect(bucketStarts('2025-11-10', '2027-02-01', 'year')).toEqual(['2025-11-10', '2026-01-01', '2027-01-01']);
+    });
+
+    it('años: un periodo dentro de un solo año tiene una barra', () => {
+        expect(bucketStarts('2026-07-01', '2026-08-31', 'year')).toEqual(['2026-07-01']);
+    });
+});
+
 describe('pairBuckets', () => {
     const a = { from: '2026-07-01', to: '2026-07-14', days: [day('2026-07-01', 100), day('2026-07-03', 50), day('2026-07-07', 70)] };
     const b = { from: '2025-07-01', to: '2025-07-14', days: [day('2025-07-01', 40), day('2025-07-08', 90)] };
@@ -67,7 +81,37 @@ describe('pairBuckets', () => {
     });
 });
 
+describe('pairBuckets por día y por año', () => {
+    it('días: empareja el día n de A con el día n de B', () => {
+        const pa = { from: '2026-07-01', to: '2026-07-03', days: [day('2026-07-02', 10)] };
+        const pb = { from: '2025-07-01', to: '2025-07-02', days: [day('2025-07-01', 4), day('2025-07-02', 6)] };
+        expect(pairBuckets(pa, pb, 'day')).toEqual([
+            { start: '2026-07-01', a: 0, b: 4 },
+            { start: '2026-07-02', a: 10, b: 6 },
+            { start: '2026-07-03', a: 0, b: 0 }
+        ]);
+    });
+
+    it('años: junta los días de cada año natural', () => {
+        const pa = { from: '2025-12-20', to: '2026-01-10', days: [day('2025-12-31', 5), day('2026-01-02', 7)] };
+        const pb = { from: '2024-12-20', to: '2025-01-10', days: [day('2024-12-25', 1), day('2025-01-05', 2)] };
+        expect(pairBuckets(pa, pb, 'year')).toEqual([
+            { start: '2025-12-20', a: 5, b: 1 },
+            { start: '2026-01-01', a: 7, b: 2 }
+        ]);
+    });
+});
+
 describe('bucketLabel', () => {
+    it('día: como la semana, con el día y el mes', () => {
+        expect(bucketLabel('2026-07-06', 'day', false)).toBe('6 jul');
+        expect(bucketLabel('2026-07-06', 'day', true)).toBe('6/7');
+    });
+
+    it('año: el año con cuatro cifras', () => {
+        expect(bucketLabel('2026-01-01', 'year', false)).toBe('2026');
+    });
+
     it('semana en escritorio: día y mes abreviado', () => {
         expect(bucketLabel('2026-07-06', 'week', false)).toBe('6 jul');
     });

@@ -67,7 +67,13 @@ const ranking = async (from, to, section) => {
   };
 };
 
-const GROUPS = { brand: 'v.brand', family: 'v.family', section: 'v.section' };
+const GROUPS = {
+  brand: 'v.brand',
+  family: 'v.family',
+  section: 'v.section',
+  size: 'v.size',
+  color: "COALESCE(v.color, 'Sin color')"
+};
 
 const grouped = async (column, from, to) => {
   const [rows] = await pool.query(
@@ -138,11 +144,11 @@ const getCompare = async (req, res, next) => {
       daily(bFrom, bTo, null),
       ...Object.values(GROUPS).map((column) => breakdown(column, a, b))
     ]);
-    const [brand, family, section] = groups;
+    const [brand, family, section, size, color] = groups;
     res.json({
       a: { summary: summaryA, days: daysA },
       b: { summary: summaryB, days: daysB },
-      breakdown: { brand, family, section }
+      breakdown: { brand, family, section, size, color }
     });
   } catch (err) {
     next(err);

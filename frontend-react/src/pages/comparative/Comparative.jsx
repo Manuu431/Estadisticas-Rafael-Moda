@@ -133,14 +133,14 @@ function Comparative({ title }) {
                         />
                     </section>
                     <section className="panel-card compare-card">
-                        <div className="compare-card-head">
+                        <div className="compare-card-head is-breakdown">
                             <h2 className="panel-card-title m-0 compare-head-title">Desglose</h2>
                             <span className="panel-muted compare-head-note">
                                 {isMobile ? `Por ${groupLabel} · ${names.shortA} frente a ${names.shortB}` : `Por ${groupLabel}`}
                             </span>
                             <Segs label="Desglosar por" options={COMPARE_GROUPS} value={group} onChange={setGroup} />
                         </div>
-                        <CompareBreakdown rows={breakdown[group]} group={group} names={names} isMobile={isMobile} />
+                        <CompareBreakdown key={`${group}-${a.from}-${a.to}-${b.from}-${b.to}`} rows={breakdown[group]} group={group} names={names} isMobile={isMobile} />
                     </section>
                 </div>
             </>

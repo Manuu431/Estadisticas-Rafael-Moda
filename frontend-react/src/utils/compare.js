@@ -1,4 +1,4 @@
-import { addDays, addMonths, differenceInCalendarDays, differenceInCalendarMonths, endOfMonth, format, isBefore, parseISO, startOfDay, startOfMonth, subYears } from 'date-fns';
+import { addDays, addMonths, addYears, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, endOfMonth, format, isBefore, parseISO, startOfDay, startOfMonth, startOfYear, subYears } from 'date-fns';
 import { apiDate, formatShortDay } from './dates.js';
 import { previousEdition } from './campaigns.js';
 
@@ -9,25 +9,44 @@ export const COMPARE_MODES = [
 ];
 
 export const COMPARE_BUCKETS = [
+    { value: 'day', label: 'Días', noun: 'día' },
     { value: 'week', label: 'Semanas', noun: 'semana' },
-    { value: 'month', label: 'Meses', noun: 'mes' }
+    { value: 'month', label: 'Meses', noun: 'mes' },
+    { value: 'year', label: 'Años', noun: 'año' }
 ];
 
+export const BREAKDOWN_PAGE_SIZE = 5;
+
 export const COMPARE_GROUPS = [
-    { value: 'brand', label: 'Marca' },
-    { value: 'family', label: 'Familia' },
-    { value: 'section', label: 'Sección' }
+    { value: 'brand', label: 'Marca', plural: 'marcas' },
+    { value: 'family', label: 'Familia', plural: 'familias' },
+    { value: 'section', label: 'Sección', plural: 'secciones' },
+    { value: 'size', label: 'Talla', plural: 'tallas' },
+    { value: 'color', label: 'Color', plural: 'colores' }
 ];
 
 const SHORT_MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const mondayFirst = (date) => (date.getDay() + 6) % 7;
 
+const NEXT_START = {
+    day: (last) => addDays(last, 1),
+    week: (last) => addDays(last, 7 - mondayFirst(last)),
+    month: (last) => startOfMonth(addMonths(last, 1)),
+    year: (last) => startOfYear(addYears(last, 1))
+};
+
+const BUCKET_INDEX = {
+    day: (moment, start) => differenceInCalendarDays(moment, start),
+    week: (moment, start) => Math.floor((differenceInCalendarDays(moment, start) + mondayFirst(start)) / 7),
+    month: (moment, start) => differenceInCalendarMonths(moment, start),
+    year: (moment, start) => differenceInCalendarYears(moment, start)
+};
+
 export function bucketStarts(from, to, kind) {
     const end = parseISO(to);
     const starts = [parseISO(from)];
     for (;;) {
-        const last = starts[starts.length - 1];
-        const next = kind === 'month' ? startOfMonth(addMonths(last, 1)) : addDays(last, 7 - mondayFirst(last));
+        const next = NEXT_START[kind](starts[starts.length - 1]);
         if (isBefore(end, next)) break;
         starts.push(next);
     }
@@ -38,10 +57,7 @@ function bucketTotals({ from, to, days }, kind) {
     const start = parseISO(from);
     const totals = bucketStarts(from, to, kind).map(() => 0);
     days.forEach(({ date, total }) => {
-        const moment = parseISO(date);
-        const index = kind === 'month'
-            ? differenceInCalendarMonths(moment, start)
-            : Math.floor((differenceInCalendarDays(moment, start) + mondayFirst(start)) / 7);
+        const index = BUCKET_INDEX[kind](parseISO(date), start);
         if (index >= 0 && index < totals.length) totals[index] += total;
     });
     return totals;
@@ -62,7 +78,8 @@ export function pairBuckets(a, b, kind) {
 
 export function bucketLabel(start, kind, compact, firstStart = start) {
     const date = parseISO(start);
-    if (kind === 'week') return compact ? `${date.getDate()}/${date.getMonth() + 1}` : formatShortDay(date);
+    if (kind === 'year') return String(date.getFullYear());
+    if (kind === 'week' || kind === 'day') return compact ? `${date.getDate()}/${date.getMonth() + 1}` : formatShortDay(date);
     const month = SHORT_MONTHS[date.getMonth()];
     return date.getFullYear() === parseISO(firstStart).getFullYear() ? month : `${month} ${format(date, 'yy')}`;
 }

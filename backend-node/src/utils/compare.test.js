@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { mergeBreakdown, BREAKDOWN_LIMIT } = require('./compare');
+const { mergeBreakdown } = require('./compare');
 
 test('mergeBreakdown junta los dos periodos por nombre y ordena por el A', () => {
   const a = [{ name: 'Lois', total: 3890 }, { name: 'Paz Torras', total: 5420 }];
@@ -24,11 +24,16 @@ test('mergeBreakdown desempata por el B y luego por el nombre', () => {
   assert.deepEqual(merged.map((row) => row.name), ['Beta', 'Alfa', 'Zeta']);
 });
 
-test('mergeBreakdown se queda con las primeras BREAKDOWN_LIMIT filas', () => {
-  const rows = Array.from({ length: BREAKDOWN_LIMIT + 4 }, (_, index) => ({ name: `M${index}`, total: 1000 - index }));
+test('mergeBreakdown devuelve todas las filas, sin recortar', () => {
+  const rows = Array.from({ length: 30 }, (_, index) => ({ name: `M${index}`, total: 1000 - index }));
   const merged = mergeBreakdown(rows, []);
-  assert.equal(merged.length, BREAKDOWN_LIMIT);
+  assert.equal(merged.length, 30);
   assert.equal(merged[0].name, 'M0');
+});
+
+test('mergeBreakdown tolera un nombre que no es texto', () => {
+  const merged = mergeBreakdown([{ name: null, total: 5 }, { name: 'Rojo', total: 5 }], []);
+  assert.equal(merged.length, 2);
 });
 
 test('mergeBreakdown sin datos devuelve una lista vacía', () => {
