@@ -1,6 +1,8 @@
 const FOOT = 'En los meses de rebajas el porcentaje baja porque se vende con descuento.';
+const FOOT_COMPACT = 'En rebajas el porcentaje baja porque se vende con descuento.';
 
-function ExpensesTable({ grain, table }) {
+function ExpensesTable({ grain, table, compact }) {
+    const foot = compact ? FOOT_COMPACT : FOOT;
     const title = grain === 'year' ? 'Año a año' : 'Mes a mes';
 
     return (
@@ -10,7 +12,7 @@ function ExpensesTable({ grain, table }) {
                 <div role="row" className="expenses-row is-head">
                     <span role="columnheader"><span className="visually-hidden">Periodo</span></span>
                     <span role="columnheader">Ingresos</span>
-                    <span role="columnheader">Gastos</span>
+                    <span role="columnheader" className="expenses-cell-cost">Gastos</span>
                     <span role="columnheader">Beneficio</span>
                     <span role="columnheader">%</span>
                 </div>
@@ -24,7 +26,7 @@ function ExpensesTable({ grain, table }) {
                     </div>
                 ))}
             </div>
-            <p className="expenses-foot">{table.note ? `${table.note} ${FOOT}` : FOOT}</p>
+            <p className="expenses-foot">{table.note ? `${table.note} ${foot}` : foot}</p>
         </section>
     );
 }

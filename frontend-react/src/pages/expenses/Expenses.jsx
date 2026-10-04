@@ -69,8 +69,8 @@ function Expenses({ title }) {
                     </section>
                 ) : (
                     <div className="expenses-main">
-                        <ExpensesChart buckets={buckets} noun={noun} />
-                        <ExpensesTable grain={grain} table={expensesTable(grain, buckets, data.range, today)} />
+                        <ExpensesChart buckets={buckets} noun={noun} compact={isMobile} />
+                        <ExpensesTable grain={grain} table={expensesTable(grain, buckets, data.range, today)} compact={isMobile} />
                     </div>
                 )}
             </>

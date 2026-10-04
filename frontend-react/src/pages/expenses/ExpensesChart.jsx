@@ -2,11 +2,11 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { axisLabel, chartPeak, yAxisScale } from '../../utils/expenses.js';
 import { formatEuros } from '../../utils/format.js';
 
-const PLOT_HEIGHT = 300;
 const TOP_ROOM = 8;
-const X_AXIS_HEIGHT = 26;
-const Y_AXIS_WIDTH = 64;
-const SPREAD_LABELS_FROM = 12;
+const SIZES = {
+    desktop: { plot: 300, xAxis: 26, xMargin: 13, yAxis: 64, yMargin: 12, barGap: 4, categoryGap: '10%', maxBar: 30, radius: 5 },
+    mobile: { plot: 220, xAxis: 22, xMargin: 11, yAxis: 52, yMargin: 8, barGap: 2, categoryGap: '7%', maxBar: 22, radius: 4 }
+};
 
 function ChartTooltip({ active, payload }) {
     if (!active || !payload?.length) return null;
@@ -25,9 +25,11 @@ function ChartTooltip({ active, payload }) {
     );
 }
 
-function ExpensesChart({ buckets, noun }) {
+function ExpensesChart({ buckets, noun, compact }) {
     const scale = yAxisScale(chartPeak(buckets));
     const title = `Ingresos y gastos por ${noun}`;
+    const size = compact ? SIZES.mobile : SIZES.desktop;
+    const radius = [size.radius, size.radius, 2, 2];
 
     return (
         <section className="panel-card expenses-card" aria-label={title}>
@@ -39,31 +41,32 @@ function ExpensesChart({ buckets, noun }) {
                 </div>
             </div>
             <div className="expenses-chart" role="img" aria-label={title}>
-                <ResponsiveContainer width="100%" height={TOP_ROOM + PLOT_HEIGHT + X_AXIS_HEIGHT}>
-                    <BarChart data={buckets} margin={{ top: TOP_ROOM, right: 0, bottom: 0, left: 0 }} barGap={4} barCategoryGap="10%">
+                <ResponsiveContainer width="100%" height={TOP_ROOM + size.plot + size.xAxis}>
+                    <BarChart data={buckets} margin={{ top: TOP_ROOM, right: 0, bottom: 0, left: 0 }} barGap={size.barGap} barCategoryGap={size.categoryGap}>
                         <CartesianGrid vertical={false} stroke="var(--rm-line-soft)" />
                         <XAxis
                             dataKey="label"
-                            height={X_AXIS_HEIGHT}
+                            height={size.xAxis}
                             tickLine={false}
                             axisLine={false}
                             tickSize={0}
-                            tickMargin={13}
-                            interval={buckets.length > SPREAD_LABELS_FROM ? 'preserveStartEnd' : 0}
+                            tickMargin={size.xMargin}
+                            interval="preserveStartEnd"
+                            minTickGap={4}
                         />
                         <YAxis
-                            width={Y_AXIS_WIDTH}
+                            width={size.yAxis}
                             tickLine={false}
                             axisLine={false}
                             tickSize={0}
-                            tickMargin={12}
+                            tickMargin={size.yMargin}
                             domain={[0, scale.top]}
                             ticks={scale.ticks}
                             tickFormatter={axisLabel}
                         />
                         <Tooltip content={<ChartTooltip />} cursor={{ fill: 'var(--rm-cream-light)' }} />
-                        <Bar dataKey="amount" name="Ingresos" fill="var(--rm-orange)" radius={[5, 5, 2, 2]} maxBarSize={30} />
-                        <Bar dataKey="cost" name="Gastos" fill="var(--rm-cost)" radius={[5, 5, 2, 2]} maxBarSize={30} />
+                        <Bar dataKey="amount" name="Ingresos" fill="var(--rm-orange)" radius={radius} maxBarSize={size.maxBar} />
+                        <Bar dataKey="cost" name="Gastos" fill="var(--rm-cost)" radius={radius} maxBarSize={size.maxBar} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

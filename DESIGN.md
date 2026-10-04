@@ -76,7 +76,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-2xs` 11 · `2xs-plus` 11,5 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-3xs` 10 · `--rm-text-2xs` 11 · `2xs-plus` 11,5 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `xs-plus` 34 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -291,8 +291,8 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Años) y la leyenda a la derecha (16 px, `text-xs-plus`, `ink-2`, cuadraditos `.panel-dot`). La gráfica (`.expenses-chart`) va pegada abajo (`mt-auto`): 300 px de dibujo,
   Ingresos (`--rm-orange`) y Gastos (`--rm-cost`) agrupados con 4 px entre las dos, esquinas 5/5/2/2, máximo 30 px, `barCategoryGap="10%"` (en Recharts el porcentaje
   cuenta por cada lado, así que 10 % deja las barras en el 80 % del hueco del mes), rejilla horizontal `--rm-line-soft`. Eje Y de 52 px + 12 de separación
-  (`tickSize={0}`: Recharts suma 6 px de marca aunque no se dibuje), letras `text-2xs` en `ink-3`; eje X con una etiqueta por barra en `text-2xs-plus` (por encima de
-  12 barras, automáticas y sin pisarse). Los textos de los ejes, por CSS. Escala del eje Y (`yAxisScale`): el paso es el primero de 5.000, 10.000, 20.000, 25.000, 50.000,
+  (`tickSize={0}`: Recharts suma 6 px de marca aunque no se dibuje), letras `text-2xs` en `ink-3`; eje X con una etiqueta por barra en `text-2xs-plus` (siempre `interval="preserveStartEnd"` con `minTickGap` 4: salen todas si caben y, si no, solo las que no se pisan;
+  así también con etiquetas «Ene 25» o con 70 meses). Los textos de los ejes, por CSS. Escala del eje Y (`yAxisScale`): el paso es el primero de 5.000, 10.000, 20.000, 25.000, 50.000,
   100.000, 200.000, 250.000, 500.000… (1, 2, 2,5 y 5 por una potencia de diez, mínimo 5.000) para el que mayor ÷ paso ≤ 4, y el tope el múltiplo del paso por encima del mayor.
   «Mayor» es el mayor entre ingresos y gastos: nada impide un coste superior al precio. Etiquetas «0», «10 mil», «1.500 mil». Los meses sin ventas del periodo salen con las barras
   a 0 (y los años, hasta el año en curso). Tooltip de Recharts con el nombre completo («Septiembre», con el año si el periodo cruza años) y los dos importes con dos decimales.
@@ -318,6 +318,13 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   opciones a partes iguales (botones de 40 px y `text-md`, contenedor de 4 px y radio 12). Las cifras van en **una sola tarjeta** (`.expenses-kpis-card`, padding 0 16 px) con tres bloques
   (`.expenses-kpi-block`, padding 16 × 0, 4 px entre líneas, borde superior `--rm-line-soft` salvo el primero): etiqueta, cifra en serif de **34 px** (`--rm-display-xs-plus`, token nuevo, `line-height` 1) y
   nota; la del segundo bloque es más corta: «Lo que costó la ropa vendida · 51,6 %». La silueta de carga usa la misma tarjeta, con la cifra a 34 px.
+- **Gastos en móvil, gráfica y tabla** (<992 px, `ExpensesChart compact`, `ExpensesTable compact`): tarjetas con padding 16 px; la de la gráfica a 14 px entre bloques y la de la tabla a 10. Gráfica: el título (15 px, 600) y,
+  **debajo**, la leyenda (`text-xs`, `ink-2`, cuadraditos de 9 px, 5 px de separación, 14 px entre elementos; `.expenses-card-head` pasa a `display: contents`). Zona de dibujo de **220 px**, eje Y de 44 px
+  (52 con los 8 px de separación) con letras de `text-3xs` (10 px, token nuevo), barras con 2 px entre las dos, `barCategoryGap="7%"` (≈ 42 % del mes cada una), máximo 22 px, esquinas 4/4/2/2, etiquetas
+  del eje X de 10 px a 8 px; la misma escala del eje Y que en escritorio. Tabla «Mes a mes» con **cuatro columnas** (la de Gastos se oculta por CSS, `.expenses-cell-cost`): `minmax(0,1fr) 4.5rem 4.5rem 3.75rem` a 6 px
+  (el artboard usa 76/76/56 y partía «40,0 %» en dos líneas; aquí todo en una línea con `nowrap`), cabecera de 30 px (la de `text-xs`, primera columna vacía), filas de 44 px como mínimo, nombre en 500 cortado con «…»,
+  pastilla con padding 2 × 7 px. Pie a 4 px de la tabla con el texto corto: «En rebajas el porcentaje baja porque se vende con descuento.» (detrás de la nota del asterisco). Las siluetas de carga móviles miden lo
+  mismo que lo real (gráfica de 250 px, filas de 44, cabecera de 30).
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
