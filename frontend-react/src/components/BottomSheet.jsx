@@ -1,8 +1,8 @@
 import { Offcanvas } from 'react-bootstrap';
 
-function BottomSheet({ show, onHide, title, children, footer }) {
+function BottomSheet({ show, onHide, title, children, footer, className = '' }) {
     return (
-        <Offcanvas show={show} onHide={onHide} placement="bottom" className="m-sheet">
+        <Offcanvas show={show} onHide={onHide} placement="bottom" className={`m-sheet ${className}`}>
             <span className="m-sheet-grip" aria-hidden="true" />
             <Offcanvas.Header className="m-sheet-head">
                 <Offcanvas.Title className="m-sheet-title">{title}</Offcanvas.Title>

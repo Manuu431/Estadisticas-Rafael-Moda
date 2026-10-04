@@ -7,6 +7,7 @@ import { DEFAULT_SALES_PERIOD, customPeriodError } from "../utils/salesPeriod.js
 import { EMPTY_PANEL, panelParams } from "../utils/salesPanel.js";
 import BottomSheet from "./BottomSheet.jsx";
 import { BrandSelect, CustomDates, PeriodSelect, SearchField } from "./SalesFields.jsx";
+import SalesSheet from "./SalesSheet.jsx";
 import SalesPanelFields from "./SalesPanelFields.jsx";
 import { SectionSegments } from "./FiltersComponents.jsx";
 
@@ -19,6 +20,7 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
     const [draft, setDraft] = useState(period);
     const [search, setSearch] = useState('');
     const [brand, setBrand] = useState('');
+    const [sheetBrand, setSheetBrand] = useState('');
     const [section, setSection] = useState('');
     const [panel, setPanel] = useState(EMPTY_PANEL);
     const [appliedPanel, setAppliedPanel] = useState({});
@@ -54,8 +56,14 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
         setAppliedPanel({});
     };
 
+    const openSheet = () => {
+        setSheetBrand(brand);
+        setSheetOpen(true);
+    };
+
     const applySheet = () => {
         applyPanel();
+        setBrand(sheetBrand);
         if (isReady(draft)) onPeriodChange(draft);
         else setDraft(period);
         setSheetOpen(false);
@@ -64,8 +72,10 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
     const clearSheet = () => {
         clearPanel();
         setBrand('');
+        setSheetBrand('');
         setDraft(DEFAULT_SALES_PERIOD);
         onPeriodChange(DEFAULT_SALES_PERIOD);
+        setSheetOpen(false);
     };
 
     const brandSelect = <BrandSelect brands={options?.brands ?? NO_OPTIONS} value={brand} onChange={setBrand} />;
@@ -77,27 +87,31 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
             options={[]}
             selectedValues={{ section: section ? [section] : [] }}
             handleSelectChange={(id, picked) => setSection(picked[0]?.value ?? '')}
-            className="is-plus"
+            className={isMobile ? '' : 'is-plus'}
         />
     );
 
     if (isMobile) {
         return (
-            <div className="filters-mobile d-flex align-items-stretch gap-2">
-                {segmentControl}
-                <button
-                    type="button"
-                    className="m-btn flex-shrink-0 d-inline-flex align-items-center gap-2"
-                    aria-haspopup="dialog"
-                    onClick={() => setSheetOpen(true)}
-                >
-                    <i className="bi bi-sliders" aria-hidden="true" />
-                    Filtros
-                </button>
+            <div className="sales-mobile d-flex flex-column">
+                <SearchField large value={search} onChange={setSearch} />
+                <div className="filters-mobile d-flex align-items-stretch">
+                    {segmentControl}
+                    <button
+                        type="button"
+                        className="m-btn flex-shrink-0 d-inline-flex align-items-center gap-2"
+                        aria-haspopup="dialog"
+                        onClick={openSheet}
+                    >
+                        <i className="bi bi-sliders sales-icon-plus" aria-hidden="true" />
+                        Filtros
+                    </button>
+                </div>
                 <BottomSheet
                     show={sheetOpen}
                     onHide={() => setSheetOpen(false)}
                     title="Filtros"
+                    className="is-sales"
                     footer={
                         <>
                             <button type="button" className="m-ghost" onClick={clearSheet}>Limpiar</button>
@@ -105,12 +119,16 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
                         </>
                     }
                 >
-                    <div className="d-flex flex-column gap-3">
-                        <PeriodSelect period={draft} onChange={changePeriod} />
-                        <CustomDates period={draft} onChange={changePeriod} />
-                        {brandSelect}
-                        <SalesPanelFields panel={panel} options={panelOptions} onChange={setPanel} />
-                    </div>
+                    <SalesSheet
+                        period={draft}
+                        onPeriodChange={changePeriod}
+                        brands={options?.brands ?? NO_OPTIONS}
+                        brand={sheetBrand}
+                        onBrandChange={setSheetBrand}
+                        panel={panel}
+                        onPanelChange={setPanel}
+                        options={panelOptions}
+                    />
                 </BottomSheet>
             </div>
         );

@@ -74,7 +74,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -158,6 +158,19 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `--rm-positive` y 500, sin signo. La sección es una pastilla de 24 px (`.sales-pill`): Mujer `--rm-orange-tint` con
   `--rm-pill-mujer-ink`, Hombre `--rm-pill-hombre` con `--rm-section-hombre`. Al pasar el cursor, `--rm-row-hover`.
   Por debajo de 1200 px las filas no bajan de 59,5 rem y la tabla se desplaza dentro de su tarjeta (`.sales-scroll`).
+- **Ventas en móvil** (<992 px, `.sales-page`): cabecera con el periodo en `text-sm` y «Ventas» en `display-sm`, a 4 px; el párrafo de
+  resumen desaparece y lo sustituye `SalesSummaryCard` (`.sales-card`: tarjeta de radio `lg` con `--rm-shadow`, padding 16 px,
+  dos columnas a 12 px). Cada columna lleva «Vendido» / «Beneficio» en `text-xs` `ink-3` y el importe en `lg-plus` 600
+  (el beneficio, en `--rm-positive`); debajo, en toda la fila, «N líneas de venta · N prendas» en `text-xs-plus` `ink-2`.
+  Los bloques van a 14 px y el contenido con padding 10 × 16 × 24 px: Ventas compensa con margen negativo el padding general de
+  `.app-main` (24 × 16 × 32 px) en vez de cambiarlo para todas las pantallas. Buscador a ancho completo (`.panel-field.is-large`:
+  48 px, radio 14, `text-lg`, lupa de `icon-plus`), después Todo / Mujer / Hombre (botones de 40 px y `text-md`) y «Filtros»
+  (`.m-btn`, 48 px) a 10 px. Buscador y sección se aplican al momento; la hoja, al pulsar «Ver resultados».
+- **Hoja «Filtros» de Ventas** (`.m-sheet.is-sales`, `SalesSheet`): título en `display-xs` y «Cerrar» sin relleno. Periodo a ancho
+  completo (con «Desde» y «Hasta» si es «Personalizado…»), rejilla de 2 columnas a 10 px con Marca, Familia, Talla y Color, y Precio
+  de venta (€) y Beneficio (€) con sus dos campos iguales. Etiqueta encima (`.sheet-label`, `text-sm`, 600, `--rm-nav`, a 6 px),
+  campos de 48 px y radio 14, bloques a 14 px, sin flecha en los desplegables (como el artboard). «Limpiar» (`--rm-tint`) vacía
+  toda la hoja (Periodo vuelve a «Este mes»), lo aplica y cierra; «Ver resultados» aplica y cierra.
 - **Estados de Ventas** (`SalesPlaceholder`, `.sales-state`): la cabecera de la tabla se queda y el cuerpo, de unas tres filas de alto
   (10,875 rem), centra el mensaje en `text-md` y `ink-2`. Cargando: `.spinner-border-sm` en `--rm-orange` (sin giro con
   `prefers-reduced-motion`) y «Cargando ventas…», y el resumen de la cabecera se sustituye por dos siluetas `.panel-skeleton`:

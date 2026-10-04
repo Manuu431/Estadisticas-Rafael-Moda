@@ -32,4 +32,31 @@ function SalesSummary({ kind, summary }) {
     );
 }
 
+export function SalesSummaryCard({ kind, summary }) {
+    if (kind === 'loading') {
+        return (
+            <div className="sales-card" aria-hidden="true">
+                <Skeleton className="sales-card-skeleton" />
+                <Skeleton className="sales-card-skeleton" />
+                <Skeleton className="sales-card-skeleton is-wide" />
+            </div>
+        );
+    }
+
+    const known = kind !== 'error';
+    return (
+        <div className="sales-card">
+            <div className="sales-card-stat">
+                <span className="sales-card-label">Vendido</span>
+                <span className="sales-card-value">{known ? formatMoney(summary.amountCents) : UNKNOWN}</span>
+            </div>
+            <div className="sales-card-stat">
+                <span className="sales-card-label">Beneficio</span>
+                <span className="sales-card-value sales-card-profit">{known ? formatMoney(summary.profitCents) : UNKNOWN}</span>
+            </div>
+            <span className="sales-card-note">{known ? `${formatSalesLines(summary.lines)} · ${formatUnits(summary.units)}` : `${UNKNOWN} líneas de venta · ${UNKNOWN} prendas`}</span>
+        </div>
+    );
+}
+
 export default SalesSummary;

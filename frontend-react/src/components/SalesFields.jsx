@@ -32,9 +32,9 @@ export function BrandSelect({ brands, value, onChange }) {
     return <InlineSelect name="brand" label="Marca" value={value} options={options} onChange={onChange} className="panel-field-brand" />;
 }
 
-export function SearchField({ value, onChange }) {
+export function SearchField({ value, onChange, large = false }) {
     return (
-        <label className="panel-field panel-field-search">
+        <label className={`panel-field panel-field-search${large ? ' is-large' : ''}`}>
             <i className="bi bi-search" aria-hidden="true" />
             <input
                 type="search"
