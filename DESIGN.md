@@ -206,6 +206,13 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   silueta `.clients-count-skeleton`. Sin resultados: «No hay clientes con estos filtros.», sin pie, y la cabecera sigue con el total real.
   Error: el `CardError` de siempre («No se han podido cargar estos datos.» y «Reintentar»); un error gana a los datos antiguos. Si falla
   solo el recuento, la cabecera no lo enseña.
+- **Clientes en móvil** (<992 px): la cabecera usa las reglas móviles de `.panel-heading` (recuento en `text-sm`, «Clientes» en
+  `display-sm`, a 4 px). No hay enlace «‹ Más» (la app no tiene cabecera con flecha) ni hoja «Filtros»: la barra sale de la tarjeta y se
+  apila en `.clients-mobile`, con bloques a 14 px. Buscador `.panel-field.is-large` (48 px, radio 14, padding 0 14 px, lupa de
+  `icon-plus`, texto de `text-lg`, «Nombre o código postal»); debajo Provincia y Ciudad en `.clients-selects` (2 columnas a 10 px,
+  `.is-large` con la palabra a `text-sm`, sin flecha). «Limpiar filtros» (no está en el artboard) sale solo con algún filtro puesto como
+  `.m-btn` a ancho completo. Buscador a los 300 ms; desplegables, al momento. Como en Ventas, `.clients-page` compensa con margen negativo
+  (−18 px arriba, −8 px abajo) el padding de `.app-main` para dejar el contenido en 6 × 16 × 24 px.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

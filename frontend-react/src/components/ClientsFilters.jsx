@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDebouncedValue } from "../hooks/useDebouncedValue.js";
+import { useIsMobile } from "../utils/useIsMobile.js";
 import { InlineSelect, SearchField } from "./SalesFields.jsx";
 
 const SEARCH_DELAY = 300;
@@ -10,6 +11,7 @@ function ClientsFilters({ options, loading, onFilterChange }) {
     const [search, setSearch] = useState('');
     const [province, setProvince] = useState('');
     const [city, setCity] = useState('');
+    const isMobile = useIsMobile();
     const debouncedSearch = useDebouncedValue(search.trim(), SEARCH_DELAY);
     const cities = options?.cities ?? NO_OPTIONS;
 
@@ -33,6 +35,50 @@ function ClientsFilters({ options, loading, onFilterChange }) {
         setCity('');
     };
 
+    const provinceSelect = (
+        <InlineSelect
+            name="province"
+            label="Provincia"
+            value={province}
+            options={withAll(options?.provinces ?? NO_OPTIONS)}
+            onChange={setProvince}
+            className={`clients-province${isMobile ? ' is-large' : ''}`}
+        />
+    );
+
+    const citySelect = (
+        <InlineSelect
+            name="city"
+            label="Ciudad"
+            value={city}
+            options={withAll(cities)}
+            onChange={setCity}
+            className={`clients-city${isMobile ? ' is-large' : ''}`}
+        />
+    );
+
+    if (isMobile) {
+        return (
+            <div className="clients-mobile d-flex flex-column">
+                <SearchField
+                    large
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="Nombre o código postal"
+                    label="Buscar clientes"
+                    className="clients-search"
+                />
+                <div className="clients-selects">
+                    {provinceSelect}
+                    {citySelect}
+                </div>
+                {hasFilters && (
+                    <button type="button" className="m-btn" onClick={clearFilters}>Limpiar filtros</button>
+                )}
+            </div>
+        );
+    }
+
     return (
         <div className="clients-filters filters-bar d-flex flex-wrap align-items-center">
             <SearchField
@@ -42,22 +88,8 @@ function ClientsFilters({ options, loading, onFilterChange }) {
                 label="Buscar clientes"
                 className="clients-search"
             />
-            <InlineSelect
-                name="province"
-                label="Provincia"
-                value={province}
-                options={withAll(options?.provinces ?? NO_OPTIONS)}
-                onChange={setProvince}
-                className="clients-province"
-            />
-            <InlineSelect
-                name="city"
-                label="Ciudad"
-                value={city}
-                options={withAll(cities)}
-                onChange={setCity}
-                className="clients-city"
-            />
+            {provinceSelect}
+            {citySelect}
             {hasFilters && (
                 <button type="button" className="panel-btn clients-clear" onClick={clearFilters}>
                     <i className="bi bi-x-lg" aria-hidden="true" />

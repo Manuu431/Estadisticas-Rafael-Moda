@@ -2627,3 +2627,24 @@
         width: 100%;
     }
 }
+
+.clients-selects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem;
+}
+
+.clients-mobile .panel-field > .bi-chevron-down {
+    display: none;
+}
+
+@media (max-width: 991.98px) {
+    .clients-page {
+        gap: 0.875rem;
+        margin: -1.125rem 0 -0.5rem;
+    }
+
+    .clients-mobile {
+        gap: 0.875rem;
+    }
+}
