@@ -741,6 +741,42 @@
     color: var(--rm-positive);
 }
 
+.sales-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 10.875rem;
+    padding: 1.5rem;
+}
+
+.sales-state-text {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    font-size: var(--rm-text-md);
+    color: var(--rm-ink-2);
+}
+
+.sales-spinner {
+    color: var(--rm-orange);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sales-spinner {
+        animation: none;
+    }
+}
+
+.sales-summary-skeleton {
+    width: 14rem;
+    height: 1rem;
+}
+
+.sales-summary-skeleton.is-short {
+    width: 10rem;
+}
+
 .sales-pill {
     display: inline-flex;
     align-items: center;
