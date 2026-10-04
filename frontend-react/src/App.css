@@ -2806,6 +2806,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    container: compare / inline-size;
 }
 
 .compare-controls {
@@ -3116,6 +3117,40 @@
 
     .compare-main {
         grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+}
+
+@media (min-width: 992px) {
+    @container compare (max-width: 995.98px) {
+        .compare-controls.is-dates .compare-mode .panel-segs {
+            flex-direction: column;
+        }
+
+        .compare-controls.is-dates .compare-slot .flex-wrap {
+            flex-direction: column;
+        }
+
+        .compare-controls.is-dates .compare-slot .panel-field-period {
+            flex: none;
+            width: 100%;
+        }
+    }
+}
+
+@media (min-width: 1100px) and (max-width: 1199.98px) {
+    .compare-kpi {
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas: "label delta" "value note";
+        align-items: end;
+        column-gap: 1rem;
+    }
+
+    .compare-kpi-delta {
+        justify-self: end;
+    }
+
+    .compare-kpi-note {
+        text-align: right;
     }
 }
 

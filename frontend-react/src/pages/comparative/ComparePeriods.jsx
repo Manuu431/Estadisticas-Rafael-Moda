@@ -41,7 +41,7 @@ function DatesChoice({ label, tone, period, onChange }) {
 
 function ComparePeriods({ mode, onModeChange, options, a, b, onChoose, dates, onDatesChange }) {
     return (
-        <section className="panel-card compare-controls" aria-label="Periodos a comparar">
+        <section className={`panel-card compare-controls${mode === 'dates' ? ' is-dates' : ''}`} aria-label="Periodos a comparar">
             <div className="compare-mode">
                 <span className="compare-slot-label">Comparar</span>
                 <div className="panel-segs d-flex" role="group" aria-label="Comparar por">
