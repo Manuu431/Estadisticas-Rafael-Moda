@@ -2933,6 +2933,8 @@
 
 .compare-card-head.is-breakdown .panel-seg {
     flex: 1;
+    min-width: 0;
+    padding: 0 0.375rem;
 }
 
 .compare-head-title {
@@ -3117,7 +3119,7 @@
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1368px) {
     .compare-main {
         grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     }

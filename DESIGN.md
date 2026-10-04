@@ -255,7 +255,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   y no se reparten, y por debajo de 576 px manda el diseño de móvil con la pastilla bajo la cifra): etiqueta en `text-md` 600 con `DeltaPill` a la derecha, cifra en serif
   `display-sm` y «frente a X en 2025» en `text-sm` `ink-2`. En móvil la pastilla baja bajo la cifra, la cifra es `display-xs` y la nota
   pasa a «2025: X». Ticket medio = ventas / tickets. El nombre corto del periodo B es el año si A y B son de años distintos; si no, el nombre.
-  Gráfica y desglose (`.compare-main`, 7/5 desde 1200 px, apiladas por debajo, tarjetas del mismo alto): la gráfica de barras
+  Gráfica y desglose (`.compare-main`, 7/5 desde 1368 px, apiladas por debajo (con menos, el nombre del desglose se quedaba en «E…»), tarjetas del mismo alto): la gráfica de barras
   (320 px, 260 en móvil) se baja con `mt-auto`. El control es Días / Semanas / Meses / Años. Días = una barra por día; Semanas = la
   primera desde el primer día del periodo y las demás desde el lunes; Meses = la primera desde el primer día y las demás desde el día 1;
   Años = la primera desde el primer día y las demás desde el 1 de enero (etiqueta «2026»); A y B se emparejan por posición. Etiquetas «6 jul» (móvil «6/7»); los meses llevan el año («ene 22») cuando A o B abarcan más de un año. El tooltip enseña, junto a cada punto de color, el rango exacto de esa barra en su periodo («3 ene – 7 ene 2026», con el año en los dos extremos si cruza de año), no el nombre del periodo. La
@@ -263,7 +263,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   (`.compare-row`: nombre · A · B · Diferencia, filas de 47 px, importes redondeados con `formatEurosRound`, A en 600, B en `ink-2`); en
   móvil, una lista (`.compare-item`) con el nombre, «2025: X» debajo y, a la derecha, el importe de A con la pastilla. El control
   Marca / Familia / Sección / Talla / Color (`.is-breakdown`) va en su propia fila bajo el título, a ancho completo, porque cinco
-  pestañas no caben junto a él. El desglose se pagina de 5 en 5 (`BREAKDOWN_PAGE_SIZE`) con el pie de `Pagination` sin extremos
+  pestañas no caben junto a él (en la tarjeta estrecha las pestañas se reparten el ancho con 6 px de relleno). El desglose se pagina de 5 en 5 (`BREAKDOWN_PAGE_SIZE`) con el pie de `Pagination` sin extremos
   (`.compare-foot`, sin padding lateral, abajo del todo con `mt-auto`) y «Mostrando 1–5 de 9 marcas»; `.compare-body` reserva el alto
   de 5 filas (16,9375 rem en escritorio, 17,5 rem en móvil) para que las tarjetas no cambien de alto con Sección (2 filas) ni con
   la última página, y la gráfica no se queda con un hueco blanco enorme. Cambiar de pestaña o de periodo vuelve a la página 1. Cargando:
