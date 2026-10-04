@@ -250,7 +250,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Temporadas apiladas). Los tres bloques se centran en vertical, las tres etiquetas («Comparar», «Periodo A», «Periodo B») quedan a la misma
   altura y «Desde» y «Hasta» se separan 30 px para que su columna mida lo mismo que la de «Comparar»; el «vs.» se centra en vertical
   respecto a los campos. Por debajo de 992 px manda el diseño de móvil, y por debajo de 576 px Desde y Hasta van en columna.
-  KPI (`.compare-kpi`, 4 en fila desde 1200 px y 2 por debajo; de 1100 a 1199 px y de 576 a 991 px, con tarjetas anchas, la pastilla va arriba
+  KPI (`.compare-kpi`, 4 en fila desde 1307 px y 2 por debajo; de 1100 a 1306 px y de 576 a 991 px, con tarjetas anchas, la pastilla va arriba
   a la derecha y la nota «frente a…» (en móvil «2025: X») pasa a la derecha de la cifra, alineada a la derecha; de 992 a 1099 px caben justas
   y no se reparten, y por debajo de 576 px manda el diseño de móvil con la pastilla bajo la cifra): etiqueta en `text-md` 600 con `DeltaPill` a la derecha, cifra en serif
   `display-sm` y «frente a X en 2025» en `text-sm` `ink-2`. En móvil la pastilla baja bajo la cifra, la cifra es `display-xs` y la nota
