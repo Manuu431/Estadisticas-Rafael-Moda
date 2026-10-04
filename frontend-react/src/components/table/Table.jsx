@@ -10,7 +10,7 @@ import { useIsMobile } from '../../utils/useIsMobile.js'
 import { useFetch } from '../../hooks/useFetch.js';
 const PAGE_SIZES = { sales: 12 };
 const DEFAULT_PAGE_SIZE = 10;
-const ITEM_LABELS = { sales: 'líneas', clients: 'clientes', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
+const ITEM_LABELS = { sales: 'líneas', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
 const DEFAULT_SORT = { sales: { key: 'sold_at', direction: 'desc' } };
 function Table({ type, filters = {}, rows = null, external = null, setExternal, onChanged }) {
     const itemsPerPage = PAGE_SIZES[type] ?? DEFAULT_PAGE_SIZE;

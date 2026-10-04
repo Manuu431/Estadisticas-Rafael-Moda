@@ -15,18 +15,7 @@ export const DATABASE_TABLES = {
     },
     clients: {
         endpoint: `${API_BASE}/clients`,
-        endpointOptions: `${API_BASE}/clients/options`,
-        tables: {
-            columns: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
-            values: ["id", "name", "postal_code", "province", "city"]
-        },
-        mobile: { title: "name", meta: ["city", "province"], value: "postal_code" },
-        filters: {
-            label: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
-            primary: ["name", "province"],
-            inputId: ["id", "name", "postal_code", "province", "city"],
-            inputType: ["text", "text", "text", "select", "select"]
-        }
+        endpointOptions: `${API_BASE}/clients/options`
     },
     campaigns: {
         endpoint: `${API_BASE}/campaigns`,
