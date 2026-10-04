@@ -200,6 +200,11 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   botones de orden (el orden alfabético lo da el SQL); filas de 52 px con borde superior `--rm-line-soft` y `text-md`. Nombre en 500, Ciudad
   normal, Provincia en `ink-2` y CP a la derecha en `ink-2` con cifras tabulares; el texto largo se corta con «…». Al pasar el cursor,
   `--rm-row-hover`. Cabe sin desplazamiento hasta 992 px, así que no lleva `.sales-scroll`.
+  Estados (`ClientsPlaceholder`, `clientsState`; reutilizan `.sales-state*` de Ventas): la barra y la cabecera de la tabla se quedan y el
+  cuerpo (10,875 rem) centra el mensaje. Cargando: spinner naranja y «Cargando clientes…», y el recuento de la cabecera de página es una
+  silueta `.clients-count-skeleton`. Sin resultados: «No hay clientes con estos filtros.», sin pie, y la cabecera sigue con el total real.
+  Error: el `CardError` de siempre («No se han podido cargar estos datos.» y «Reintentar»); un error gana a los datos antiguos. Si falla
+  solo el recuento, la cabecera no lo enseña.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
