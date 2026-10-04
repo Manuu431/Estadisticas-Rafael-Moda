@@ -1,5 +1,5 @@
 const pool = require('../config/db');
-const { sources, allowedColumns, searchColumns, exactColumns, numericColumns } = require('../utils/columns');
+const { sources, allowedColumns, searchColumns, exactColumns, orderBy, numericColumns } = require('../utils/columns');
 const { likeSearch } = require('../utils/search');
 
 const isText = (item) => typeof item === 'string';
@@ -48,6 +48,7 @@ const getAll = (resource) => async (req, res, next) => {
 
   let query = `SELECT * FROM ${sources[resource]}`;
   if (conditions.length > 0) query += ` WHERE ${conditions.join(' AND ')}`;
+  if (orderBy[resource]) query += ` ORDER BY ${orderBy[resource]}`;
 
   try {
     const [results] = await pool.query(query, values);

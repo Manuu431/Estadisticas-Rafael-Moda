@@ -17,10 +17,15 @@ const allowedColumns = {
 };
 
 const searchColumns = {
-  sales: ['product', 'color']
+  sales: ['product', 'color'],
+  clients: ['name', 'postal_code']
 };
 
-const exactColumns = ['size', 'section', 'brand', 'family', 'color'];
+const exactColumns = ['size', 'section', 'brand', 'family', 'color', 'province', 'city'];
+
+const orderBy = {
+  clients: '`name`, `id`'
+};
 
 const numericColumns =['id', 'ticket_id', 'product_id', 'brand_id', 'family_id', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit', 'expenses', 'period_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats'];
 
@@ -45,4 +50,4 @@ const normalizeDecimalFields = (data, fields) => {
   return newData;
 };
 
-module.exports = { sources, allowedColumns, searchColumns, exactColumns, numericColumns, filterColumns, normalizeDecimalFields };
+module.exports = { sources, allowedColumns, searchColumns, exactColumns, orderBy, numericColumns, filterColumns, normalizeDecimalFields };
