@@ -18,8 +18,9 @@ describe('salesState', () => {
         expect(salesState({ data: [sale], error: null, period: mes, filters: {} })).toEqual({ kind: 'ready' });
     });
 
-    it('con ventas ya cargadas no se vuelve error si falla una recarga', () => {
-        expect(salesState({ data: [sale], error: new Error('x'), period: mes, filters: {} })).toEqual({ kind: 'ready' });
+    it('si falla una recarga con filtros nuevos no enseña las ventas antiguas como si fueran el resultado', () => {
+        expect(salesState({ data: [sale], error: new Error('x'), period: mes, filters: { brand: 'Lois' } })).toEqual({ kind: 'error' });
+        expect(salesState({ data: [], error: new Error('x'), period: mes, filters: {} })).toEqual({ kind: 'error' });
     });
 
     it('sin ventas, dice que no hay ventas con estos filtros', () => {
