@@ -25,6 +25,14 @@ function ClientsFilters({ options, loading, onFilterChange }) {
         if (options && !loading && city && !cities.includes(city)) setCity('');
     }, [options, loading, cities, city]);
 
+    const hasFilters = Boolean(search || province || city);
+
+    const clearFilters = () => {
+        setSearch('');
+        setProvince('');
+        setCity('');
+    };
+
     return (
         <div className="clients-filters filters-bar d-flex flex-wrap align-items-center">
             <SearchField
@@ -50,6 +58,12 @@ function ClientsFilters({ options, loading, onFilterChange }) {
                 onChange={setCity}
                 className="clients-city"
             />
+            {hasFilters && (
+                <button type="button" className="panel-btn clients-clear" onClick={clearFilters}>
+                    <i className="bi bi-x-lg" aria-hidden="true" />
+                    Limpiar filtros
+                </button>
+            )}
         </div>
     );
 }

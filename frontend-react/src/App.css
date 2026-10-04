@@ -2616,3 +2616,14 @@
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
+
+.clients-clear .bi-x-lg {
+    font-size: var(--rm-text-sm);
+}
+
+@media (max-width: 991.98px) {
+    .clients-clear {
+        justify-content: center;
+        width: 100%;
+    }
+}

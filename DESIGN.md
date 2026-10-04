@@ -193,7 +193,8 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   encima del titular. Una sola tarjeta `.data-card` lleva la barra de filtros, la tabla y el pie de paginación, a diferencia de Ventas, donde
   la barra va fuera. Barra (`.clients-filters`): padding 18 × 24 px, una línea con 10 px de separación; buscador que ocupa el espacio libre
   («Buscar por nombre o código postal»), Provincia de 200 px y Ciudad de 190 px (`.panel-field.is-labelled`, «Todas» primero). Sin «Más
-  filtros» ni Todo / Mujer / Hombre. El buscador se aplica a los 300 ms; Provincia y Ciudad, al momento. Ciudad solo ofrece las ciudades de la
+  filtros» ni Todo / Mujer / Hombre. Al final de la barra, «Limpiar filtros» (`.panel-btn`, 42 px, con `bi-x-lg`), que no está en el
+  artboard: solo sale cuando hay buscador, provincia o ciudad puestos y los vacía los tres. El buscador se aplica a los 300 ms; Provincia y Ciudad, al momento. Ciudad solo ofrece las ciudades de la
   provincia elegida y, si la ciudad elegida deja de pertenecer a ella, se vacía.
   Tabla (`ClientsTable`, `.clients-row`): Nombre · Ciudad · Provincia · CP en la rejilla `minmax(0,1.8fr) minmax(0,1.4fr) minmax(0,1fr) 80px`
   con 16 px entre columnas y padding 0 24 px. Cabecera de 44 px en `--rm-cream-light`, `text-xs-plus`, 600, `ink-2`, sin mayúsculas y sin
