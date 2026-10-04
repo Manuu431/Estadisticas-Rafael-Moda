@@ -3224,10 +3224,6 @@
         width: 100%;
     }
 
-    .compare-select .panel-select-toggle .panel-select-detail {
-        display: none;
-    }
-
     .compare-select .dropdown-item {
         min-height: 2.75rem;
     }

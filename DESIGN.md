@@ -241,7 +241,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Barra de periodos (`.compare-controls`, tarjeta con la rejilla `auto · 1fr · vs. · 1fr`, 20 px): «Comparar» con Fechas / Campañas /
   Temporadas (`.panel-segs`) y dos campos con punto naranja (A) o `--rm-compare` (B) y su etiqueta encima. En Campañas y Temporadas el
   campo (`.compare-select`, 44 px) es un `FieldDropdown` sin palabra interior (`showLabel={false}`): enseña el nombre en 600 y, a la derecha,
-  el rango («1 jul – 31 ago», oculto en móvil), y la lista es la de Clientes con el rango en `.panel-select-detail` (`text-sm`, `ink-2`) a la
+  el rango («1 jul – 31 ago», también en móvil), y la lista es la de Clientes con el rango en `.panel-select-detail` (`text-sm`, `ink-2`) a la
   derecha de cada opción; la de B se abre hacia la izquierda (`alignEnd`). Solo salen las que ya han empezado. Por defecto A es la última que ya
   terminó (o la que está en curso) y B su edición anterior; al elegir otra A, B vuelve a su edición anterior. En Fechas, los campos
   Desde / Hasta de Ventas (`CustomDates`) con sus avisos; empieza en el último mes cerrado frente al mismo mes del año anterior.
