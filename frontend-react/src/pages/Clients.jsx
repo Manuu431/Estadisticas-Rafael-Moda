@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import ClientsFilters from "../components/ClientsFilters.jsx";
 import ClientsTable from "../components/table/ClientsTable.jsx";
+import ClientsMobileList from "../components/table/ClientsMobileList.jsx";
 import ClientsPlaceholder from "../components/table/ClientsPlaceholder.jsx";
 import Pagination from "../components/Pagination.jsx";
 import { Skeleton } from "./controlPanel/cards/CardState.jsx";
@@ -29,7 +30,7 @@ function Clients(props) {
 
     const filtersBar = <ClientsFilters options={options} loading={loading} onFilterChange={changeFilters} />;
 
-    const list = state.kind === 'ready' ? (
+    const desktopList = state.kind === 'ready' ? (
         <>
             <ClientsTable data={clients.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)} />
             <Pagination
@@ -55,12 +56,18 @@ function Clients(props) {
             {isMobile ? (
                 <>
                     {filtersBar}
-                    <section className="data-card" aria-label="Listado de clientes">{list}</section>
+                    {state.kind === 'ready' ? (
+                        <ClientsMobileList rows={clients} />
+                    ) : (
+                        <section className="data-card" aria-label="Listado de clientes">
+                            <ClientsPlaceholder state={state} onRetry={refetch} />
+                        </section>
+                    )}
                 </>
             ) : (
                 <section className="data-card" aria-label="Listado de clientes">
                     {filtersBar}
-                    {list}
+                    {desktopList}
                 </section>
             )}
         </div>

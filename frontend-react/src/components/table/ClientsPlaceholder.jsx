@@ -1,10 +1,13 @@
+import { useIsMobile } from '../../utils/useIsMobile.js';
 import { CardError } from '../../pages/controlPanel/cards/CardState.jsx';
 import ClientsTable from './ClientsTable.jsx';
 
 function ClientsPlaceholder({ state, onRetry }) {
+    const isMobile = useIsMobile();
+
     return (
         <>
-            <ClientsTable data={[]} />
+            {isMobile ? null : <ClientsTable data={[]} />}
             <div className="sales-state">
                 {state.kind === 'loading' && (
                     <p className="sales-state-text" role="status">

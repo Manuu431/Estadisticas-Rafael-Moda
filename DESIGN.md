@@ -213,6 +213,13 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `.is-large` con la palabra a `text-sm`, sin flecha). «Limpiar filtros» (no está en el artboard) sale solo con algún filtro puesto como
   `.m-btn` a ancho completo. Buscador a los 300 ms; desplegables, al momento. Como en Ventas, `.clients-page` compensa con margen negativo
   (−18 px arriba, −8 px abajo) el padding de `.app-main` para dejar el contenido en 6 × 16 × 24 px.
+  Lista (`ClientsMobileList`, `.clients-list` a 14 px): tarjeta `.m-list` y una fila `.clients-item` por cliente, de 62 px como mínimo, con
+  padding 0 16 px, 12 px entre columnas y borde `--rm-line-soft` salvo la primera. Avatar `.clients-avatar` de 38 px, `--rm-tint`, texto
+  `--rm-nav` en `text-sm` 700, con las iniciales de las dos primeras palabras del nombre (una sola letra si hay una palabra). Nombre en
+  `text-lg` 600 con «…» y debajo, en `text-sm` `ink-2`, «Ciudad (Provincia) · CP»: la provincia solo sale si no es Valencia y no se llama
+  igual que la ciudad («Pego (Alicante) · 03780», «Oliva · 46780», «Madrid · 28014»). Sin paginación de flechas: 10 clientes y un `.m-btn`
+  a ancho completo «Ver más clientes (N)» con los que faltan, que añade 10 por pulsación y desaparece al llegar al final; al cambiar un
+  filtro vuelve a los 10 primeros. Cargando, sin resultados y error: los mensajes del escritorio, sin cabecera de tabla, en una tarjeta blanca.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
