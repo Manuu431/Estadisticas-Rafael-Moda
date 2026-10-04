@@ -283,7 +283,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 - **Gastos, tarjetas de cifras** (`.expenses-kpis`, `ExpensesKpis`): tres `.panel-card.expenses-kpi` en una rejilla de 3 columnas iguales a 24 px
   desde 1200 px y en una columna por debajo (con 3 columnas a 1000 px la cifra de 42 px se salía de la tarjeta; a 1200 px la más ancha, «1.422.692,82 €»,
   ocupa 201 de 221 px). Padding 22 × 26 px, 10 px entre líneas. Etiqueta `.expenses-kpi-label` (`text-sm-plus`, 600) con su cuadradito (`.panel-dot.is-income`
-  naranja y `.is-cost` marrón, 10 px, radio 3; Beneficio no lleva), cifra `.expenses-kpi-value` (serif `display-lg`, `line-height` 1; Beneficio en `--rm-positive`)
+  naranja y `.is-cost` marrón, 10 px, radio 3; Beneficio no lleva), cifra `.expenses-kpi-value` (serif `display-lg`, `line-height` 1; Beneficio en `--rm-positive`, y en `--rm-negative` con pérdidas, siempre con el signo menos)
   y nota `.expenses-kpi-note` (`text-xs-plus`, `ink-3`). Etiqueta y nota llevan `line-height: normal`, como el artboard (con el 1,5 de Bootstrap la tarjeta crecía 10 px).
   Los totales vienen del servidor (no se suman las filas redondeadas) y los porcentajes son gastos / ingresos y beneficio / ingresos con un decimal («0,0 %» sin ingresos).
 - **Gastos, gráfica «Ingresos y gastos por mes»** (`ExpensesChart`, `.expenses-card`): tarjeta con padding 24 × 26 px y 22 px entre bloques. Gráfica y tabla comparten
@@ -301,7 +301,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   (`visually-hidden`). Rejilla `.expenses-row`: `minmax(5.5rem,1.2fr) 4.5rem 4.25rem 4.5rem 3.75rem` a 10 px (no la del artboard, que dejaba 34 px al nombre y pisaba «Septiembre*»;
   con esta cabe justa en los 402 px de la tarjeta a 1440 px), `white-space: nowrap`. Cabecera de 32 px sin borde (`text-xs`, 600, `ink-2`); filas de 42 px (`text-sm-plus`) con
   borde superior `--rm-line-soft`, también la primera. Orden del mes más reciente al más antiguo. Nombre en 500 con la inicial en mayúscula (si el periodo cruza de año, la forma corta
-  con año, «Sep 25», porque «Septiembre 2025*» no cabe); Ingresos normal; Gastos en `ink-2`; Beneficio en 600 y `--rm-positive`; los tres con `formatEurosRound`. El % es beneficio / ingresos
+  con año, «Sep 25», porque «Septiembre 2025*» no cabe); Ingresos normal; Gastos en `ink-2`; Beneficio en 600 y `--rm-positive` (`--rm-negative` con pérdidas, con el signo menos y la pastilla del % bajo); los tres con `formatEurosRound`. El % es beneficio / ingresos
   con un decimal en 600 y `--rm-nav`; por debajo de `LOW_MARGIN` (42 %) va en pastilla (2 × 8 px, radio 99, `--rm-orange-tint`, `--rm-pill-mujer-ink`). La pastilla se decide con el mismo
   número que se lee (41,96 % se ve «42,0 %» y no la lleva). Un mes sin ventas enseña «0 €» y «—», sin pastilla. El asterisco marca el último mes si el periodo acaba antes de que acabe
   el mes y el primero si empieza a mitad; el pie (`.expenses-foot`, `mt-auto`, `text-xs-plus`, 1,5, `ink-3`) lo explica: «* Septiembre, hasta el día 28.», «* Marzo, desde el día 15.»,

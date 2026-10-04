@@ -64,7 +64,8 @@ export function expensesKpis({ amount, cost, profit }) {
         cost: formatEuros(cost),
         profit: formatEuros(profit),
         costShare: formatShare(cost, amount),
-        profitShare: formatShare(profit, amount)
+        profitShare: formatShare(profit, amount),
+        loss: profit < 0
     };
 }
 
@@ -168,7 +169,8 @@ export function expensesTable(grain, buckets, range, today) {
         cost: formatEurosRound(item.cost),
         profit: formatEurosRound(item.profit),
         share: item.amount > 0 ? formatShare(item.profit, item.amount) : '—',
-        low: isLow(item.margin)
+        low: isLow(item.margin),
+        loss: item.profit < 0
     }));
     return { rows, note };
 }

@@ -11,7 +11,7 @@ function ExpensesKpis({ totals, compact }) {
             value: kpis.cost,
             note: `Lo que costó la ropa vendida · ${kpis.costShare}${compact ? '' : ' de lo ingresado'}`
         },
-        { key: 'profit', label: 'Beneficio', value: kpis.profit, positive: true, note: `Te quedas con el ${kpis.profitShare} de cada venta` }
+        { key: 'profit', label: 'Beneficio', value: kpis.profit, tone: kpis.loss ? ' text-negative' : ' text-positive', note: `Te quedas con el ${kpis.profitShare} de cada venta` }
     ];
     const content = (block) => (
         <>
@@ -19,7 +19,7 @@ function ExpensesKpis({ totals, compact }) {
                 {block.dot && <span className={`panel-dot ${block.dot}`} aria-hidden="true" />}
                 {block.label}
             </span>
-            <span className={`expenses-kpi-value${block.positive ? ' text-positive' : ''}`}>{block.value}</span>
+            <span className={`expenses-kpi-value${block.tone ?? ''}`}>{block.value}</span>
             <span className="expenses-kpi-note">{block.note}</span>
         </>
     );

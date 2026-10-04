@@ -21,7 +21,7 @@ function ExpensesTable({ grain, table, compact }) {
                         <span role="cell" className="expenses-cell-name">{row.name}</span>
                         <span role="cell">{row.amount}</span>
                         <span role="cell" className="expenses-cell-cost">{row.cost}</span>
-                        <span role="cell" className="expenses-cell-profit">{row.profit}</span>
+                        <span role="cell" className={`expenses-cell-profit${row.loss ? ' is-loss' : ''}`}>{row.profit}</span>
                         <span role="cell" className={`expenses-pct${row.low ? ' is-low' : ''}`}>{row.share}</span>
                     </div>
                 ))}

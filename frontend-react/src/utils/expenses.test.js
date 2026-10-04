@@ -171,7 +171,8 @@ describe('expensesKpis', () => {
             cost: '103.805,50 €',
             profit: '97.552,90 €',
             costShare: '51,6 %',
-            profitShare: '48,4 %'
+            profitShare: '48,4 %',
+            loss: false
         });
     });
 
@@ -181,7 +182,8 @@ describe('expensesKpis', () => {
             cost: '0,00 €',
             profit: '0,00 €',
             costShare: '0,0 %',
-            profitShare: '0,0 %'
+            profitShare: '0,0 %',
+            loss: false
         });
     });
 
@@ -195,6 +197,13 @@ describe('expensesKpis', () => {
         const kpis = expensesKpis({ amount: 100, cost: 120, profit: -20 });
         expect(kpis.profit).toBe('-20,00 €');
         expect(kpis.profitShare).toBe('-20,0 %');
+    });
+
+    it('avisa de la pérdida solo si el beneficio es menor que cero', () => {
+        expect(expensesKpis({ amount: 100, cost: 120, profit: -20 }).loss).toBe(true);
+        expect(expensesKpis({ amount: 100, cost: 100, profit: 0 }).loss).toBe(false);
+        expect(expensesKpis({ amount: 100, cost: 40, profit: 60 }).loss).toBe(false);
+        expect(expensesKpis({ amount: 0, cost: 0, profit: 0 }).loss).toBe(false);
     });
 });
 
@@ -327,6 +336,12 @@ describe('expensesTable', () => {
     it('decide la pastilla con el mismo número que se lee', () => {
         const result = table('month', { from: '2026-01-01', to: '2026-01-31' }, [row('2026-01', 100, 58.04)]);
         expect(result.rows[0]).toMatchObject({ share: '42,0 %', low: false });
+    });
+
+    it('un mes con pérdidas lo marca, lleva pastilla y enseña el signo menos', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-02-28' }, [row('2026-01', 100, 120), row('2026-02', 100, 50)]);
+        expect(result.rows[1]).toMatchObject({ key: '2026-01', profit: '-20 €', share: '-20,0 %', low: true, loss: true });
+        expect(result.rows[0].loss).toBe(false);
     });
 
     it('un mes sin ventas enseña 0 €, un guion y ninguna pastilla', () => {

@@ -2249,19 +2249,6 @@
     color: var(--rm-negative);
 }
 
-.panel-pct {
-    font-weight: 600;
-    color: var(--rm-nav);
-}
-
-.panel-pct.is-low {
-    display: inline-block;
-    padding: 0.125rem 0.5rem;
-    border-radius: 99px;
-    background-color: var(--rm-orange-tint);
-    color: var(--rm-orange-ink);
-}
-
 .chart-tooltip {
     padding: 0.625rem 0.75rem;
     border: 1px solid var(--rm-line);
@@ -3506,6 +3493,10 @@
 .expenses-cell-profit {
     font-weight: 600;
     color: var(--rm-positive);
+}
+
+.expenses-cell-profit.is-loss {
+    color: var(--rm-negative);
 }
 
 .expenses-row > .expenses-pct {

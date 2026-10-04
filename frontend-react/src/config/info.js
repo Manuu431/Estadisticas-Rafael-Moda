@@ -19,9 +19,3 @@ export const MOBILE_TABS = [
 const TAB_PATHS = MOBILE_TABS.map((tab) => tab.path);
 
 export const MORE_ITEMS = MENU_ITEMS.filter((item) => !TAB_PATHS.includes(item.path));
-
-export const SHOW_BY_OPTIONS = [
-  { value: 'day', label: 'Días' },
-  { value: 'month', label: 'Meses' },
-  { value: 'year', label: 'Años' }
-];
