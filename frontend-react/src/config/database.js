@@ -15,6 +15,7 @@ export const DATABASE_TABLES = {
     },
     clients: {
         endpoint: `${API_BASE}/clients`,
+        endpointOptions: `${API_BASE}/clients/options`,
         tables: {
             columns: ["ID", "Nombre", "CP", "Provincia", "Ciudad"],
             values: ["id", "name", "postal_code", "province", "city"]

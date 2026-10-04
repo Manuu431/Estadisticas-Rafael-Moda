@@ -32,16 +32,16 @@ export function BrandSelect({ brands, value, onChange }) {
     return <InlineSelect name="brand" label="Marca" value={value} options={options} onChange={onChange} className="panel-field-brand" />;
 }
 
-export function SearchField({ value, onChange, large = false }) {
+export function SearchField({ value, onChange, large = false, placeholder = 'Buscar prenda o color', label = 'Buscar ventas', className = 'panel-field-search' }) {
     return (
-        <label className={`panel-field panel-field-search${large ? ' is-large' : ''}`}>
+        <label className={`panel-field ${className}${large ? ' is-large' : ''}`}>
             <i className="bi bi-search" aria-hidden="true" />
             <input
                 type="search"
                 name="search"
                 autoComplete="off"
-                placeholder="Buscar prenda o color"
-                aria-label="Buscar ventas"
+                placeholder={placeholder}
+                aria-label={label}
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
             />

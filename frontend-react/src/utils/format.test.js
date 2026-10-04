@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatEuros, formatEurosSigned, formatMoney, formatNumber, formatPercent, formatSalesLines, formatShare, formatUnits } from './format.js';
+import { formatClientsRegistered, formatEuros, formatEurosSigned, formatMoney, formatNumber, formatPercent, formatSalesLines, formatShare, formatUnits } from './format.js';
 
 describe('formatEuros', () => {
     it('agrupa los miles también con cuatro cifras', () => {
@@ -60,6 +60,18 @@ describe('formatSalesLines', () => {
         expect(formatSalesLines(185)).toBe('185 líneas de venta');
         expect(formatSalesLines(0)).toBe('0 líneas de venta');
         expect(formatSalesLines(15229)).toBe('15.229 líneas de venta');
+    });
+});
+
+describe('formatClientsRegistered', () => {
+    it('concuerda el singular y el plural', () => {
+        expect(formatClientsRegistered(1)).toBe('1 cliente registrado');
+        expect(formatClientsRegistered(486)).toBe('486 clientes registrados');
+        expect(formatClientsRegistered(0)).toBe('0 clientes registrados');
+    });
+
+    it('agrupa los miles', () => {
+        expect(formatClientsRegistered(1205)).toBe('1.205 clientes registrados');
     });
 });
 

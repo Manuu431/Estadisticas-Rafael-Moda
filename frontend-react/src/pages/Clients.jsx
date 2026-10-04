@@ -1,22 +1,28 @@
 import { useState } from 'react';
-import Filters from "../components/Filters.jsx";
+import ClientsFilters from "../components/ClientsFilters.jsx";
 import Table from "../components/table/Table.jsx";
-import { activeFiltersLabel } from "../utils/filterUtils.js";
+import { Skeleton } from "./controlPanel/cards/CardState.jsx";
+import { DATABASE_TABLES } from "../config/database.js";
+import { useFetch } from "../hooks/useFetch.js";
+import { formatClientsRegistered } from "../utils/format.js";
+
+const OPTIONS_URL = DATABASE_TABLES.clients.endpointOptions;
 
 function Clients(props) {
     const [filters, setFilters] = useState({});
+    const { data: options, loading } = useFetch(OPTIONS_URL, filters.province ? { province: filters.province } : undefined);
 
     return (
-        <>
-            <header className="d-flex flex-column gap-1 mb-4">
-                <span className="panel-kicker">{activeFiltersLabel(filters)}</span>
+        <div className="clients-page">
+            <header className="panel-heading d-flex flex-column">
+                {options ? <span className="panel-period">{formatClientsRegistered(options.total)}</span> : <Skeleton className="clients-count-skeleton" />}
                 <h1 className="panel-title m-0">{props.title}</h1>
             </header>
-            <div className="d-flex flex-column gap-4">
-                <Filters type="clients" onFilterChange={setFilters} />
-                <Table type="clients" filters={filters} />
-            </div>
-        </>
+            <section className="data-card" aria-label="Listado de clientes">
+                <ClientsFilters options={options} loading={loading} onFilterChange={setFilters} />
+            </section>
+            <Table type="clients" filters={filters} />
+        </div>
     );
 }
 

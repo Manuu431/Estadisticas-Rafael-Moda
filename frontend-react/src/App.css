@@ -2533,3 +2533,38 @@
     color: var(--rm-positive);
     white-space: nowrap;
 }
+
+.clients-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.clients-count-skeleton {
+    width: 9rem;
+    height: 1rem;
+}
+
+.clients-filters {
+    padding: 1.125rem 1.5rem;
+}
+
+.clients-search {
+    flex-grow: 1;
+}
+
+.clients-province {
+    width: 12.5rem;
+}
+
+.clients-city {
+    width: 11.875rem;
+}
+
+@media (max-width: 991.98px) {
+    .clients-search,
+    .clients-province,
+    .clients-city {
+        width: 100%;
+    }
+}

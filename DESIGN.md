@@ -188,6 +188,13 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   un cero es un dato, así que no se enseña mientras carga. Sin resultados: «No hay ventas con estos filtros.» (o «Todavía no hay
   ventas hoy.» con Hoy y ningún otro filtro), resumen a cero y sin pie de paginación. Si falla la carga: el `CardError` de siempre
   («No se han podido cargar estos datos.» y «Reintentar») y el resumen en guiones. En móvil, el mismo mensaje en una tarjeta blanca.
+- **Clientes en escritorio** (`.clients-page`, 24 px entre bloques): encabezado con `.panel-heading` y `.panel-period` («486 clientes
+  registrados», singular con 1; es el total real de la tabla y no cambia al filtrar; mientras carga, una silueta `.clients-count-skeleton`)
+  encima del titular. Una sola tarjeta `.data-card` lleva la barra de filtros, la tabla y el pie de paginación, a diferencia de Ventas, donde
+  la barra va fuera. Barra (`.clients-filters`): padding 18 × 24 px, una línea con 10 px de separación; buscador que ocupa el espacio libre
+  («Buscar por nombre o código postal»), Provincia de 200 px y Ciudad de 190 px (`.panel-field.is-labelled`, «Todas» primero). Sin «Más
+  filtros» ni Todo / Mujer / Hombre. El buscador se aplica a los 300 ms; Provincia y Ciudad, al momento. Ciudad solo ofrece las ciudades de la
+  provincia elegida y, si la ciudad elegida deja de pertenecer a ella, se vacía.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
