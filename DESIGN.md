@@ -306,6 +306,12 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   número que se lee (41,96 % se ve «42,0 %» y no la lleva). Un mes sin ventas enseña «0 €» y «—», sin pastilla. El asterisco marca el último mes si el periodo acaba antes de que acabe
   el mes y el primero si empieza a mitad; el pie (`.expenses-foot`, `mt-auto`, `text-xs-plus`, 1,5, `ink-3`) lo explica: «* Septiembre, hasta el día 28.», «* Marzo, desde el día 15.»,
   «* Septiembre, del día 5 al 20.»; en años, solo el año en curso y hasta hoy: «* 2026, hasta el 28 de septiembre.». Detrás va siempre la frase de las rebajas.
+- **Gastos, estados** (`expensesState`, `ExpensesSkeleton`): la cabecera, el campo Periodo, el control y la fila de campaña o fechas se quedan siempre. **Cargando** (también mientras llega la lista de
+  campañas o temporadas): las tres tarjetas, la gráfica y la tabla pasan a siluetas `.panel-skeleton` con la forma de cada una y **el mismo alto que las reales** (tarjetas de cifras de 139 px; la
+  tabla dibuja una fila por mes del periodo, con tope de 12, y siete en años; el título mide 18 px). Nunca ceros ni datos del periodo anterior. **Error** (de los datos o de la lista de campañas o
+  temporadas): el `CardError` de siempre en una sola tarjeta que sustituye a las tres secciones; un error gana a los datos antiguos. **Sin ventas en el periodo**: las tres tarjetas con «0,00 €» y
+  «0,0 %» y, en lugar de la gráfica y la tabla, una tarjeta con «No hay ventas en este periodo.» (`.sales-state`), también en «Años». **Periodo sin elegir o no válido**: no se pide nada, se sigue
+  enseñando el último periodo válido con su texto y bajo los campos sale el aviso (el de los campos de fecha, o «Elige las dos fechas del periodo.» en `.panel-note`).
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

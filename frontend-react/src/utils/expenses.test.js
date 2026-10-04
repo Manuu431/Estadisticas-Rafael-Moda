@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LOW_MARGIN, axisLabel, chartPeak, chosenPeriod, expensesBuckets, expensesKpis, expensesTable, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yAxisScale, yearsText } from './expenses.js';
+import { EMPTY_MESSAGE, LOW_MARGIN, axisLabel, chartPeak, chosenPeriod, datesNotice, expensesBuckets, expensesKpis, expensesState, expensesTable, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, skeletonRows, startedPeriods, yAxisScale, yearsText } from './expenses.js';
 
 const today = new Date(2026, 8, 28, 12, 30);
 const custom = (from, to) => ({ key: 'custom', from, to, bad: [] });
@@ -391,5 +391,76 @@ describe('expensesTable', () => {
 
     it('sin barras no hay filas ni nota', () => {
         expect(expensesTable('month', [], null, today)).toEqual({ rows: [], note: '' });
+    });
+});
+
+describe('expensesState', () => {
+    const sold = { totals: { amount: 100, cost: 40, profit: 60 }, rows: [{ key: '2026-01', amount: 100, cost: 40, profit: 60 }] };
+    const none = { totals: { amount: 0, cost: 0, profit: 0 }, rows: [] };
+
+    it('sin respuesta todavía y sin error, está cargando', () => {
+        expect(expensesState({ data: null, error: null })).toEqual({ kind: 'loading' });
+    });
+
+    it('con ventas, está listo', () => {
+        expect(expensesState({ data: sold, error: null })).toEqual({ kind: 'ready' });
+    });
+
+    it('sin ventas en el periodo, dice que no hay ventas', () => {
+        expect(expensesState({ data: none, error: null })).toEqual({ kind: 'empty', message: EMPTY_MESSAGE });
+        expect(EMPTY_MESSAGE).toBe('No hay ventas en este periodo.');
+    });
+
+    it('un error gana a los datos antiguos y a la carga', () => {
+        expect(expensesState({ data: null, error: new Error('x') })).toEqual({ kind: 'error' });
+        expect(expensesState({ data: sold, error: new Error('x') })).toEqual({ kind: 'error' });
+        expect(expensesState({ data: none, error: new Error('x') })).toEqual({ kind: 'error' });
+    });
+
+    it('mientras carga la lista de campañas o temporadas, está cargando aunque haya datos', () => {
+        expect(expensesState({ data: sold, error: null, listLoading: true })).toEqual({ kind: 'loading' });
+    });
+
+    it('si falla la lista de campañas o temporadas, es un error', () => {
+        expect(expensesState({ data: sold, error: null, listError: new Error('x') })).toEqual({ kind: 'error' });
+        expect(expensesState({ data: null, error: null, listError: new Error('x'), listLoading: true })).toEqual({ kind: 'error' });
+    });
+});
+
+describe('datesNotice', () => {
+    it('con fechas a medias pide las dos fechas', () => {
+        expect(datesNotice('dates', custom('2026-03-15', ''))).toBe('Elige las dos fechas del periodo.');
+        expect(datesNotice('dates', custom('', ''))).toBe('Elige las dos fechas del periodo.');
+    });
+
+    it('no repite los avisos que ya enseñan los campos de fecha', () => {
+        expect(datesNotice('dates', custom('2026-05-10', '2026-03-15'))).toBeNull();
+        expect(datesNotice('dates', { key: 'custom', from: '', to: '2026-03-15', bad: ['from'] })).toBeNull();
+    });
+
+    it('con fechas buenas, o con otro tipo de periodo, no hay aviso', () => {
+        expect(datesNotice('dates', custom('2026-03-15', '2026-05-10'))).toBeNull();
+        expect(datesNotice('year', custom('', ''))).toBeNull();
+        expect(datesNotice('campaign', custom('', ''))).toBeNull();
+    });
+});
+
+describe('skeletonRows', () => {
+    it('en meses dibuja una fila por mes del periodo, para que la silueta mida lo que medirá la tabla', () => {
+        expect(skeletonRows('month', { from: '2026-01-01', to: '2026-10-04' })).toBe(10);
+        expect(skeletonRows('month', { from: '2026-09-05', to: '2026-09-20' })).toBe(1);
+        expect(skeletonRows('month', { from: '2025-11-10', to: '2026-02-01' })).toBe(4);
+    });
+
+    it('no pasa de 12 filas con periodos largos', () => {
+        expect(skeletonRows('month', { from: '2021-01-01', to: '2026-10-04' })).toBe(12);
+    });
+
+    it('en años dibuja siete', () => {
+        expect(skeletonRows('year', { from: '2026-01-01', to: '2026-10-04' })).toBe(7);
+    });
+
+    it('sin periodo dibuja nueve', () => {
+        expect(skeletonRows('month', null)).toBe(9);
     });
 });

@@ -2,7 +2,7 @@ import { getDaysInMonth, startOfDay } from 'date-fns';
 import { apiDate } from './dates.js';
 import { defaultPair, formatBucketRange } from './compare.js';
 import { formatEuros, formatEurosRound, formatNumber, formatShare } from './format.js';
-import { salesPeriodRange } from './salesPeriod.js';
+import { customPeriodError, periodApplyError, salesPeriodRange } from './salesPeriod.js';
 
 const PROMPTS = { campaign: 'Una campaña…', season: 'Una temporada…', dates: 'Fechas concretas…' };
 
@@ -171,4 +171,26 @@ export function expensesTable(grain, buckets, range, today) {
         low: isLow(item.margin)
     }));
     return { rows, note };
+}
+
+export const EMPTY_MESSAGE = 'No hay ventas en este periodo.';
+
+export function expensesState({ data, error, listLoading = false, listError = null }) {
+    if (error || listError) return { kind: 'error' };
+    if (listLoading || data === null) return { kind: 'loading' };
+    if (data.rows.length === 0) return { kind: 'empty', message: EMPTY_MESSAGE };
+    return { kind: 'ready' };
+}
+
+export function datesNotice(kind, dates) {
+    return kind === 'dates' && !customPeriodError(dates) ? periodApplyError(dates) : null;
+}
+
+const SKELETON_MAX_ROWS = 12;
+const SKELETON_YEARS = 7;
+const SKELETON_DEFAULT_ROWS = 9;
+
+export function skeletonRows(grain, period) {
+    if (grain === 'year') return SKELETON_YEARS;
+    return period ? Math.min(SKELETON_MAX_ROWS, monthKeys(period.from, period.to).length) : SKELETON_DEFAULT_ROWS;
 }

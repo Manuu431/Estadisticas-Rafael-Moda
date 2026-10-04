@@ -5,9 +5,11 @@ import ExpensesPick from './ExpensesPick.jsx';
 import ExpensesKpis from './ExpensesKpis.jsx';
 import ExpensesChart from './ExpensesChart.jsx';
 import ExpensesTable from './ExpensesTable.jsx';
+import ExpensesSkeleton from './ExpensesSkeleton.jsx';
+import { CardError } from '../controlPanel/cards/CardState.jsx';
 import { DATABASE_TABLES } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
-import { chosenPeriod, expensesBuckets, expensesParams, expensesRange, expensesTable, monthsLabel, periodMenu, periodText, startedPeriods, yearsText } from '../../utils/expenses.js';
+import { chosenPeriod, datesNotice, expensesBuckets, expensesParams, expensesRange, expensesState, expensesTable, monthsLabel, periodMenu, periodText, skeletonRows, startedPeriods, yearsText } from '../../utils/expenses.js';
 
 const LISTS = { campaign: 'campaigns', season: 'seasons' };
 const NO_TOTALS = { amount: 0, cost: 0, profit: 0 };
@@ -32,8 +34,10 @@ function Expenses({ title }) {
     if (candidateKey && shown?.key !== candidateKey) setShown({ key: candidateKey, period: candidate, kind });
     const period = candidate ?? shown?.period ?? null;
 
-    const request = useFetch(DATABASE_TABLES.statistics.expenses, expensesParams(grain, period));
+    const params = expensesParams(grain, period);
+    const request = useFetch(params ? DATABASE_TABLES.statistics.expenses : null, params ?? undefined);
     const data = request.settled && !request.loading ? request.data : null;
+    const state = expensesState({ data, error: request.error, listLoading: Boolean(LISTS[kind]) && list.loading, listError: LISTS[kind] ? list.error : null });
     const totals = data?.totals ?? NO_TOTALS;
     const buckets = expensesBuckets(grain, data, today);
 
@@ -42,6 +46,34 @@ function Expenses({ title }) {
     const menu = periodMenu(kind, menuText, yearText);
     const grainOptions = [{ value: 'month', label: monthsLabel(period) }, { value: 'year', label: 'Años' }];
     const noun = grain === 'year' ? 'año' : 'mes';
+
+    const content = (() => {
+        if (state.kind === 'error') {
+            return (
+                <section className="panel-card">
+                    <CardError onRetry={list.error ? list.refetch : request.refetch} />
+                </section>
+            );
+        }
+        if (state.kind === 'loading') return <ExpensesSkeleton rows={skeletonRows(grain, period)} />;
+        return (
+            <>
+                <ExpensesKpis totals={totals} />
+                {state.kind === 'empty' ? (
+                    <section className="panel-card">
+                        <div className="sales-state">
+                            <p className="sales-state-text">{state.message}</p>
+                        </div>
+                    </section>
+                ) : (
+                    <div className="expenses-main">
+                        <ExpensesChart buckets={buckets} noun={noun} />
+                        <ExpensesTable grain={grain} table={expensesTable(grain, buckets, data.range, today)} />
+                    </div>
+                )}
+            </>
+        );
+    })();
 
     return (
         <div className="expenses-page">
@@ -69,14 +101,9 @@ function Expenses({ title }) {
                 onChange={(id) => setPicks((prev) => ({ ...prev, [kind]: id }))}
                 dates={dates}
                 onDatesChange={setDates}
+                notice={datesNotice(kind, dates)}
             />
-            <div className="d-flex flex-column gap-4">
-                <ExpensesKpis totals={totals} />
-                <div className="expenses-main">
-                    <ExpensesChart buckets={buckets} noun={noun} />
-                    <ExpensesTable grain={grain} table={expensesTable(grain, buckets, data?.range ?? null, today)} />
-                </div>
-            </div>
+            {content}
         </div>
     );
 }

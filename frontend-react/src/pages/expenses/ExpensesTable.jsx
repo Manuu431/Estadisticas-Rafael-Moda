@@ -6,28 +6,24 @@ function ExpensesTable({ grain, table }) {
     return (
         <section className="panel-card expenses-card is-table" aria-label={title}>
             <h2 className="panel-card-title m-0">{title}</h2>
-            {table.rows.length === 0 ? (
-                <p className="panel-muted m-0">No hay ventas en este periodo.</p>
-            ) : (
-                <div className="expenses-table" role="table" aria-label="Ingresos, gastos y beneficio">
-                    <div role="row" className="expenses-row is-head">
-                        <span role="columnheader"><span className="visually-hidden">Periodo</span></span>
-                        <span role="columnheader">Ingresos</span>
-                        <span role="columnheader">Gastos</span>
-                        <span role="columnheader">Beneficio</span>
-                        <span role="columnheader">%</span>
-                    </div>
-                    {table.rows.map((row) => (
-                        <div role="row" className="expenses-row" key={row.key}>
-                            <span role="cell" className="expenses-cell-name">{row.name}</span>
-                            <span role="cell">{row.amount}</span>
-                            <span role="cell" className="expenses-cell-cost">{row.cost}</span>
-                            <span role="cell" className="expenses-cell-profit">{row.profit}</span>
-                            <span role="cell" className={`expenses-pct${row.low ? ' is-low' : ''}`}>{row.share}</span>
-                        </div>
-                    ))}
+            <div className="expenses-table" role="table" aria-label="Ingresos, gastos y beneficio">
+                <div role="row" className="expenses-row is-head">
+                    <span role="columnheader"><span className="visually-hidden">Periodo</span></span>
+                    <span role="columnheader">Ingresos</span>
+                    <span role="columnheader">Gastos</span>
+                    <span role="columnheader">Beneficio</span>
+                    <span role="columnheader">%</span>
                 </div>
-            )}
+                {table.rows.map((row) => (
+                    <div role="row" className="expenses-row" key={row.key}>
+                        <span role="cell" className="expenses-cell-name">{row.name}</span>
+                        <span role="cell">{row.amount}</span>
+                        <span role="cell" className="expenses-cell-cost">{row.cost}</span>
+                        <span role="cell" className="expenses-cell-profit">{row.profit}</span>
+                        <span role="cell" className={`expenses-pct${row.low ? ' is-low' : ''}`}>{row.share}</span>
+                    </div>
+                ))}
+            </div>
             <p className="expenses-foot">{table.note ? `${table.note} ${FOOT}` : FOOT}</p>
         </section>
     );
