@@ -62,6 +62,7 @@
     --rm-text-sm: 0.8125rem;
     --rm-text-sm-plus: 0.84375rem;
     --rm-text-md: 0.875rem;
+    --rm-text-md-plus: 0.90625rem;
     --rm-text-lg: 0.9375rem;
     --rm-text-base: 1rem;
     --rm-text-icon: 1.0625rem;
@@ -1746,13 +1747,6 @@
     border-top: 0;
 }
 
-.m-item-time {
-    width: 2.5rem;
-    font-size: var(--rm-text-sm);
-    font-weight: 600;
-    color: var(--rm-ink-3);
-}
-
 .m-item-title {
     font-size: var(--rm-text-md);
     font-weight: 600;
@@ -1766,24 +1760,6 @@
 .m-item-value {
     font-size: var(--rm-text-md);
     font-weight: 600;
-    white-space: nowrap;
-}
-
-.m-item-profit {
-    font-size: var(--rm-text-xs);
-    font-weight: 600;
-    color: var(--rm-positive);
-    white-space: nowrap;
-}
-
-.m-group-title {
-    font-size: var(--rm-text-md);
-    font-weight: 600;
-}
-
-.m-group-sum {
-    font-size: var(--rm-text-sm);
-    color: var(--rm-ink-2);
     white-space: nowrap;
 }
 
@@ -2457,4 +2433,103 @@
     .filters-mobile .panel-seg {
         font-size: var(--rm-text-md);
     }
+}
+
+.sales-days {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.sales-day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sales-day-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 0.25rem;
+}
+
+.sales-day-title {
+    margin: 0;
+    font-size: var(--rm-text-md);
+    font-weight: 600;
+}
+
+.sales-day-sum {
+    font-size: var(--rm-text-sm);
+    color: var(--rm-ink-2);
+    white-space: nowrap;
+}
+
+.sales-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 4.25rem;
+    padding: 0 1rem;
+    border-top: 1px solid var(--rm-line-soft);
+}
+
+.sales-item:first-child {
+    border-top: 0;
+}
+
+.sales-item-time {
+    width: 2.5rem;
+    flex-shrink: 0;
+    font-size: var(--rm-text-xs-plus);
+    font-weight: 600;
+    color: var(--rm-ink-3);
+}
+
+.sales-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1875rem;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.sales-item-title,
+.sales-item-meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sales-item-title {
+    font-size: var(--rm-text-md-plus);
+    font-weight: 600;
+}
+
+.sales-item-meta {
+    font-size: var(--rm-text-xs-plus);
+    color: var(--rm-ink-3);
+}
+
+.sales-item-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.1875rem;
+    flex-shrink: 0;
+}
+
+.sales-item-amount {
+    font-size: var(--rm-text-md-plus);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sales-item-profit {
+    font-size: var(--rm-text-xs);
+    font-weight: 600;
+    color: var(--rm-positive);
+    white-space: nowrap;
 }

@@ -74,7 +74,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -171,6 +171,14 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   de venta (€) y Beneficio (€) con sus dos campos iguales. Etiqueta encima (`.sheet-label`, `text-sm`, 600, `--rm-nav`, a 6 px),
   campos de 48 px y radio 14, bloques a 14 px, sin flecha en los desplegables (como el artboard). «Limpiar» (`--rm-tint`) vacía
   toda la hoja (Periodo vuelve a «Este mes»), lo aplica y cierra; «Ver resultados» aplica y cierra.
+- **Lista de ventas en móvil** (`SalesMobileList`, `.sales-day`, `.sales-item`): ventas agrupadas por día, la más reciente primero. Título del
+  día en `text-md` 600 («Hoy, jueves 1», «Sábado 26», «Sábado 26 de julio» o «Sábado 26 de julio de 2025» según sea del mes, del año o
+  de otro año) y, a la derecha, el total del día **completo** en `text-sm` `ink-2` (no cambia al ver más). Cada venta (`.sales-item`):
+  mínimo 4,25 rem (68 px), padding 0 16 px y 12 px entre columnas; hora en 40 px (`xs-plus`, 600, `ink-3`), nombre en `md-plus` 600
+  cortado con «…», debajo «Marca · Sección · T. X · N uds.» (las unidades solo si son más de una) en `xs-plus` `ink-3`, y a la derecha el
+  importe en `md-plus` 600 y el beneficio con signo en `text-xs`, 600, `--rm-positive`. Sin paginación de flechas: 12 ventas y debajo un
+  `.m-btn` a ancho completo «Ver más ventas (N)» con las que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
+  filtro vuelve a las 12 primeras.
 - **Estados de Ventas** (`SalesPlaceholder`, `.sales-state`): la cabecera de la tabla se queda y el cuerpo, de unas tres filas de alto
   (10,875 rem), centra el mensaje en `text-md` y `ink-2`. Cargando: `.spinner-border-sm` en `--rm-orange` (sin giro con
   `prefers-reduced-motion`) y «Cargando ventas…», y el resumen de la cabecera se sustituye por dos siluetas `.panel-skeleton`:

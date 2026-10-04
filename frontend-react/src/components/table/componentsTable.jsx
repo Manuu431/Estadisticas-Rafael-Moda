@@ -1,5 +1,3 @@
-import { format, isToday, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { TableIconButton } from '../smallComponents.jsx';
 import { formatDate, handleSort, getSortIconClass } from '../../utils/tableUtils.js';
 import { getValueLabel } from '../../config/labels.js';
@@ -136,68 +134,6 @@ export function DesktopTable(props) {
     return props.type === 'sales' ? <SalesTable data={props.data} /> : <GenericTable {...props} />;
 }
 
-const dayHeading = (value) => {
-    const date = parseISO(value);
-    if (isNaN(date)) return value;
-    const label = format(date, 'EEEE d', { locale: es });
-    if (isToday(date)) return `Hoy, ${label}`;
-    return label.charAt(0).toUpperCase() + label.slice(1);
-};
-
-const saleTime = (item) => (typeof item.sold_at === 'string' ? item.sold_at.slice(11, 16) : '');
-
-const saleMeta = (item) =>
-    [item.brand, getValueLabel('section', item.section), item.size ? `T. ${item.size}` : '', item.units > 1 ? `${item.units} uds.` : '']
-        .filter(Boolean)
-        .join(' · ');
-
-const groupByDay = (data) => {
-    const groups = [];
-    data.forEach((item) => {
-        const key = item.sale_date ?? '';
-        let group = groups.find((entry) => entry.key === key);
-        if (!group) {
-            group = { key, total: 0, items: [] };
-            groups.push(group);
-        }
-        group.total += Number(item.amount ?? 0);
-        group.items.push(item);
-    });
-    return groups;
-};
-
-function SalesDayList({ data }) {
-    return (
-        <div className="d-flex flex-column gap-3">
-            {groupByDay(data).map((group) => (
-                <section className="d-flex flex-column gap-2" key={group.key}>
-                    {group.key ? (
-                        <div className="d-flex align-items-baseline justify-content-between gap-3 px-1">
-                            <h3 className="m-group-title m-0">{dayHeading(group.key)}</h3>
-                            <span className="m-group-sum">{formatEuros(group.total)}</span>
-                        </div>
-                    ) : null}
-                    <ul className="m-list list-unstyled m-0">
-                        {group.items.map((item) => (
-                            <li className="m-item d-flex align-items-center gap-3" key={item.id}>
-                                <span className="m-item-time flex-shrink-0">{saleTime(item)}</span>
-                                <span className="d-flex flex-column flex-grow-1 overflow-hidden">
-                                    <span className="m-item-title text-truncate">{item.product ?? item.family ?? '—'}</span>
-                                    <span className="m-item-meta text-truncate">{saleMeta(item)}</span>
-                                </span>
-                                <span className="d-flex flex-column align-items-end flex-shrink-0">
-                                    <span className="m-item-value">{formatEuros(item.amount)}</span>
-                                    <span className="m-item-profit">+{formatEuros(item.profit)}</span>
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-            ))}
-        </div>
-    );
-}
-
 function CardList({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete }) {
     const { columns, values } = DATABASE_TABLE.tables;
     const mobile = DATABASE_TABLE.mobile ?? { title: values[1] ?? values[0], meta: values.slice(2, 4), value: null };
@@ -239,6 +175,4 @@ function CardList({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, h
     );
 }
 
-export function MobileTable(props) {
-    return props.type === 'sales' ? <SalesDayList data={props.data} /> : <CardList {...props} />;
-}
+export const MobileTable = CardList;

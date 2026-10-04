@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import SalesFilters from "../components/SalesFilters.jsx";
 import Table from "../components/table/Table.jsx";
 import SalesPlaceholder from "../components/table/SalesPlaceholder.jsx";
+import SalesMobileList from "../components/table/SalesMobileList.jsx";
 import SalesSummary, { SalesSummaryCard } from "../components/SalesSummary.jsx";
 import { DATABASE_TABLES } from "../config/database.js";
 import { useFetch } from "../hooks/useFetch.js";
@@ -33,7 +34,7 @@ function Sales(props) {
             </header>
             {isMobile ? <SalesSummaryCard kind={state.kind} summary={summary} /> : null}
             <SalesFilters period={period} onPeriodChange={setPeriod} onFilterChange={setFilters} />
-            {state.kind === 'ready' ? <Table type="sales" rows={data} /> : <SalesPlaceholder state={state} onRetry={refetch} />}
+            {state.kind !== 'ready' ? <SalesPlaceholder state={state} onRetry={refetch} /> : isMobile ? <SalesMobileList rows={data} /> : <Table type="sales" rows={data} />}
         </div>
     );
 }
