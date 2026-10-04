@@ -8,10 +8,12 @@ import ModalComponent from '../ModalComponent.jsx';
 import { DesktopTable, MobileTable } from './componentsTable.jsx';
 import { useIsMobile } from '../../utils/useIsMobile.js'
 import { useFetch } from '../../hooks/useFetch.js';
-const itemsPerPage = 10;
+const PAGE_SIZES = { sales: 12 };
+const DEFAULT_PAGE_SIZE = 10;
 const ITEM_LABELS = { sales: 'líneas', clients: 'clientes', campaigns: 'campañas', seasons: 'temporadas', seasonTypes: 'tipos', campaignTypes: 'tipos' };
 const DEFAULT_SORT = { sales: { key: 'sold_at', direction: 'desc' } };
 function Table({ type, filters = {}, rows = null, external = null, setExternal, onChanged }) {
+    const itemsPerPage = PAGE_SIZES[type] ?? DEFAULT_PAGE_SIZE;
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -46,7 +48,7 @@ function Table({ type, filters = {}, rows = null, external = null, setExternal, 
         setData(result);
         setCurrentPage(1);
         setTotalPages(Math.ceil(result.length / itemsPerPage));
-    }, [fetched, isCreateType]);
+    }, [fetched, isCreateType, itemsPerPage]);
 
     const reloadTable = async () => {
         try {
@@ -189,6 +191,7 @@ function Table({ type, filters = {}, rows = null, external = null, setExternal, 
                             totalItems={sortedData.length}
                             pageSize={itemsPerPage}
                             itemLabel={ITEM_LABELS[type] ?? 'registros'}
+                            edges
                         />
                     </div>
                 )}

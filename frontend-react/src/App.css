@@ -29,6 +29,7 @@
     --rm-orange-border: #E7C3A2;
     --rm-orange-line: #F1CFB0;
     --rm-row-hover: #FDFAF6;
+    --rm-icon-disabled: #B9AEA3;
     --rm-pill-mujer-ink: #9A4A0A;
     --rm-pill-hombre: #EDE8E3;
     --rm-event: #FBE3CF;
@@ -760,7 +761,7 @@
 .data-foot {
     padding: 0.875rem 1.5rem;
     border-top: 1px solid var(--rm-line-soft);
-    font-size: var(--rm-text-sm);
+    font-size: var(--rm-text-sm-plus);
     color: var(--rm-ink-2);
 }
 
@@ -787,7 +788,16 @@
 }
 
 .data-page:disabled {
-    color: var(--rm-line-dashed);
+    color: var(--rm-icon-disabled);
+}
+
+.data-page-label {
+    padding: 0 0.375rem;
+}
+
+.data-page-current {
+    font-weight: 600;
+    color: var(--rm-ink);
 }
 
 .data-row-card {

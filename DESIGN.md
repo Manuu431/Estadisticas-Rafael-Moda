@@ -29,6 +29,7 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Fondo seleccionado | `--rm-orange-tint` / `-soft` | #FBEBDD / #FDF3EA |
 | Borde del botón abierto (Ventas) | `--rm-orange-line` | #F1CFB0 |
 | Fila de la tabla de Ventas al pasar el cursor | `--rm-row-hover` | #FDFAF6 |
+| Icono desactivado (paginación) | `--rm-icon-disabled` | #B9AEA3 |
 | Pastilla Mujer, texto / Hombre, fondo | `--rm-pill-mujer-ink` / `--rm-pill-hombre` | #9A4A0A / #EDE8E3 |
 | Positivo (ingresos, subidas) | `--rm-positive` + `-tint` | #1E6B45 / #E7F3EC |
 | Negativo (gastos, bajadas) | `--rm-negative` + `-tint` | #A3261B / #FBE9E7 |
@@ -157,6 +158,12 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `--rm-positive` y 500, sin signo. La sección es una pastilla de 24 px (`.sales-pill`): Mujer `--rm-orange-tint` con
   `--rm-pill-mujer-ink`, Hombre `--rm-pill-hombre` con `--rm-section-hombre`. Al pasar el cursor, `--rm-row-hover`.
   Por debajo de 1200 px las filas no bajan de 59,5 rem y la tabla se desplaza dentro de su tarjeta (`.sales-scroll`).
+- **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
+  `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
+  los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
+  Los botones (`.data-page`) son de 36 × 36 px, radio `sm`, borde `--rm-line-strong`, con `bi-chevron-double-left/right` en los
+  extremos; desactivados, el icono pasa a `--rm-icon-disabled`. En la primera página, primera y anterior están desactivadas; en la
+  última, siguiente y última. Los extremos solo salen en escritorio (`edges`). Ventas pagina de 12 en 12; el resto, de 10 en 10.
 - **Enlace de tarjeta** (`.panel-link`): «Ver todas» y similares, `text-sm` 600 en `--rm-orange-strong`, con
   `bi-chevron-right` detrás; al pasar el cursor, `--rm-orange-ink`.
 - **Campaña en curso** (`.campaign-current`): caja `--rm-surface-soft` con borde `--rm-line-soft` y radio `--rm-radius`,
