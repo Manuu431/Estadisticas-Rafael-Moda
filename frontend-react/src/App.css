@@ -2649,6 +2649,10 @@
     }
 }
 
+.clients-shell {
+    display: contents;
+}
+
 .clients-list {
     display: flex;
     flex-direction: column;

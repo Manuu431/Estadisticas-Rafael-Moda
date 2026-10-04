@@ -18,7 +18,7 @@ function Clients(props) {
     const [filters, setFilters] = useState({});
     const [page, setPage] = useState(1);
     const isMobile = useIsMobile();
-    const { data: options, loading, error: optionsError } = useFetch(OPTIONS_URL, filters.province ? { province: filters.province } : undefined);
+    const { data: options, error: optionsError } = useFetch(OPTIONS_URL, filters.province ? { province: filters.province } : undefined);
     const { data: clients, error, refetch } = useFetch(DATABASE_TABLES.clients.endpoint, filters);
     const state = clientsState({ data: clients, error });
     const totalPages = Math.ceil((clients?.length ?? 0) / PAGE_SIZE);
@@ -28,7 +28,7 @@ function Clients(props) {
         setPage(1);
     }, []);
 
-    const filtersBar = <ClientsFilters options={options} loading={loading} onFilterChange={changeFilters} />;
+    const filtersBar = <ClientsFilters options={options} onFilterChange={changeFilters} />;
 
     const desktopList = state.kind === 'ready' ? (
         <>
@@ -47,29 +47,24 @@ function Clients(props) {
         <ClientsPlaceholder state={state} onRetry={refetch} />
     );
 
+    const mobileList = state.kind === 'ready' ? (
+        <ClientsMobileList rows={clients} />
+    ) : (
+        <div className="data-card">
+            <ClientsPlaceholder state={state} onRetry={refetch} />
+        </div>
+    );
+
     return (
         <div className="clients-page">
             <header className="panel-heading d-flex flex-column">
                 {options ? <span className="panel-period">{formatClientsRegistered(options.total)}</span> : optionsError ? null : <Skeleton className="clients-count-skeleton" />}
                 <h1 className="panel-title m-0">{props.title}</h1>
             </header>
-            {isMobile ? (
-                <>
-                    {filtersBar}
-                    {state.kind === 'ready' ? (
-                        <ClientsMobileList rows={clients} />
-                    ) : (
-                        <section className="data-card" aria-label="Listado de clientes">
-                            <ClientsPlaceholder state={state} onRetry={refetch} />
-                        </section>
-                    )}
-                </>
-            ) : (
-                <section className="data-card" aria-label="Listado de clientes">
-                    {filtersBar}
-                    {desktopList}
-                </section>
-            )}
+            <section className={isMobile ? 'clients-shell' : 'data-card'} aria-label="Listado de clientes">
+                {filtersBar}
+                {isMobile ? mobileList : desktopList}
+            </section>
         </div>
     );
 }

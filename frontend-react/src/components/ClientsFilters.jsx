@@ -7,27 +7,29 @@ const SEARCH_DELAY = 300;
 const NO_OPTIONS = [];
 const withAll = (names) => [{ value: '', label: 'Todas' }, ...names.map((name) => ({ value: name, label: name }))];
 
-function ClientsFilters({ options, loading, onFilterChange }) {
+function ClientsFilters({ options, onFilterChange }) {
     const [search, setSearch] = useState('');
     const [province, setProvince] = useState('');
     const [city, setCity] = useState('');
     const isMobile = useIsMobile();
-    const debouncedSearch = useDebouncedValue(search.trim(), SEARCH_DELAY);
-    const cities = options?.cities ?? NO_OPTIONS;
+    const typed = search.trim();
+    const debouncedSearch = useDebouncedValue(typed, SEARCH_DELAY);
+    const appliedSearch = typed ? debouncedSearch : '';
 
     useEffect(() => {
         onFilterChange({
-            ...(debouncedSearch ? { search: debouncedSearch } : {}),
+            ...(appliedSearch ? { search: appliedSearch } : {}),
             ...(province ? { province } : {}),
             ...(city ? { city } : {})
         });
-    }, [debouncedSearch, province, city, onFilterChange]);
+    }, [appliedSearch, province, city, onFilterChange]);
 
-    useEffect(() => {
-        if (options && !loading && city && !cities.includes(city)) setCity('');
-    }, [options, loading, cities, city]);
+    const hasFilters = Boolean(typed || province || city);
 
-    const hasFilters = Boolean(search || province || city);
+    const changeProvince = (next) => {
+        setProvince(next);
+        if (next) setCity('');
+    };
 
     const clearFilters = () => {
         setSearch('');
@@ -41,7 +43,7 @@ function ClientsFilters({ options, loading, onFilterChange }) {
             label="Provincia"
             value={province}
             options={withAll(options?.provinces ?? NO_OPTIONS)}
-            onChange={setProvince}
+            onChange={changeProvince}
             className={`clients-province${isMobile ? ' is-large' : ''}`}
         />
     );
@@ -51,7 +53,7 @@ function ClientsFilters({ options, loading, onFilterChange }) {
             name="city"
             label="Ciudad"
             value={city}
-            options={withAll(cities)}
+            options={withAll(options?.cities ?? NO_OPTIONS)}
             onChange={setCity}
             className={`clients-city${isMobile ? ' is-large' : ''}`}
         />

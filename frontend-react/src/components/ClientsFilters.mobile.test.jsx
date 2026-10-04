@@ -14,7 +14,7 @@ afterEach(() => {
 
 const setup = () => {
     const onFilterChange = vi.fn();
-    render(<ClientsFilters options={OPTIONS} loading={false} onFilterChange={onFilterChange} />);
+    render(<ClientsFilters options={OPTIONS} onFilterChange={onFilterChange} />);
     return { lastFilters: () => onFilterChange.mock.calls.at(-1)[0] };
 };
 
