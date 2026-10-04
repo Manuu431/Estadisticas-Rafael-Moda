@@ -280,6 +280,12 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Desde / Hasta de Ventas (`CustomDates`). Por defecto, la última que ya terminó. Todo se aplica al momento; si las fechas no valen no se
   pide nada y se sigue enseñando el último periodo válido con su texto. El rango se recorta a hoy (una campaña en curso no pinta meses futuros).
   El rango se escribe con `formatBucketRange` («1 ene – 4 oct 2026»), no con `formatShortRange`, que pone un punto tras el mes.
+- **Gastos, tarjetas de cifras** (`.expenses-kpis`, `ExpensesKpis`): tres `.panel-card.expenses-kpi` en una rejilla de 3 columnas iguales a 24 px
+  desde 1200 px y en una columna por debajo (con 3 columnas a 1000 px la cifra de 42 px se salía de la tarjeta; a 1200 px la más ancha, «1.422.692,82 €»,
+  ocupa 201 de 221 px). Padding 22 × 26 px, 10 px entre líneas. Etiqueta `.expenses-kpi-label` (`text-sm-plus`, 600) con su cuadradito (`.panel-dot.is-income`
+  naranja y `.is-cost` marrón, 10 px, radio 3; Beneficio no lleva), cifra `.expenses-kpi-value` (serif `display-lg`, `line-height` 1; Beneficio en `--rm-positive`)
+  y nota `.expenses-kpi-note` (`text-xs-plus`, `ink-3`). Etiqueta y nota llevan `line-height: normal`, como el artboard (con el 1,5 de Bootstrap la tarjeta crecía 10 px).
+  Los totales vienen del servidor (no se suman las filas redondeadas) y los porcentajes son gastos / ingresos y beneficio / ingresos con un decimal («0,0 %» sin ingresos).
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

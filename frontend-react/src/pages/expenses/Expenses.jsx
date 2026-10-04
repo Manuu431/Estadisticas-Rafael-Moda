@@ -4,9 +4,10 @@ import { es } from 'date-fns/locale';
 import PairedBarChart from '../../components/PairedBarChart.jsx';
 import ExpensesPeriod from './ExpensesPeriod.jsx';
 import ExpensesPick from './ExpensesPick.jsx';
+import ExpensesKpis from './ExpensesKpis.jsx';
 import { DATABASE_TABLES } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
-import { formatEuros, formatEurosRound, formatShare } from '../../utils/format.js';
+import { formatEurosRound, formatShare } from '../../utils/format.js';
 import { chosenPeriod, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yearsText } from '../../utils/expenses.js';
 
 const SERIES = [
@@ -85,39 +86,7 @@ function Expenses({ title }) {
                 onDatesChange={setDates}
             />
             <div className="d-flex flex-column gap-4">
-                <div className="row g-4">
-                    <div className="col-12 col-md-4">
-                        <section className="panel-card d-flex flex-column gap-2 h-100">
-                            <span className="panel-card-title d-flex align-items-center gap-2">
-                                <span className="panel-dot is-income" aria-hidden="true" />
-                                Ingresos
-                            </span>
-                            <span className="panel-display">{formatEuros(totals.amount)}</span>
-                            <span className="panel-muted">Lo que han pagado los clientes</span>
-                        </section>
-                    </div>
-                    <div className="col-12 col-md-4">
-                        <section className="panel-card d-flex flex-column gap-2 h-100">
-                            <span className="panel-card-title d-flex align-items-center gap-2">
-                                <span className="panel-dot is-cost" aria-hidden="true" />
-                                Gastos en mercancía
-                            </span>
-                            <span className="panel-display">{formatEuros(totals.cost)}</span>
-                            <span className="panel-muted">
-                                Lo que costó la ropa vendida · {formatShare(totals.cost, totals.amount)} de lo ingresado
-                            </span>
-                        </section>
-                    </div>
-                    <div className="col-12 col-md-4">
-                        <section className="panel-card d-flex flex-column gap-2 h-100">
-                            <span className="panel-card-title">Beneficio</span>
-                            <span className="panel-display text-positive">{formatEuros(totals.profit)}</span>
-                            <span className="panel-muted">
-                                Te quedas con el {formatShare(totals.profit, totals.amount)} de cada venta
-                            </span>
-                        </section>
-                    </div>
-                </div>
+                <ExpensesKpis totals={totals} />
                 <div className="row g-4 align-items-start">
                     <div className="col-12 col-xl-7">
                         <section className="panel-card d-flex flex-column gap-3">

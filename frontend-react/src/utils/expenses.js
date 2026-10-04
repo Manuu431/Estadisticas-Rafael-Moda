@@ -1,6 +1,7 @@
 import { startOfDay } from 'date-fns';
 import { apiDate } from './dates.js';
 import { defaultPair, formatBucketRange } from './compare.js';
+import { formatEuros, formatShare } from './format.js';
 import { salesPeriodRange } from './salesPeriod.js';
 
 const PROMPTS = { campaign: 'Una campaña…', season: 'Una temporada…', dates: 'Fechas concretas…' };
@@ -55,4 +56,14 @@ export function chosenPeriod(started, pickId, today) {
 export function periodMenu(kind, text, yearText) {
     const option = (value) => ({ value, label: kind === value && text ? text : PROMPTS[value] });
     return [{ value: 'year', label: kind === 'year' ? text : yearText }, option('campaign'), option('season'), option('dates')];
+}
+
+export function expensesKpis({ amount, cost, profit }) {
+    return {
+        amount: formatEuros(amount),
+        cost: formatEuros(cost),
+        profit: formatEuros(profit),
+        costShare: formatShare(cost, amount),
+        profitShare: formatShare(profit, amount)
+    };
 }

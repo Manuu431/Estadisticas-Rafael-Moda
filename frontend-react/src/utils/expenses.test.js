@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chosenPeriod, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yearsText } from './expenses.js';
+import { chosenPeriod, expensesKpis, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yearsText } from './expenses.js';
 
 const today = new Date(2026, 8, 28, 12, 30);
 const custom = (from, to) => ({ key: 'custom', from, to, bad: [] });
@@ -161,5 +161,39 @@ describe('periodMenu', () => {
 
     it('si aún no hay texto, la opción elegida se queda con su invitación', () => {
         expect(periodMenu('season', null, yearText)[2].label).toBe('Una temporada…');
+    });
+});
+
+describe('expensesKpis', () => {
+    it('da los importes con dos decimales y los porcentajes con uno', () => {
+        expect(expensesKpis({ amount: 201358.4, cost: 103805.5, profit: 97552.9 })).toEqual({
+            amount: '201.358,40 €',
+            cost: '103.805,50 €',
+            profit: '97.552,90 €',
+            costShare: '51,6 %',
+            profitShare: '48,4 %'
+        });
+    });
+
+    it('con ingresos a 0 los porcentajes salen a 0,0 %', () => {
+        expect(expensesKpis({ amount: 0, cost: 0, profit: 0 })).toEqual({
+            amount: '0,00 €',
+            cost: '0,00 €',
+            profit: '0,00 €',
+            costShare: '0,0 %',
+            profitShare: '0,0 %'
+        });
+    });
+
+    it('usa los totales que le dan, no los recalcula', () => {
+        const kpis = expensesKpis({ amount: 100, cost: 40, profit: 59.99 });
+        expect(kpis.profit).toBe('59,99 €');
+        expect(kpis.profitShare).toBe('60,0 %');
+    });
+
+    it('con pérdidas el beneficio y su porcentaje salen negativos', () => {
+        const kpis = expensesKpis({ amount: 100, cost: 120, profit: -20 });
+        expect(kpis.profit).toBe('-20,00 €');
+        expect(kpis.profitShare).toBe('-20,0 %');
     });
 });
