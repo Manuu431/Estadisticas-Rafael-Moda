@@ -195,6 +195,11 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   («Buscar por nombre o código postal»), Provincia de 200 px y Ciudad de 190 px (`.panel-field.is-labelled`, «Todas» primero). Sin «Más
   filtros» ni Todo / Mujer / Hombre. El buscador se aplica a los 300 ms; Provincia y Ciudad, al momento. Ciudad solo ofrece las ciudades de la
   provincia elegida y, si la ciudad elegida deja de pertenecer a ella, se vacía.
+  Tabla (`ClientsTable`, `.clients-row`): Nombre · Ciudad · Provincia · CP en la rejilla `minmax(0,1.8fr) minmax(0,1.4fr) minmax(0,1fr) 80px`
+  con 16 px entre columnas y padding 0 24 px. Cabecera de 44 px en `--rm-cream-light`, `text-xs-plus`, 600, `ink-2`, sin mayúsculas y sin
+  botones de orden (el orden alfabético lo da el SQL); filas de 52 px con borde superior `--rm-line-soft` y `text-md`. Nombre en 500, Ciudad
+  normal, Provincia en `ink-2` y CP a la derecha en `ink-2` con cifras tabulares; el texto largo se corta con «…». Al pasar el cursor,
+  `--rm-row-hover`. Cabe sin desplazamiento hasta 992 px, así que no lleva `.sales-scroll`.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
