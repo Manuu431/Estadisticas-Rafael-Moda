@@ -269,6 +269,17 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   de 5 filas (16,9375 rem en escritorio, 17,5 rem en móvil) para que las tarjetas no cambien de alto con Sección (2 filas) ni con
   la última página, y la gráfica no se queda con un hueco blanco enorme. Cambiar de pestaña o de periodo vuelve a la página 1. Cargando:
   siluetas por tarjeta; error: `CardError` en una tarjeta; sin dos periodos válidos: «Elige los dos periodos para compararlos.».
+- **Gastos, cabecera y periodo** (`.expenses-page`, 24 px entre bloques; en móvil 14 px y el mismo margen negativo que Clientes). Los datos salen de
+  `/api/statistics/expenses` (ingresos = `amount`, gastos = `cost`, beneficio = `profit` de `v_sales`, agrupados por mes o por año en el SQL).
+  Cabecera `.expenses-head` (`align-items: flex-end`, `space-between`, 24 px, se parte en dos líneas): a la izquierda `.panel-heading` con
+  «Lo que cuesta la ropa que vendes, frente a lo que ingresas» en `.panel-period`; a la derecha, a 12 px, el campo Periodo y el control
+  segmentado (`.panel-segs.is-plus`). Periodo es un `FieldDropdown` (`.expenses-period`, 300 px) con el valor en 600; con «Años» el campo se
+  bloquea (`disabled`) en «Todos los años · 2020 – 2026». Opciones: «Este año · 1 ene – 4 oct 2026», «Una campaña…», «Una temporada…»,
+  «Fechas concretas…»; al elegir una de las tres últimas sale una fila propia bajo la cabecera (`.expenses-extra`): un `FieldDropdown`
+  (`.expenses-pick`, 384 px, con el rango a la derecha de cada opción) con las campañas o temporadas que ya han empezado, o los campos
+  Desde / Hasta de Ventas (`CustomDates`). Por defecto, la última que ya terminó. Todo se aplica al momento; si las fechas no valen no se
+  pide nada y se sigue enseñando el último periodo válido con su texto. El rango se recorta a hoy (una campaña en curso no pinta meses futuros).
+  El rango se escribe con `formatBucketRange` («1 ene – 4 oct 2026»), no con `formatShortRange`, que pone un punto tras el mes.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

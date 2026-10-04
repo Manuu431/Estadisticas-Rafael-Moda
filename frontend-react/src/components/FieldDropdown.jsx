@@ -1,6 +1,6 @@
 import Dropdown from 'react-bootstrap/Dropdown';
 
-function FieldDropdown({ label, value, options, onChange, className = '', large = false, alignEnd = false, showLabel = true }) {
+function FieldDropdown({ label, value, options, onChange, className = '', large = false, alignEnd = false, showLabel = true, disabled = false }) {
     const selected = options.find((option) => option.value === value) ?? options[0];
 
     return (
@@ -8,6 +8,7 @@ function FieldDropdown({ label, value, options, onChange, className = '', large 
             <Dropdown.Toggle
                 as="button"
                 type="button"
+                disabled={disabled}
                 className={`panel-field ${showLabel ? 'is-labelled' : 'is-plain'} panel-select-toggle${large ? ' is-large' : ''}`}
                 aria-label={`${label}: ${selected.label}`}
             >

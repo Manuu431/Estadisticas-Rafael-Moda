@@ -3313,3 +3313,73 @@
         width: 100%;
     }
 }
+
+/**
+ * GASTOS
+ */
+.expenses-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.expenses-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.expenses-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.expenses-period {
+    width: 18.75rem;
+}
+
+.expenses-pick {
+    width: 24rem;
+}
+
+.expenses-pick .panel-select-option {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.expenses-period .panel-select-value,
+.expenses-pick .panel-select-value {
+    font-weight: 600;
+}
+
+.expenses-extra .panel-field-period {
+    width: 12.25rem;
+}
+
+.panel-select-toggle:disabled {
+    cursor: default;
+}
+
+@media (max-width: 991.98px) {
+    .expenses-page {
+        gap: 0.875rem;
+        margin: -1.125rem 0 -0.5rem;
+    }
+
+    .expenses-head,
+    .expenses-tools {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.875rem;
+    }
+
+    .expenses-period,
+    .expenses-pick,
+    .expenses-extra .panel-field-period {
+        width: 100%;
+    }
+}

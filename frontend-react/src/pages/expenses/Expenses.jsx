@@ -1,57 +1,90 @@
 import { useMemo, useState } from 'react';
-import PeriodPicker from '../../components/PeriodPicker.jsx';
+import { format, parseISO, startOfDay } from 'date-fns';
+import { es } from 'date-fns/locale';
 import PairedBarChart from '../../components/PairedBarChart.jsx';
+import ExpensesPeriod from './ExpensesPeriod.jsx';
+import ExpensesPick from './ExpensesPick.jsx';
 import { DATABASE_TABLES } from '../../config/database.js';
-import { SHOW_BY_OPTIONS } from '../../config/info.js';
 import { useFetch } from '../../hooks/useFetch.js';
-import { bucketSales, filterByRange, summarize } from '../../utils/compareData.js';
 import { formatEuros, formatEurosRound, formatShare } from '../../utils/format.js';
-
-const THIS_YEAR = new Date().getFullYear();
-
-const INITIAL = {
-    start_date: `${THIS_YEAR}-01-01`,
-    end_date: `${THIS_YEAR}-12-31`,
-    period: '',
-    selectDateBy: 'exact_date'
-};
+import { chosenPeriod, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yearsText } from '../../utils/expenses.js';
 
 const SERIES = [
     { key: 'amount', name: 'Ingresos', color: 'var(--rm-orange)' },
     { key: 'cost', name: 'Gastos', color: 'var(--rm-cost)' }
 ];
 
-function Expenses({ title }) {
-    const [filters, setFilters] = useState(INITIAL);
-    const [applied, setApplied] = useState(INITIAL);
-    const [showBy, setShowBy] = useState('month');
-    const { data } = useFetch(DATABASE_TABLES.sales.endpoint);
+const LISTS = { campaign: 'campaigns', season: 'seasons' };
+const NO_TOTALS = { amount: 0, cost: 0, profit: 0 };
+const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
-    const sales = useMemo(
-        () => filterByRange(data ?? [], applied.start_date, applied.end_date),
-        [data, applied.start_date, applied.end_date]
-    );
-    const totals = useMemo(() => summarize(sales), [sales]);
-    const buckets = useMemo(() => bucketSales(sales, showBy), [sales, showBy]);
-    const rows = useMemo(() => [...buckets].reverse(), [buckets]);
-    const showByLabel = SHOW_BY_OPTIONS.find((option) => option.value === showBy)?.label.toLowerCase() ?? '';
+const adaptRows = (data, grain) =>
+    (data?.rows ?? []).map((row) => ({
+        ...row,
+        label: grain === 'year' ? row.key : capitalize(format(parseISO(`${row.key}-01`), 'LLL yy', { locale: es })),
+        margin: row.amount > 0 ? (row.profit / row.amount) * 100 : 0
+    }));
+
+function Expenses({ title }) {
+    const today = useMemo(() => startOfDay(new Date()), []);
+    const [kind, setKind] = useState('year');
+    const [picks, setPicks] = useState({ campaign: '', season: '' });
+    const [dates, setDates] = useState(() => ({ key: 'custom', from: `${today.getFullYear()}-01-01`, to: format(today, 'yyyy-MM-dd'), bad: [] }));
+    const [grain, setGrain] = useState('month');
+    const [shown, setShown] = useState(null);
+
+    const list = useFetch(LISTS[kind] ? DATABASE_TABLES[LISTS[kind]].endpoint : null);
+    const started = useMemo(() => startedPeriods(list.data, today), [list.data, today]);
+    const item = LISTS[kind] ? chosenPeriod(started, picks[kind], today) : null;
+
+    const candidate = useMemo(() => {
+        const range = expensesRange(kind, { item, dates }, today);
+        return range ? { ...range, text: periodText(kind, range, item?.name) } : null;
+    }, [kind, item, dates, today]);
+    const candidateKey = candidate ? `${candidate.from}|${candidate.to}|${candidate.text}` : null;
+    if (candidateKey && shown?.key !== candidateKey) setShown({ key: candidateKey, period: candidate, kind });
+    const period = candidate ?? shown?.period ?? null;
+
+    const request = useFetch(DATABASE_TABLES.statistics.expenses, expensesParams(grain, period));
+    const data = request.settled && !request.loading ? request.data : null;
+    const totals = data?.totals ?? NO_TOTALS;
+    const buckets = adaptRows(data, grain);
+    const rows = [...buckets].reverse();
+
+    const yearText = periodText('year', expensesRange('year', {}, today));
+    const menuText = candidate?.text ?? (shown?.kind === kind ? shown.period.text : null);
+    const menu = periodMenu(kind, menuText, yearText);
+    const grainOptions = [{ value: 'month', label: monthsLabel(period) }, { value: 'year', label: 'Años' }];
+    const noun = grain === 'year' ? 'año' : 'mes';
 
     return (
-        <>
-            <header className="d-flex flex-column gap-1 mb-4">
-                <span className="panel-kicker">Lo que cuesta la ropa que vendes, frente a lo que ingresas</span>
-                <h1 className="panel-title m-0">{title}</h1>
-            </header>
-            <div className="d-flex flex-column gap-4">
-                <PeriodPicker
-                    filters={filters}
-                    setFilters={setFilters}
-                    onApply={setApplied}
-                    onClear={() => {
-                        setFilters(INITIAL);
-                        setApplied(INITIAL);
-                    }}
+        <div className="expenses-page">
+            <div className="expenses-head">
+                <header className="panel-heading d-flex flex-column">
+                    <span className="panel-period">Lo que cuesta la ropa que vendes, frente a lo que ingresas</span>
+                    <h1 className="panel-title m-0">{title}</h1>
+                </header>
+                <ExpensesPeriod
+                    menu={menu}
+                    kind={kind}
+                    onKindChange={setKind}
+                    locked={grain === 'year'}
+                    lockedText={yearsText(data?.range ?? null, today)}
+                    grainOptions={grainOptions}
+                    grain={grain}
+                    onGrainChange={setGrain}
                 />
+            </div>
+            <ExpensesPick
+                kind={kind}
+                items={started}
+                loading={list.loading}
+                value={String(item?.id ?? '')}
+                onChange={(id) => setPicks((prev) => ({ ...prev, [kind]: id }))}
+                dates={dates}
+                onDatesChange={setDates}
+            />
+            <div className="d-flex flex-column gap-4">
                 <div className="row g-4">
                     <div className="col-12 col-md-4">
                         <section className="panel-card d-flex flex-column gap-2 h-100">
@@ -88,22 +121,7 @@ function Expenses({ title }) {
                 <div className="row g-4 align-items-start">
                     <div className="col-12 col-xl-7">
                         <section className="panel-card d-flex flex-column gap-3">
-                            <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                                <h2 className="panel-card-title m-0">Ingresos y gastos por {showByLabel}</h2>
-                                <div className="panel-segs d-inline-flex" role="group" aria-label="Mostrar por">
-                                    {SHOW_BY_OPTIONS.map((option) => (
-                                        <button
-                                            key={option.value}
-                                            type="button"
-                                            className={`panel-seg${showBy === option.value ? ' is-on' : ''}`}
-                                            aria-pressed={showBy === option.value}
-                                            onClick={() => setShowBy(option.value)}
-                                        >
-                                            {option.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                            <h2 className="panel-card-title m-0">Ingresos y gastos por {noun}</h2>
                             <div className="d-flex gap-3 panel-muted">
                                 <span className="d-flex align-items-center gap-2">
                                     <span className="panel-dot is-income" aria-hidden="true" />
@@ -120,7 +138,7 @@ function Expenses({ title }) {
                     <div className="col-12 col-xl-5">
                         <section className="panel-card d-flex flex-column gap-3">
                             <h2 className="panel-card-title m-0">
-                                {showBy === 'year' ? 'Año a año' : showBy === 'month' ? 'Mes a mes' : 'Día a día'}
+                                {grain === 'year' ? 'Año a año' : 'Mes a mes'}
                             </h2>
                             {rows.length === 0 ? (
                                 <p className="panel-muted m-0">No hay ventas en este periodo.</p>
@@ -161,7 +179,7 @@ function Expenses({ title }) {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
