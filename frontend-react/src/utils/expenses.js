@@ -1,7 +1,7 @@
-import { startOfDay } from 'date-fns';
+import { getDaysInMonth, startOfDay } from 'date-fns';
 import { apiDate } from './dates.js';
 import { defaultPair, formatBucketRange } from './compare.js';
-import { formatEuros, formatNumber, formatShare } from './format.js';
+import { formatEuros, formatEurosRound, formatNumber, formatShare } from './format.js';
 import { salesPeriodRange } from './salesPeriod.js';
 
 const PROMPTS = { campaign: 'Una campaña…', season: 'Una temporada…', dates: 'Fechas concretas…' };
@@ -123,4 +123,52 @@ export function expensesBuckets(grain, data, today) {
             ? bucket(key, `${name.slice(0, 3)} ${key.slice(2, 4)}`, `${name} ${key.slice(0, 4)}`, found.get(key))
             : bucket(key, name.slice(0, 3), name, found.get(key));
     });
+}
+
+export const LOW_MARGIN = 42;
+
+const isLow = (margin) => margin !== null && Math.round(margin * 10) / 10 < LOW_MARGIN;
+
+function monthCuts(range, buckets) {
+    const [fromKey, toKey] = [range.from.slice(0, 7), range.to.slice(0, 7)];
+    const startDay = Number(range.from.slice(8, 10));
+    const endDay = Number(range.to.slice(8, 10));
+    const cutStart = startDay > 1;
+    const cutEnd = endDay < getDaysInMonth(new Date(Number(toKey.slice(0, 4)), Number(toKey.slice(5, 7)) - 1));
+    const cuts = new Map();
+    buckets.forEach((item) => {
+        const first = item.key === fromKey && cutStart;
+        const last = item.key === toKey && cutEnd;
+        if (first && last) cuts.set(item.key, `del día ${startDay} al ${endDay}`);
+        else if (first) cuts.set(item.key, `desde el día ${startDay}`);
+        else if (last) cuts.set(item.key, `hasta el día ${endDay}`);
+    });
+    return cuts;
+}
+
+function yearCuts(buckets, today) {
+    const cuts = new Map();
+    const open = today.getMonth() < 11 || today.getDate() < 31;
+    const current = String(today.getFullYear());
+    if (open && buckets.some((item) => item.key === current)) {
+        cuts.set(current, `hasta el ${today.getDate()} de ${MONTH_NAMES[today.getMonth()].toLowerCase()}`);
+    }
+    return cuts;
+}
+
+export function expensesTable(grain, buckets, range, today) {
+    if (buckets.length === 0) return { rows: [], note: '' };
+    const cuts = grain === 'year' ? yearCuts(buckets, today) : monthCuts(range, buckets);
+    const note = buckets.filter((item) => cuts.has(item.key)).map((item) => `* ${item.name}, ${cuts.get(item.key)}.`).join(' ');
+    const short = grain === 'month' && range.from.slice(0, 4) !== range.to.slice(0, 4);
+    const rows = [...buckets].reverse().map((item) => ({
+        key: item.key,
+        name: (short ? item.label : item.name) + (cuts.has(item.key) ? '*' : ''),
+        amount: formatEurosRound(item.amount),
+        cost: formatEurosRound(item.cost),
+        profit: formatEurosRound(item.profit),
+        share: item.amount > 0 ? formatShare(item.profit, item.amount) : '—',
+        low: isLow(item.margin)
+    }));
+    return { rows, note };
 }

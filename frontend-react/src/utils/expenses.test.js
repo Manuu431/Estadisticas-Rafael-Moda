@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { axisLabel, chartPeak, chosenPeriod, expensesBuckets, expensesKpis, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yAxisScale, yearsText } from './expenses.js';
+import { LOW_MARGIN, axisLabel, chartPeak, chosenPeriod, expensesBuckets, expensesKpis, expensesTable, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, startedPeriods, yAxisScale, yearsText } from './expenses.js';
 
 const today = new Date(2026, 8, 28, 12, 30);
 const custom = (from, to) => ({ key: 'custom', from, to, bad: [] });
@@ -294,5 +294,102 @@ describe('expensesBuckets', () => {
     it('sin datos o sin ventas devuelve una lista vacía', () => {
         expect(expensesBuckets('month', null, today)).toEqual([]);
         expect(expensesBuckets('year', { range: null, rows: [] }, today)).toEqual([]);
+    });
+});
+
+describe('expensesTable', () => {
+    const row = (key, amount, cost) => ({ key, amount, cost, profit: Math.round((amount - cost) * 100) / 100 });
+    const table = (grain, range, rows, now = today) => expensesTable(grain, expensesBuckets(grain, { range, rows }, now), range, now);
+
+    it('el margen bajo es el 42 %', () => {
+        expect(LOW_MARGIN).toBe(42);
+    });
+
+    it('va del mes más reciente al más antiguo', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-03-31' }, []);
+        expect(result.rows.map((item) => item.key)).toEqual(['2026-03', '2026-02', '2026-01']);
+    });
+
+    it('redondea los importes y deja el % con un decimal', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-01-31' }, [row('2026-01', 29740.4, 18140.2)]);
+        expect(result.rows[0]).toMatchObject({ amount: '29.740 €', cost: '18.140 €', profit: '11.600 €', share: '39,0 %', low: true });
+    });
+
+    it('la pastilla sale por debajo del 42 %, y justo 42,0 % no la lleva', () => {
+        const range = { from: '2026-01-01', to: '2026-03-31' };
+        const result = table('month', range, [row('2026-01', 100, 58), row('2026-02', 100, 58.1), row('2026-03', 100, 57.9)]);
+        const byKey = Object.fromEntries(result.rows.map((item) => [item.key, item]));
+        expect(byKey['2026-01']).toMatchObject({ share: '42,0 %', low: false });
+        expect(byKey['2026-02']).toMatchObject({ share: '41,9 %', low: true });
+        expect(byKey['2026-03']).toMatchObject({ share: '42,1 %', low: false });
+    });
+
+    it('decide la pastilla con el mismo número que se lee', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-01-31' }, [row('2026-01', 100, 58.04)]);
+        expect(result.rows[0]).toMatchObject({ share: '42,0 %', low: false });
+    });
+
+    it('un mes sin ventas enseña 0 €, un guion y ninguna pastilla', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-02-28' }, [row('2026-01', 100, 50)]);
+        expect(result.rows[0]).toMatchObject({ key: '2026-02', amount: '0 €', cost: '0 €', profit: '0 €', share: '—', low: false });
+    });
+
+    it('marca el último mes y avisa cuando el periodo acaba antes de acabar el mes', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-09-28' }, []);
+        expect(result.rows[0].name).toBe('Septiembre*');
+        expect(result.rows[1].name).toBe('Agosto');
+        expect(result.note).toBe('* Septiembre, hasta el día 28.');
+    });
+
+    it('si el periodo cierra en el último día del mes y empieza el día 1, no hay asterisco ni nota', () => {
+        const result = table('month', { from: '2026-01-01', to: '2026-08-31' }, []);
+        expect(result.rows.some((item) => item.name.includes('*'))).toBe(false);
+        expect(result.note).toBe('');
+    });
+
+    it('marca el primer mes cuando el periodo empieza a mitad', () => {
+        const result = table('month', { from: '2026-03-15', to: '2026-05-31' }, []);
+        expect(result.rows.map((item) => item.name)).toEqual(['Mayo', 'Abril', 'Marzo*']);
+        expect(result.note).toBe('* Marzo, desde el día 15.');
+    });
+
+    it('marca el primero y el último, en orden cronológico en la nota', () => {
+        const result = table('month', { from: '2026-03-15', to: '2026-05-10' }, []);
+        expect(result.rows.map((item) => item.name)).toEqual(['Mayo*', 'Abril', 'Marzo*']);
+        expect(result.note).toBe('* Marzo, desde el día 15. * Mayo, hasta el día 10.');
+    });
+
+    it('un periodo dentro de un solo mes dice del día X al Y', () => {
+        const result = table('month', { from: '2026-09-05', to: '2026-09-20' }, []);
+        expect(result.rows[0].name).toBe('Septiembre*');
+        expect(result.note).toBe('* Septiembre, del día 5 al 20.');
+    });
+
+    it('si el periodo cruza de año, la nota nombra el mes con su año', () => {
+        const result = table('month', { from: '2025-12-15', to: '2026-01-31' }, []);
+        expect(result.note).toBe('* Diciembre 2025, desde el día 15.');
+    });
+
+    it('si el periodo cruza de año, las filas usan el nombre corto con año para caber en la columna', () => {
+        const result = table('month', { from: '2025-11-01', to: '2026-01-31' }, []);
+        expect(result.rows.map((item) => item.name)).toEqual(['Ene 26', 'Dic 25', 'Nov 25']);
+        expect(table('month', { from: '2025-12-15', to: '2026-01-31' }, []).rows[1].name).toBe('Dic 25*');
+    });
+
+    it('en años marca el año en curso y avisa hasta qué día', () => {
+        const result = table('year', { from: '2024-02-03', to: '2026-09-01' }, []);
+        expect(result.rows.map((item) => item.name)).toEqual(['2026*', '2025', '2024']);
+        expect(result.note).toBe('* 2026, hasta el 28 de septiembre.');
+    });
+
+    it('en años, a 31 de diciembre el año en curso está completo', () => {
+        const newYearsEve = new Date(2026, 11, 31, 10);
+        const result = table('year', { from: '2025-02-03', to: '2026-09-01' }, [], newYearsEve);
+        expect(result.rows[0].name).toBe('2026');
+        expect(result.note).toBe('');
+    });
+
+    it('sin barras no hay filas ni nota', () => {
+        expect(expensesTable('month', [], null, today)).toEqual({ rows: [], note: '' });
     });
 });

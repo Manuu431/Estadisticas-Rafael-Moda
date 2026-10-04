@@ -296,6 +296,16 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   100.000, 200.000, 250.000, 500.000… (1, 2, 2,5 y 5 por una potencia de diez, mínimo 5.000) para el que mayor ÷ paso ≤ 4, y el tope el múltiplo del paso por encima del mayor.
   «Mayor» es el mayor entre ingresos y gastos: nada impide un coste superior al precio. Etiquetas «0», «10 mil», «1.500 mil». Los meses sin ventas del periodo salen con las barras
   a 0 (y los años, hasta el año en curso). Tooltip de Recharts con el nombre completo («Septiembre», con el año si el periodo cruza años) y los dos importes con dos decimales.
+- **Gastos, tabla «Mes a mes»** (`ExpensesTable`, `.expenses-card.is-table`): tarjeta de 24 × 26 px con 14 px entre bloques, en 5/12 desde 1440 px y del mismo alto que la gráfica. Título
+  «Mes a mes» («Año a año» con Años). Es una tabla con roles (`role="table"` / `row` / `columnheader` / `cell`) y `aria-label`; la primera cabecera lleva «Periodo» solo para lectores
+  (`visually-hidden`). Rejilla `.expenses-row`: `minmax(5.5rem,1.2fr) 4.5rem 4.25rem 4.5rem 3.75rem` a 10 px (no la del artboard, que dejaba 34 px al nombre y pisaba «Septiembre*»;
+  con esta cabe justa en los 402 px de la tarjeta a 1440 px), `white-space: nowrap`. Cabecera de 32 px sin borde (`text-xs`, 600, `ink-2`); filas de 42 px (`text-sm-plus`) con
+  borde superior `--rm-line-soft`, también la primera. Orden del mes más reciente al más antiguo. Nombre en 500 con la inicial en mayúscula (si el periodo cruza de año, la forma corta
+  con año, «Sep 25», porque «Septiembre 2025*» no cabe); Ingresos normal; Gastos en `ink-2`; Beneficio en 600 y `--rm-positive`; los tres con `formatEurosRound`. El % es beneficio / ingresos
+  con un decimal en 600 y `--rm-nav`; por debajo de `LOW_MARGIN` (42 %) va en pastilla (2 × 8 px, radio 99, `--rm-orange-tint`, `--rm-pill-mujer-ink`). La pastilla se decide con el mismo
+  número que se lee (41,96 % se ve «42,0 %» y no la lleva). Un mes sin ventas enseña «0 €» y «—», sin pastilla. El asterisco marca el último mes si el periodo acaba antes de que acabe
+  el mes y el primero si empieza a mitad; el pie (`.expenses-foot`, `mt-auto`, `text-xs-plus`, 1,5, `ink-3`) lo explica: «* Septiembre, hasta el día 28.», «* Marzo, desde el día 15.»,
+  «* Septiembre, del día 5 al 20.»; en años, solo el año en curso y hasta hoy: «* 2026, hasta el 28 de septiembre.». Detrás va siempre la frase de las rebajas.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
