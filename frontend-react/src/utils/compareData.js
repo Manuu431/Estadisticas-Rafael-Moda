@@ -1,6 +1,5 @@
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { getValueLabel } from '../config/labels.js';
 
 const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -66,26 +65,3 @@ export const bucketSales = (sales, showBy) => {
         .sort((a, b) => a[0].localeCompare(b[0]))
         .map(([key, rows]) => ({ key, label: bucketLabel(key, showBy), ...summarize(rows) }));
 };
-
-export const groupAmount = (sales, field) => {
-    const groups = new Map();
-
-    sales.forEach((sale) => {
-        const label = getValueLabel(field, sale[field]) || 'Sin categoría';
-        groups.set(label, (groups.get(label) || 0) + Number(sale.amount || 0));
-    });
-
-    return groups;
-};
-
-export const compareGroups = (salesA, salesB, field) => {
-    const groupsA = groupAmount(salesA, field);
-    const groupsB = groupAmount(salesB, field);
-    const names = new Set([...groupsA.keys(), ...groupsB.keys()]);
-
-    return [...names]
-        .map((name) => ({ name, a: groupsA.get(name) || 0, b: groupsB.get(name) || 0 }))
-        .sort((x, y) => y.a - x.a);
-};
-
-export const deltaPercent = (a, b) => (b > 0 ? (a / b - 1) * 100 : null);

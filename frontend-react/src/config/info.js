@@ -25,11 +25,3 @@ export const SHOW_BY_OPTIONS = [
   { value: 'month', label: 'Meses' },
   { value: 'year', label: 'Años' }
 ];
-
-export const GROUP_BY_OPTIONS = [
-  { value: 'section', label: 'sección' },
-  { value: 'family', label: 'familia' },
-  { value: 'brand', label: 'marca' },
-  { value: 'color', label: 'color' },
-  { value: 'size', label: 'talla' }
-];

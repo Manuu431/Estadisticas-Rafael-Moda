@@ -1,176 +1,211 @@
 import { useMemo, useState } from 'react';
-import PeriodPicker from '../../components/PeriodPicker.jsx';
-import PairedBarChart from '../../components/PairedBarChart.jsx';
-import DeltaPill from '../../components/DeltaPill.jsx';
+import { parseISO, startOfDay } from 'date-fns';
+import ComparePeriods from './ComparePeriods.jsx';
+import CompareKpis from './CompareKpis.jsx';
+import CompareChart from './CompareChart.jsx';
+import CompareBreakdown from './CompareBreakdown.jsx';
+import { CardError, Skeleton } from '../controlPanel/cards/CardState.jsx';
 import { DATABASE_TABLES } from '../../config/database.js';
-import { GROUP_BY_OPTIONS, SHOW_BY_OPTIONS } from '../../config/info.js';
 import { useFetch } from '../../hooks/useFetch.js';
-import { bucketSales, compareGroups, deltaPercent, filterByRange, summarize } from '../../utils/compareData.js';
-import { formatEuros, formatNumber } from '../../utils/format.js';
+import { previousEdition } from '../../utils/campaigns.js';
+import {
+    COMPARE_BUCKETS,
+    COMPARE_GROUPS,
+    bucketLabel,
+    compareKpis,
+    comparePeriodNames,
+    compareState,
+    defaultDates,
+    defaultPair,
+    pairBuckets
+} from '../../utils/compare.js';
+import { apiDate, formatCompactRange, formatShortRange } from '../../utils/dates.js';
+import { salesPeriodRange } from '../../utils/salesPeriod.js';
+import { useIsMobile } from '../../utils/useIsMobile.js';
 
-const THIS_YEAR = new Date().getFullYear();
+const COMPARE_URL = DATABASE_TABLES.statistics.compare;
+const NO_PICKS = { a: '', b: '' };
+const PICK_MESSAGE = 'Elige los dos periodos para compararlos.';
 
-const INITIAL = {
-    start_date_1: `${THIS_YEAR}-01-01`,
-    end_date_1: `${THIS_YEAR}-12-31`,
-    start_date_2: `${THIS_YEAR - 1}-01-01`,
-    end_date_2: `${THIS_YEAR - 1}-12-31`,
-    period_1: '',
-    period_2: '',
-    selectDateBy: 'exact_date'
-};
+const asPeriod = (item) => ({ id: String(item.id), name: item.name, from: item.start_date, to: item.end_date });
 
-const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
-
-const SERIES = [
-    { key: 'a', name: 'Periodo A', color: 'var(--rm-orange)' },
-    { key: 'b', name: 'Periodo B', color: 'var(--rm-compare)' }
-];
+function datesPeriod(period, today) {
+    const range = salesPeriodRange(period, today);
+    if (!range) return null;
+    return { id: '', name: formatShortRange(range.from, range.to), from: apiDate(range.from), to: apiDate(range.to) };
+}
 
 function Comparative({ title }) {
-    const [filters, setFilters] = useState(INITIAL);
-    const [applied, setApplied] = useState(INITIAL);
-    const [showBy, setShowBy] = useState('month');
-    const [groupBy, setGroupBy] = useState('brand');
-    const { data } = useFetch(DATABASE_TABLES.sales.endpoint);
+    const today = useMemo(() => startOfDay(new Date()), []);
+    const isMobile = useIsMobile();
+    const [mode, setMode] = useState('campaigns');
+    const [picks, setPicks] = useState({ campaigns: NO_PICKS, seasons: NO_PICKS });
+    const [dates, setDates] = useState(() => defaultDates(today));
+    const [bucket, setBucket] = useState('week');
+    const [group, setGroup] = useState('brand');
 
-    const salesA = useMemo(
-        () => filterByRange(data ?? [], applied.start_date_1, applied.end_date_1),
-        [data, applied.start_date_1, applied.end_date_1]
+    const list = useFetch(mode === 'dates' ? null : DATABASE_TABLES[mode].endpoint);
+    const started = useMemo(
+        () => (list.data ?? []).filter((item) => item.start_date <= apiDate(today)),
+        [list.data, today]
     );
-    const salesB = useMemo(
-        () => filterByRange(data ?? [], applied.start_date_2, applied.end_date_2),
-        [data, applied.start_date_2, applied.end_date_2]
-    );
-    const totalsA = useMemo(() => summarize(salesA), [salesA]);
-    const totalsB = useMemo(() => summarize(salesB), [salesB]);
 
-    const chartData = useMemo(() => {
-        const bucketsA = bucketSales(salesA, showBy);
-        const bucketsB = bucketSales(salesB, showBy);
-        const length = Math.max(bucketsA.length, bucketsB.length);
-        return Array.from({ length }, (_, index) => ({
-            label: bucketsA[index]?.label ?? bucketsB[index]?.label ?? '',
-            a: bucketsA[index]?.amount ?? 0,
-            b: bucketsB[index]?.amount ?? 0
+    const { a, b } = useMemo(() => {
+        if (mode === 'dates') return { a: datesPeriod(dates.a, today), b: datesPeriod(dates.b, today) };
+        const fallback = defaultPair(started, today);
+        const picked = picks[mode];
+        const first = started.find((item) => String(item.id) === picked.a) ?? fallback.a;
+        const second = started.find((item) => String(item.id) === picked.b) ?? (first ? previousEdition(started, first) : null);
+        return { a: first ? asPeriod(first) : null, b: second ? asPeriod(second) : null };
+    }, [mode, dates, picks, started, today]);
+
+    const ready = Boolean(a && b);
+    const request = useFetch(
+        ready ? COMPARE_URL : null,
+        ready ? { aFrom: a.from, aTo: a.to, bFrom: b.from, bTo: b.to } : undefined
+    );
+    const state = compareState({
+        ready,
+        data: request.loading || !request.settled ? null : request.data,
+        error: request.error,
+        listLoading: list.loading,
+        listError: list.error
+    });
+    const names = ready ? comparePeriodNames(a, b) : null;
+
+    const options = started.map((item) => ({
+        value: String(item.id),
+        label: item.name,
+        range: formatCompactRange(parseISO(item.start_date), parseISO(item.end_date))
+    }));
+
+    const choose = (side, value) => {
+        setPicks((prev) => ({
+            ...prev,
+            [mode]: side === 'a' ? { a: value, b: '' } : { ...prev[mode], b: value }
         }));
-    }, [salesA, salesB, showBy]);
+    };
 
-    const breakdown = useMemo(() => compareGroups(salesA, salesB, groupBy), [salesA, salesB, groupBy]);
-    const showByLabel = SHOW_BY_OPTIONS.find((option) => option.value === showBy)?.label.toLowerCase() ?? '';
-    const groupLabel = GROUP_BY_OPTIONS.find((option) => option.value === groupBy)?.label ?? groupBy;
+    const changeDates = (side, next) => setDates((prev) => ({ ...prev, [side]: next }));
 
-    const kpis = [
-        { label: 'Ventas', a: formatEuros(totalsA.amount), b: formatEuros(totalsB.amount), delta: deltaPercent(totalsA.amount, totalsB.amount) },
-        { label: 'Beneficio', a: formatEuros(totalsA.profit), b: formatEuros(totalsB.profit), delta: deltaPercent(totalsA.profit, totalsB.profit) },
-        { label: 'Prendas vendidas', a: formatNumber(totalsA.units), b: formatNumber(totalsB.units), delta: deltaPercent(totalsA.units, totalsB.units) },
-        { label: 'Ticket medio', a: formatEuros(totalsA.average), b: formatEuros(totalsB.average), delta: deltaPercent(totalsA.average, totalsB.average) }
-    ];
+    const bucketNoun = COMPARE_BUCKETS.find((item) => item.value === bucket).noun;
+    const groupLabel = COMPARE_GROUPS.find((item) => item.value === group).label.toLowerCase();
+
+    const content = (() => {
+        if (state.kind === 'pick') return <p className="compare-message panel-card m-0">{PICK_MESSAGE}</p>;
+        if (state.kind === 'error') {
+            return (
+                <section className="panel-card">
+                    <CardError onRetry={list.error ? list.refetch : request.refetch} />
+                </section>
+            );
+        }
+        if (state.kind === 'loading') return <CompareSkeleton />;
+
+        const { a: periodA, b: periodB, breakdown } = request.data;
+        const pairs = pairBuckets({ ...a, days: periodA.days }, { ...b, days: periodB.days }, bucket);
+        const rows = pairs.map((pair) => ({ ...pair, label: bucketLabel(pair.start, bucket, isMobile, pairs[0].start) }));
+
+        return (
+            <>
+                <CompareKpis kpis={compareKpis(periodA.summary, periodB.summary)} shortB={names.shortB} isMobile={isMobile} />
+                <div className="compare-main">
+                    <section className="panel-card compare-card">
+                        <div className="compare-card-head is-chart">
+                            <h2 className="panel-card-title m-0 compare-head-title">Ventas por {bucketNoun}</h2>
+                            <span className="compare-legend">
+                                <span className="compare-legend-item">
+                                    <span className="panel-dot is-a" aria-hidden="true" />
+                                    {isMobile ? names.shortA : names.legendA}
+                                </span>
+                                <span className="compare-legend-item">
+                                    <span className="panel-dot is-b" aria-hidden="true" />
+                                    {isMobile ? names.shortB : names.legendB}
+                                </span>
+                            </span>
+                            <Segs label="Mostrar por" options={COMPARE_BUCKETS} value={bucket} onChange={setBucket} />
+                        </div>
+                        <CompareChart
+                            rows={rows}
+                            names={{ a: names.legendA, b: names.legendB }}
+                            height={isMobile ? 260 : 320}
+                            label="Ventas de los dos periodos"
+                        />
+                    </section>
+                    <section className="panel-card compare-card">
+                        <div className="compare-card-head">
+                            <h2 className="panel-card-title m-0 compare-head-title">Desglose</h2>
+                            <span className="panel-muted compare-head-note">
+                                {isMobile ? `Por ${groupLabel} · ${names.shortA} frente a ${names.shortB}` : `Por ${groupLabel}`}
+                            </span>
+                            <Segs label="Desglosar por" options={COMPARE_GROUPS} value={group} onChange={setGroup} />
+                        </div>
+                        <CompareBreakdown rows={breakdown[group]} group={group} names={names} isMobile={isMobile} />
+                    </section>
+                </div>
+            </>
+        );
+    })();
 
     return (
-        <>
-            <header className="d-flex flex-column gap-1 mb-4">
-                <span className="panel-kicker">Dos periodos, uno al lado del otro</span>
+        <div className="compare-page">
+            <header className="panel-heading d-flex flex-column">
+                <span className="panel-period">Dos periodos, uno al lado del otro</span>
                 <h1 className="panel-title m-0">{title}</h1>
             </header>
-            <div className="d-flex flex-column gap-4">
-                <section className="panel-card d-flex flex-column gap-3">
-                    <h2 className="panel-card-title m-0">Qué comparar</h2>
-                    <PeriodPicker
-                        periods={2}
-                        filters={filters}
-                        setFilters={setFilters}
-                        onApply={setApplied}
-                        onClear={() => {
-                            setFilters(INITIAL);
-                            setApplied(INITIAL);
-                        }}
-                    />
+            <ComparePeriods
+                mode={mode}
+                onModeChange={setMode}
+                options={options}
+                a={a?.id ?? ''}
+                b={b?.id ?? ''}
+                onChoose={choose}
+                dates={dates}
+                onDatesChange={changeDates}
+            />
+            {content}
+        </div>
+    );
+}
+
+function Segs({ label, options, value, onChange }) {
+    return (
+        <div className="panel-segs d-flex compare-segs" role="group" aria-label={label}>
+            {options.map((option) => (
+                <button
+                    key={option.value}
+                    type="button"
+                    className={`panel-seg${value === option.value ? ' is-on' : ''}`}
+                    aria-pressed={value === option.value}
+                    onClick={() => onChange(option.value)}
+                >
+                    {option.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+function CompareSkeleton() {
+    return (
+        <>
+            <div className="compare-kpis">
+                {[0, 1, 2, 3].map((index) => (
+                    <div className="compare-kpi" key={index}>
+                        <Skeleton className="compare-skeleton-line" />
+                        <Skeleton className="compare-skeleton-value" />
+                    </div>
+                ))}
+            </div>
+            <div className="compare-main">
+                <section className="panel-card compare-card" aria-busy="true" aria-label="Cargando la comparativa">
+                    <Skeleton className="compare-skeleton-line" />
+                    <Skeleton className="is-chart" />
                 </section>
-                <div className="row g-4">
-                    {kpis.map((kpi) => (
-                        <div className="col-6 col-xl-3" key={kpi.label}>
-                            <section className="panel-card d-flex flex-column gap-2 h-100">
-                                <span className="panel-card-title">{kpi.label}</span>
-                                <span className="panel-display panel-display-kpi">{kpi.a}</span>
-                                <DeltaPill value={kpi.delta} />
-                                <span className="panel-muted">Periodo B: {kpi.b}</span>
-                            </section>
-                        </div>
-                    ))}
-                </div>
-                <div className="row g-4 align-items-start">
-                    <div className="col-12 col-xl-7">
-                        <section className="panel-card d-flex flex-column gap-3">
-                            <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                                <h2 className="panel-card-title m-0">Ventas por {showByLabel}</h2>
-                                <div className="d-flex gap-3 panel-muted">
-                                    <span className="d-flex align-items-center gap-2">
-                                        <span className="panel-dot is-a" aria-hidden="true" />
-                                        Periodo A
-                                    </span>
-                                    <span className="d-flex align-items-center gap-2">
-                                        <span className="panel-dot is-b" aria-hidden="true" />
-                                        Periodo B
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="panel-segs d-inline-flex align-self-start" role="group" aria-label="Mostrar por">
-                                {SHOW_BY_OPTIONS.map((option) => (
-                                    <button
-                                        key={option.value}
-                                        type="button"
-                                        className={`panel-seg${showBy === option.value ? ' is-on' : ''}`}
-                                        aria-pressed={showBy === option.value}
-                                        onClick={() => setShowBy(option.value)}
-                                    >
-                                        {option.label}
-                                    </button>
-                                ))}
-                            </div>
-                            <PairedBarChart data={chartData} series={SERIES} label="Ventas de los dos periodos" />
-                        </section>
-                    </div>
-                    <div className="col-12 col-xl-5">
-                        <section className="panel-card d-flex flex-column gap-3">
-                            <div className="d-flex flex-column gap-1">
-                                <h2 className="panel-card-title m-0">Desglose</h2>
-                                <span className="panel-muted">Por {groupLabel} · periodo A frente a B</span>
-                            </div>
-                            <div className="panel-segs d-inline-flex align-self-start" role="group" aria-label="Segmentar por">
-                                {GROUP_BY_OPTIONS.map((option) => (
-                                    <button
-                                        key={option.value}
-                                        type="button"
-                                        className={`panel-seg${groupBy === option.value ? ' is-on' : ''}`}
-                                        aria-pressed={groupBy === option.value}
-                                        onClick={() => setGroupBy(option.value)}
-                                    >
-                                        {capitalize(option.label)}
-                                    </button>
-                                ))}
-                            </div>
-                            {breakdown.length === 0 ? (
-                                <p className="panel-muted m-0">No hay ventas en estos periodos.</p>
-                            ) : (
-                                <ul className="list-unstyled m-0">
-                                    {breakdown.map((row) => (
-                                        <li className="compare-row d-flex align-items-center gap-3" key={row.name}>
-                                            <span className="d-flex flex-column flex-grow-1 overflow-hidden">
-                                                <span className="fw-semibold text-truncate">{row.name}</span>
-                                                <span className="panel-muted">Periodo B: {formatEuros(row.b)}</span>
-                                            </span>
-                                            <span className="d-flex flex-column align-items-end gap-1 flex-shrink-0">
-                                                <span className="fw-semibold">{formatEuros(row.a)}</span>
-                                                <DeltaPill value={deltaPercent(row.a, row.b)} />
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </section>
-                    </div>
-                </div>
+                <section className="panel-card compare-card" aria-busy="true">
+                    <Skeleton className="compare-skeleton-line" />
+                    <Skeleton className="is-box" />
+                </section>
             </div>
         </>
     );

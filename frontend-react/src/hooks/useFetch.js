@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from '../config/axios.js';
 import { serializeParams } from '../utils/tableUtils.js';
 export function useFetch(url, params) {
-    const [result, setResult] = useState({ url: null, data: null });
+    const [result, setResult] = useState({ url: null, key: null, data: null });
     const [loading, setLoading] = useState(Boolean(url));
     const [error, setError] = useState(null);
     const requestId = useRef(0);
@@ -18,7 +18,7 @@ export function useFetch(url, params) {
         setError(null);
         try {
             const response = await axios.get(url, { params: JSON.parse(paramsKey), paramsSerializer: serializeParams });
-            if (id === requestId.current) setResult({ url, data: response.data });
+            if (id === requestId.current) setResult({ url, key: paramsKey, data: response.data });
             return response.data;
         } catch (err) {
             console.error(`Error fetching ${url}:`, err.response ? err.response.data : err);
@@ -31,5 +31,5 @@ export function useFetch(url, params) {
     useEffect(() => {
         refetch();
     }, [refetch]);
-    return { data: result.url === url ? result.data : null, loading, error, refetch };
+    return { data: result.url === url ? result.data : null, settled: result.url === url && result.key === paramsKey, loading, error, refetch };
 }

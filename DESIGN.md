@@ -59,8 +59,10 @@ se copia la paleta en cada pantalla.
 
 **Comparación de dos series** (no categórica): la serie principal en `--rm-orange` y la de contraste
 en `--rm-cost` (ingresos frente a coste, en Gastos) o `--rm-compare` (periodo A frente a B, en
-Comparativa). Se dibujan con `components/PairedBarChart.jsx`, que pasa los tokens como `var(--rm-*)`
-a Recharts; no escribir hex en las gráficas de comparación.
+Comparativa). Gastos se dibuja con `components/PairedBarChart.jsx` y Comparativa con
+`pages/comparative/CompareChart.jsx`; los dos pasan los tokens como `var(--rm-*)` a Recharts, no escribir
+hex en las gráficas de comparación. Los textos de los ejes de Comparativa se estilan por CSS
+(`.compare-chart .recharts-cartesian-axis-tick-value`), porque `var()` no vale en un atributo SVG.
 
 **Año contra año acumulado** (Inicio): área y línea del año en curso en `--rm-orange` (relleno al 8 %) y línea
 del año anterior en `--rm-compare-line`, de 1,75 px y discontinua (`4 4`). `--rm-compare` es demasiado claro
@@ -231,6 +233,27 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Opciones de `text-md` con radio `--rm-radius-sm`; al pasar el cursor, `--rm-tint`; la elegida, `--rm-orange-tint`, `--rm-orange-ink` y
   600. Con `large` (móvil) las opciones miden 44 px y usan `text-lg`. Teclado: Enter o ↓ abren, flechas mueven, Enter elige, Escape cierra y
   el foco vuelve al campo. Nombre accesible «Provincia: Todas».
+- **Comparativa** (`.compare-page`, 24 px entre bloques en escritorio, 14 px en móvil con el mismo margen negativo que Clientes). Encabezado
+  `.panel-heading` con «Dos periodos, uno al lado del otro» en `.panel-period`. No lleva el enlace «‹ Más» del artboard móvil, igual que
+  Clientes. Los datos salen de `/api/statistics/compare` (A y B: resumen, ventas por día; y el desglose por marca, familia y sección,
+  8 filas como mucho ordenadas por A); las semanas y los meses se agrupan en el navegador (`utils/compare.js`), así que cambiar
+  Semanas/Meses o Marca/Familia/Sección no pide nada al servidor.
+  Barra de periodos (`.compare-controls`, tarjeta con la rejilla `auto · 1fr · vs. · 1fr`, 20 px): «Comparar» con Fechas / Campañas /
+  Temporadas (`.panel-segs`) y dos campos con punto naranja (A) o `--rm-compare` (B) y su etiqueta encima. En Campañas y Temporadas el
+  campo (`.compare-select`) enseña el nombre en 600 y, a la derecha, el rango («1 jul – 31 ago», oculto en móvil); es un `<select>`
+  transparente encima, así que el desplegable es el nativo. Solo salen las que ya han empezado. Por defecto A es la última que ya
+  terminó (o la que está en curso) y B su edición anterior; al elegir otra A, B vuelve a su edición anterior. En Fechas, los campos
+  Desde / Hasta de Ventas (`CustomDates`) con sus avisos; empieza en el último mes cerrado frente al mismo mes del año anterior.
+  KPI (`.compare-kpi`, 4 en fila desde 1200 px y 2 por debajo): etiqueta en `text-md` 600 con `DeltaPill` a la derecha, cifra en serif
+  `display-sm` y «frente a X en 2025» en `text-sm` `ink-2`. En móvil la pastilla baja bajo la cifra, la cifra es `display-xs` y la nota
+  pasa a «2025: X». Ticket medio = ventas / tickets. El nombre corto del periodo B es el año si A y B son de años distintos; si no, el nombre.
+  Gráfica y desglose (`.compare-main`, 7/5 desde 1200 px, apiladas por debajo, tarjetas del mismo alto): la gráfica de barras
+  (320 px, 260 en móvil) se baja con `mt-auto`. Semanas = la primera desde el primer día del periodo y las demás desde el lunes; Meses =
+  la primera desde el primer día y las demás desde el día 1; A y B se emparejan por posición. Etiquetas «6 jul» (móvil «6/7»). La
+  leyenda va bajo el título en escritorio y a su derecha en móvil (solo el año). El desglose en escritorio es una tabla
+  (`.compare-row`: nombre · A · B · Diferencia, filas de 47 px, importes redondeados con `formatEurosRound`, A en 600, B en `ink-2`); en
+  móvil, una lista (`.compare-item`) con el nombre, «2025: X» debajo y, a la derecha, el importe de A con la pastilla. Cargando:
+  siluetas por tarjeta; error: `CardError` en una tarjeta; sin dos periodos válidos: «Elige los dos periodos para compararlos.».
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

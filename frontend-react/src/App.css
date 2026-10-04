@@ -2258,16 +2258,6 @@
     color: var(--rm-orange-ink);
 }
 
-.compare-row {
-    min-height: 3.625rem;
-    padding: 0.5rem 0;
-    border-top: 1px solid var(--rm-line-soft);
-}
-
-.compare-row:first-child {
-    border-top: 0;
-}
-
 .chart-tooltip {
     padding: 0.625rem 0.75rem;
     border: 1px solid var(--rm-line);
@@ -2281,16 +2271,6 @@
 .recharts-surface:focus,
 .recharts-wrapper:focus {
     outline: none;
-}
-
-.panel-display-kpi {
-    font-size: var(--rm-display-sm);
-}
-
-@media (max-width: 991.98px) {
-    .panel-display-kpi {
-        font-size: var(--rm-display-2xs);
-    }
 }
 
 .sales-page {
@@ -2710,7 +2690,6 @@
     color: var(--rm-ink-2);
 }
 
-
 .panel-select {
     position: relative;
 }
@@ -2795,5 +2774,396 @@
 @media (prefers-reduced-motion: reduce) {
     .panel-select-toggle > .bi-chevron-down {
         transition: none;
+    }
+}
+
+/**
+ * COMPARATIVA
+ */
+.compare-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.compare-controls {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    gap: 1.25rem;
+}
+
+.compare-mode,
+.compare-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.compare-slot-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--rm-text-sm);
+    font-weight: 500;
+    color: var(--rm-ink-2);
+}
+
+.compare-vs {
+    align-self: end;
+    padding-bottom: 0.625rem;
+    font-family: var(--rm-font-display);
+    font-size: var(--rm-text-lg);
+    color: var(--rm-ink-2);
+}
+
+.compare-select {
+    position: relative;
+    height: 2.75rem;
+}
+
+.compare-select-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--rm-ink);
+}
+
+.compare-select-range {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: var(--rm-text-sm);
+    color: var(--rm-ink-2);
+}
+
+.compare-select > select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+}
+
+.compare-slot .panel-field-period {
+    flex: 1 1 9rem;
+    width: auto;
+    min-width: 0;
+}
+
+.compare-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.compare-kpi {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "label delta" "value value" "note note";
+    align-items: center;
+    row-gap: 0.375rem;
+    padding: 1.125rem 1.375rem;
+    background-color: var(--rm-surface);
+    border: 1px solid var(--rm-line);
+    border-radius: var(--rm-radius-lg);
+    box-shadow: var(--rm-shadow);
+}
+
+.compare-kpi-label {
+    grid-area: label;
+    font-size: var(--rm-text-md);
+    font-weight: 600;
+}
+
+.compare-kpi-delta {
+    grid-area: delta;
+}
+
+.compare-kpi-value {
+    grid-area: value;
+    font-family: var(--rm-font-display);
+    font-size: var(--rm-display-sm);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.compare-kpi-note {
+    grid-area: note;
+    font-size: var(--rm-text-sm);
+    color: var(--rm-ink-2);
+}
+
+.compare-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+}
+
+.compare-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.compare-card-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title segs" "note segs";
+    align-items: start;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+}
+
+.compare-head-title {
+    grid-area: title;
+}
+
+.compare-legend,
+.compare-head-note {
+    grid-area: note;
+}
+
+.compare-card-head .compare-segs {
+    grid-area: segs;
+}
+
+.compare-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    font-size: var(--rm-text-xs-plus);
+    color: var(--rm-ink-2);
+}
+
+.compare-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.compare-chart {
+    margin-top: auto;
+}
+
+.compare-chart .recharts-cartesian-axis-tick-value {
+    fill: var(--rm-ink-2);
+    font-size: var(--rm-text-xs);
+}
+
+.compare-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.compare-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4.75rem 4.75rem 6.25rem;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.9375rem;
+    border-top: 1px solid var(--rm-line-soft);
+    font-size: var(--rm-text-sm-plus);
+}
+
+.compare-row.is-head {
+    min-height: 2.25rem;
+    border-top: 0;
+    font-size: var(--rm-text-xs-plus);
+    color: var(--rm-ink-2);
+}
+
+.compare-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.compare-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.compare-strong {
+    font-weight: 600;
+}
+
+.compare-soft {
+    color: var(--rm-ink-2);
+}
+
+.compare-row .delta-pill {
+    display: inline-flex;
+}
+
+.compare-message {
+    padding: 2.5rem 1.75rem;
+    text-align: center;
+    font-size: var(--rm-text-md);
+    color: var(--rm-ink-2);
+}
+
+.compare-skeleton-line {
+    width: 40%;
+    height: 1rem;
+}
+
+.compare-skeleton-value {
+    width: 70%;
+    height: 2.25rem;
+    margin-top: 0.5rem;
+}
+
+.compare-kpi > .compare-skeleton-line {
+    grid-area: label;
+}
+
+.compare-kpi > .compare-skeleton-value {
+    grid-area: value;
+}
+
+.compare-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.compare-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 3.5rem;
+    border-top: 1px solid var(--rm-line-soft);
+}
+
+.compare-item:first-child {
+    border-top: 0;
+}
+
+.compare-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.compare-item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--rm-text-md-plus);
+    font-weight: 600;
+}
+
+.compare-item-meta {
+    font-size: var(--rm-text-xs-plus);
+    color: var(--rm-ink-2);
+}
+
+.compare-item-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.compare-item-side .delta-pill {
+    align-self: flex-end;
+}
+
+.compare-item-amount {
+    font-size: var(--rm-text-md-plus);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1200px) {
+    .compare-kpis {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .compare-main {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .compare-page {
+        gap: 0.875rem;
+        margin: -1.125rem 0 -0.5rem;
+    }
+
+    .compare-controls {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+        gap: 0.875rem;
+        padding: 1rem;
+    }
+
+    .compare-vs {
+        display: none;
+    }
+
+    .compare-mode .panel-segs {
+        width: 100%;
+    }
+
+    .compare-select-range {
+        display: none;
+    }
+
+    .compare-kpis {
+        gap: 0.625rem;
+    }
+
+    .compare-kpi {
+        grid-template-areas: "label" "value" "delta" "note";
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: start;
+        row-gap: 0.25rem;
+        padding: 0.875rem 1rem;
+    }
+
+    .compare-kpi-label {
+        font-size: var(--rm-text-sm);
+    }
+
+    .compare-kpi-value {
+        font-size: var(--rm-display-xs);
+    }
+
+    .compare-kpi-note {
+        font-size: var(--rm-text-xs-plus);
+    }
+
+    .compare-main {
+        gap: 0.875rem;
+    }
+
+    .compare-card {
+        gap: 0.875rem;
+        padding: 1rem;
+    }
+
+    .compare-card-head {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "title title" "note note" "segs segs";
+        row-gap: 0.5rem;
+    }
+
+    .compare-card-head.is-chart {
+        grid-template-areas: "title note" "segs segs";
+        align-items: center;
+    }
+
+    .compare-card-head .compare-segs {
+        width: 100%;
+    }
+
+    .compare-segs .panel-seg {
+        flex: 1;
     }
 }
