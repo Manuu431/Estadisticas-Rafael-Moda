@@ -3148,6 +3148,32 @@
             margin-block: auto;
         }
 
+        .compare-controls:not(.is-dates) .compare-select .panel-select-toggle {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas: "name chevron" "range chevron";
+            align-items: center;
+            row-gap: 0.125rem;
+            height: auto;
+            min-height: 3.75rem;
+            padding-block: 0.5rem;
+            white-space: normal;
+        }
+
+        .compare-controls:not(.is-dates) .compare-select .panel-select-value {
+            grid-area: name;
+            overflow: visible;
+            text-overflow: clip;
+        }
+
+        .compare-controls:not(.is-dates) .compare-select .panel-select-toggle > .panel-select-detail {
+            grid-area: range;
+        }
+
+        .compare-controls:not(.is-dates) .compare-select .panel-select-toggle > .bi-chevron-down {
+            grid-area: chevron;
+        }
+
         .compare-controls.is-dates .compare-slot .flex-wrap {
             flex-direction: column;
             gap: 1.875rem !important;
