@@ -245,9 +245,10 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   derecha de cada opción; la de B se abre hacia la izquierda (`alignEnd`). Solo salen las que ya han empezado. Por defecto A es la última que ya
   terminó (o la que está en curso) y B su edición anterior; al elegir otra A, B vuelve a su edición anterior. En Fechas, los campos
   Desde / Hasta de Ventas (`CustomDates`) con sus avisos; empieza en el último mes cerrado frente al mismo mes del año anterior.
-  En Fechas, mientras la tarjeta mide menos de 996 px (escritorio, container query `compare` sobre `.compare-page`; es el ancho en que
-  dos campos Desde / Hasta ya no caben en fila por periodo) las fechas van en columna y «Comparar» también (Fechas / Campañas /
-  Temporadas apiladas). Los tres bloques se centran en vertical, las tres etiquetas («Comparar», «Periodo A», «Periodo B») quedan a la misma
+  Mientras la tarjeta mide menos de 996 px (escritorio, container query `compare` sobre `.compare-page`; es el ancho en que
+  dos campos Desde / Hasta ya no caben en fila por periodo), igual en las tres opciones, «Comparar» va en columna (Fechas / Campañas /
+  Temporadas apiladas) y, en Fechas, las fechas también; en Campañas y Temporadas el campo único de cada periodo se centra en vertical, a la
+  altura del botón del medio. Los tres bloques se centran en vertical, las tres etiquetas («Comparar», «Periodo A», «Periodo B») quedan a la misma
   altura y «Desde» y «Hasta» se separan 30 px para que su columna mida lo mismo que la de «Comparar»; el «vs.» se centra en vertical
   respecto a los campos. Por debajo de 992 px manda el diseño de móvil, y por debajo de 576 px Desde y Hasta van en columna.
   KPI (`.compare-kpi`, 4 en fila desde 1307 px y 2 por debajo; de 1100 a 1306 px y de 576 a 991 px, con tarjetas anchas, la pastilla va arriba

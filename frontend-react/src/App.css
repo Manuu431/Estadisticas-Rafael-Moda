@@ -3127,21 +3127,25 @@
 
 @media (min-width: 992px) {
     @container compare (max-width: 995.98px) {
-        .compare-controls.is-dates .compare-mode .panel-segs {
+        .compare-controls {
+            align-items: stretch;
+        }
+
+        .compare-controls .compare-mode .panel-segs {
             flex-direction: column;
         }
 
-        .compare-controls.is-dates {
-            align-items: center;
-        }
-
-        .compare-controls.is-dates .compare-mode .compare-slot-label {
+        .compare-controls .compare-mode .compare-slot-label {
             justify-content: center;
         }
 
-        .compare-controls.is-dates .compare-vs {
+        .compare-controls .compare-vs {
             align-self: center;
             padding: 1.75rem 0 0;
+        }
+
+        .compare-controls:not(.is-dates) .compare-select {
+            margin-block: auto;
         }
 
         .compare-controls.is-dates .compare-slot .flex-wrap {
