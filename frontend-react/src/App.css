@@ -3130,6 +3130,10 @@
             align-items: center;
         }
 
+        .compare-controls.is-dates .compare-mode .compare-slot-label {
+            justify-content: center;
+        }
+
         .compare-controls.is-dates .compare-vs {
             align-self: center;
             padding: 1.75rem 0 0;
