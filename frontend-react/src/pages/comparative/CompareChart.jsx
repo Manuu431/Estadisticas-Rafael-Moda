@@ -1,7 +1,7 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { formatEuros, formatNumber } from '../../utils/format.js';
 
-function ChartTooltip({ active, payload, label, names }) {
+function ChartTooltip({ active, payload, label }) {
     if (!active || !payload?.length) return null;
 
     return (
@@ -10,7 +10,7 @@ function ChartTooltip({ active, payload, label, names }) {
             {payload.map((item) => (
                 <span className="d-flex align-items-center gap-2" key={item.dataKey}>
                     <span className="panel-dot" style={{ backgroundColor: item.color }} aria-hidden="true" />
-                    {names[item.dataKey]}
+                    {item.payload[item.dataKey === 'a' ? 'rangeA' : 'rangeB']}
                     <strong className="ms-auto">{formatEuros(item.value)}</strong>
                 </span>
             ))}
@@ -18,7 +18,7 @@ function ChartTooltip({ active, payload, label, names }) {
     );
 }
 
-function CompareChart({ rows, names, height, label }) {
+function CompareChart({ rows, height, label }) {
     return (
         <div className="compare-chart" role="img" aria-label={label}>
             <ResponsiveContainer width="100%" height={height}>
@@ -37,7 +37,7 @@ function CompareChart({ rows, names, height, label }) {
                         tickCount={5}
                         tickFormatter={formatNumber}
                     />
-                    <Tooltip content={<ChartTooltip names={names} />} cursor={{ fill: 'var(--rm-cream-light)' }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ fill: 'var(--rm-cream-light)' }} />
                     <Bar dataKey="a" fill="var(--rm-orange)" radius={[3, 3, 0, 0]} maxBarSize={20} />
                     <Bar dataKey="b" fill="var(--rm-compare)" radius={[3, 3, 0, 0]} maxBarSize={20} />
                 </BarChart>

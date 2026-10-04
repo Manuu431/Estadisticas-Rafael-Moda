@@ -63,6 +63,24 @@ function bucketTotals({ from, to, days }, kind) {
     return totals;
 }
 
+export function bucketRanges(from, to, kind) {
+    const starts = bucketStarts(from, to, kind);
+    return starts.map((start, index) => ({
+        from: start,
+        to: index + 1 < starts.length ? apiDate(addDays(parseISO(starts[index + 1]), -1)) : to
+    }));
+}
+
+export function formatBucketRange(range) {
+    if (!range) return '';
+    const from = parseISO(range.from);
+    const to = parseISO(range.to);
+    const day = (date) => `${date.getDate()} ${SHORT_MONTHS[date.getMonth()]}`;
+    if (range.from === range.to) return `${day(from)} ${to.getFullYear()}`;
+    if (from.getFullYear() === to.getFullYear()) return `${day(from)} – ${day(to)} ${to.getFullYear()}`;
+    return `${day(from)} ${from.getFullYear()} – ${day(to)} ${to.getFullYear()}`;
+}
+
 export function pairBuckets(a, b, kind) {
     const startsA = bucketStarts(a.from, a.to, kind);
     const startsB = bucketStarts(b.from, b.to, kind);
@@ -76,12 +94,12 @@ export function pairBuckets(a, b, kind) {
     }));
 }
 
-export function bucketLabel(start, kind, compact, firstStart = start) {
+export function bucketLabel(start, kind, compact, showYear = false) {
     const date = parseISO(start);
     if (kind === 'year') return String(date.getFullYear());
     if (kind === 'week' || kind === 'day') return compact ? `${date.getDate()}/${date.getMonth() + 1}` : formatShortDay(date);
     const month = SHORT_MONTHS[date.getMonth()];
-    return date.getFullYear() === parseISO(firstStart).getFullYear() ? month : `${month} ${format(date, 'yy')}`;
+    return showYear ? `${month} ${format(date, 'yy')}` : month;
 }
 
 export const deltaPercent = (a, b) => (b > 0 ? (a / b - 1) * 100 : null);

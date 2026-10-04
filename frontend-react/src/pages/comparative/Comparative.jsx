@@ -12,6 +12,8 @@ import {
     COMPARE_BUCKETS,
     COMPARE_GROUPS,
     bucketLabel,
+    bucketRanges,
+    formatBucketRange,
     compareKpis,
     comparePeriodNames,
     compareState,
@@ -104,7 +106,15 @@ function Comparative({ title }) {
 
         const { a: periodA, b: periodB, breakdown } = request.data;
         const pairs = pairBuckets({ ...a, days: periodA.days }, { ...b, days: periodB.days }, bucket);
-        const rows = pairs.map((pair) => ({ ...pair, label: bucketLabel(pair.start, bucket, isMobile, pairs[0].start) }));
+        const spansYears = [a, b].some((period) => period.from.slice(0, 4) !== period.to.slice(0, 4));
+        const rangesA = bucketRanges(a.from, a.to, bucket);
+        const rangesB = bucketRanges(b.from, b.to, bucket);
+        const rows = pairs.map((pair, index) => ({
+            ...pair,
+            label: bucketLabel(pair.start, bucket, isMobile, spansYears),
+            rangeA: formatBucketRange(rangesA[index]),
+            rangeB: formatBucketRange(rangesB[index])
+        }));
 
         return (
             <>
@@ -127,7 +137,6 @@ function Comparative({ title }) {
                         </div>
                         <CompareChart
                             rows={rows}
-                            names={{ a: names.legendA, b: names.legendB }}
                             height={isMobile ? 260 : 320}
                             label="Ventas de los dos periodos"
                         />

@@ -250,7 +250,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Gráfica y desglose (`.compare-main`, 7/5 desde 1200 px, apiladas por debajo, tarjetas del mismo alto): la gráfica de barras
   (320 px, 260 en móvil) se baja con `mt-auto`. El control es Días / Semanas / Meses / Años. Días = una barra por día; Semanas = la
   primera desde el primer día del periodo y las demás desde el lunes; Meses = la primera desde el primer día y las demás desde el día 1;
-  Años = la primera desde el primer día y las demás desde el 1 de enero (etiqueta «2026»); A y B se emparejan por posición. Etiquetas «6 jul» (móvil «6/7»). La
+  Años = la primera desde el primer día y las demás desde el 1 de enero (etiqueta «2026»); A y B se emparejan por posición. Etiquetas «6 jul» (móvil «6/7»); los meses llevan el año («ene 22») cuando A o B abarcan más de un año. El tooltip enseña, junto a cada punto de color, el rango exacto de esa barra en su periodo («3 ene – 7 ene 2026», con el año en los dos extremos si cruza de año), no el nombre del periodo. La
   leyenda va bajo el título en escritorio y a su derecha en móvil (solo el año). El desglose en escritorio es una tabla
   (`.compare-row`: nombre · A · B · Diferencia, filas de 47 px, importes redondeados con `formatEurosRound`, A en 600, B en `ink-2`); en
   móvil, una lista (`.compare-item`) con el nombre, «2025: X» debajo y, a la derecha, el importe de A con la pastilla. El control

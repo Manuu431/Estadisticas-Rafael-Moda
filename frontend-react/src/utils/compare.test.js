@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+    bucketRanges,
     bucketStarts,
+    formatBucketRange,
     bucketLabel,
     compareKpis,
     comparePeriodNames,
@@ -46,6 +48,53 @@ describe('bucketStarts por día y por año', () => {
 
     it('años: un periodo dentro de un solo año tiene una barra', () => {
         expect(bucketStarts('2026-07-01', '2026-08-31', 'year')).toEqual(['2026-07-01']);
+    });
+});
+
+describe('bucketRanges', () => {
+    it('semanas: cada rango acaba el día antes de la siguiente y el último, el último día del periodo', () => {
+        expect(bucketRanges('2026-07-01', '2026-07-14', 'week')).toEqual([
+            { from: '2026-07-01', to: '2026-07-05' },
+            { from: '2026-07-06', to: '2026-07-12' },
+            { from: '2026-07-13', to: '2026-07-14' }
+        ]);
+    });
+
+    it('meses: el primero empieza en el primer día del periodo y el último acaba donde acaba', () => {
+        expect(bucketRanges('2026-07-15', '2026-09-02', 'month')).toEqual([
+            { from: '2026-07-15', to: '2026-07-31' },
+            { from: '2026-08-01', to: '2026-08-31' },
+            { from: '2026-09-01', to: '2026-09-02' }
+        ]);
+    });
+
+    it('días y años', () => {
+        expect(bucketRanges('2026-07-01', '2026-07-02', 'day')).toEqual([
+            { from: '2026-07-01', to: '2026-07-01' },
+            { from: '2026-07-02', to: '2026-07-02' }
+        ]);
+        expect(bucketRanges('2025-11-10', '2026-03-01', 'year')).toEqual([
+            { from: '2025-11-10', to: '2025-12-31' },
+            { from: '2026-01-01', to: '2026-03-01' }
+        ]);
+    });
+});
+
+describe('formatBucketRange', () => {
+    it('rango dentro de un año: el año una sola vez al final', () => {
+        expect(formatBucketRange({ from: '2026-01-03', to: '2026-01-07' })).toBe('3 ene – 7 ene 2026');
+    });
+
+    it('un solo día: la fecha con el año', () => {
+        expect(formatBucketRange({ from: '2026-07-06', to: '2026-07-06' })).toBe('6 jul 2026');
+    });
+
+    it('rango que cruza de año: el año en los dos extremos', () => {
+        expect(formatBucketRange({ from: '2025-12-28', to: '2026-01-03' })).toBe('28 dic 2025 – 3 ene 2026');
+    });
+
+    it('sin rango (esa barra no existe en este periodo): vacío', () => {
+        expect(formatBucketRange(null)).toBe('');
     });
 });
 
@@ -120,9 +169,9 @@ describe('bucketLabel', () => {
         expect(bucketLabel('2026-07-06', 'week', true)).toBe('6/7');
     });
 
-    it('mes: el mes abreviado, con el año si cambia respecto al primero', () => {
-        expect(bucketLabel('2026-08-01', 'month', false, '2026-07-01')).toBe('ago');
-        expect(bucketLabel('2027-01-01', 'month', false, '2026-12-05')).toBe('ene 27');
+    it('mes: el mes abreviado, con el año cuando se pide', () => {
+        expect(bucketLabel('2022-01-01', 'month', false, true)).toBe('ene 22');
+        expect(bucketLabel('2026-08-01', 'month', false, false)).toBe('ago');
     });
 });
 
