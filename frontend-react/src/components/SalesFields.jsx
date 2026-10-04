@@ -40,7 +40,7 @@ export function SearchField({ value, onChange, large = false }) {
                 type="search"
                 name="search"
                 autoComplete="off"
-                placeholder="Buscar prenda, marca o color"
+                placeholder="Buscar prenda o color"
                 aria-label="Buscar ventas"
                 value={value}
                 onChange={(event) => onChange(event.target.value)}

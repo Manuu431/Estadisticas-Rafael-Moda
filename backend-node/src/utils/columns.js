@@ -17,7 +17,7 @@ const allowedColumns = {
 };
 
 const searchColumns = {
-  sales: ['product', 'brand', 'color']
+  sales: ['product', 'color']
 };
 
 const exactColumns = ['size', 'section', 'brand', 'family', 'color'];
@@ -45,4 +45,4 @@ const normalizeDecimalFields = (data, fields) => {
   return newData;
 };
 
-module.exports = { sources, allowedColumns, searchColumns, exactColumns, numericColumns,filterColumns, normalizeDecimalFields };
+module.exports = { sources, allowedColumns, searchColumns, exactColumns, numericColumns, filterColumns, normalizeDecimalFields };

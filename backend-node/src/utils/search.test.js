@@ -23,8 +23,9 @@ test('likeSearch escapa los comodines del texto buscado', () => {
 
 test('likeSearch no mete el texto en el SQL', () => {
   const result = likeSearch("x' OR 1=1 --", ['brand']);
-  assert.equal(result.sql, '(`brand` LIKE ?)');
-  assert.deepEqual(result.values, ["%x' OR 1=1 --%"]);
+  assert.equal(result.sql, '((`brand` LIKE ?) AND (`brand` LIKE ?) AND (`brand` LIKE ?) AND (`brand` LIKE ?))');
+  assert.ok(!result.sql.includes('1=1'));
+  assert.deepEqual(result.values, ["%x'%", '%OR%', '%1=1%', '%--%']);
 });
 
 test('likeSearch recorta espacios y descarta lo vacío', () => {
@@ -46,4 +47,30 @@ test('likeSearch limita el largo del texto a 100 caracteres', () => {
 
 test('likeSearch sin columnas donde buscar no devuelve condición', () => {
   assert.equal(likeSearch('lois', []), null);
+});
+
+test('likeSearch con varias palabras exige todas, cada una en alguna columna', () => {
+  const result = likeSearch('camisa azul', ['product', 'color']);
+  assert.equal(result.sql, '((`product` LIKE ? OR `color` LIKE ?) AND (`product` LIKE ? OR `color` LIKE ?))');
+  assert.deepEqual(result.values, ['%camisa%', '%camisa%', '%azul%', '%azul%']);
+});
+
+test('likeSearch trata varios espacios y tabulaciones como un solo separador', () => {
+  const result = likeSearch('  camisa \t  azul  ', ['product']);
+  assert.equal(result.sql, '((`product` LIKE ?) AND (`product` LIKE ?))');
+  assert.deepEqual(result.values, ['%camisa%', '%azul%']);
+});
+
+test('likeSearch escapa los comodines en cada palabra', () => {
+  assert.deepEqual(likeSearch('50% a_b', ['product']).values, ['%50\\%%', '%a\\_b%']);
+});
+
+test('likeSearch usa solo las primeras seis palabras', () => {
+  const result = likeSearch('a b c d e f g h', ['product']);
+  assert.equal(result.values.length, 6);
+  assert.deepEqual(result.values.at(-1), '%f%');
+});
+
+test('likeSearch con una sola palabra no añade paréntesis de más', () => {
+  assert.equal(likeSearch('azul', ['product', 'color']).sql, '(`product` LIKE ? OR `color` LIKE ?)');
 });
