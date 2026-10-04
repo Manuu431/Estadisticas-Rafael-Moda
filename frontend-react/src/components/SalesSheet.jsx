@@ -1,4 +1,4 @@
-import { SALES_PERIODS, customPeriodError } from '../utils/salesPeriod.js';
+import { SALES_PERIODS, customPeriodError, isDateFieldInvalid, setDateField } from '../utils/salesPeriod.js';
 
 const toOptions = (values) => values.map((value) => ({ value, label: value }));
 
@@ -40,9 +40,19 @@ function SheetPair({ id, label, fields }) {
     );
 }
 
-function SalesSheet({ period, onPeriodChange, brands, brand, onBrandChange, panel, onPanelChange, options }) {
+function SalesSheet({ period, onPeriodChange, applyError, brands, brand, onBrandChange, panel, onPanelChange, options }) {
     const set = (field) => (value) => onPanelChange({ ...panel, [field]: value });
-    const error = customPeriodError(period);
+    const error = customPeriodError(period) ?? applyError;
+    const dateInput = (name, id) => (
+        <input
+            type="date"
+            id={id}
+            name={name}
+            aria-invalid={isDateFieldInvalid(period, name)}
+            defaultValue={period[name]}
+            onChange={(event) => onPeriodChange(setDateField(period, name, event.target.value, event.target.validity.badInput))}
+        />
+    );
     const all = (allLabel, values) => [{ value: '', label: allLabel }, ...toOptions(values)];
 
     return (
@@ -60,13 +70,13 @@ function SalesSheet({ period, onPeriodChange, brands, brand, onBrandChange, pane
                         <div className="sheet-field flex-grow-1">
                             <label className="sheet-label" htmlFor="sheet-from">Desde</label>
                             <span className="panel-field is-large is-plain">
-                                <input type="date" id="sheet-from" name="from" aria-invalid={Boolean(error)} value={period.from} onChange={(event) => onPeriodChange({ ...period, from: event.target.value })} />
+                                {dateInput('from', 'sheet-from')}
                             </span>
                         </div>
                         <div className="sheet-field flex-grow-1">
                             <label className="sheet-label" htmlFor="sheet-to">Hasta</label>
                             <span className="panel-field is-large is-plain">
-                                <input type="date" id="sheet-to" name="to" aria-invalid={Boolean(error)} value={period.to} onChange={(event) => onPeriodChange({ ...period, to: event.target.value })} />
+                                {dateInput('to', 'sheet-to')}
                             </span>
                         </div>
                     </div>

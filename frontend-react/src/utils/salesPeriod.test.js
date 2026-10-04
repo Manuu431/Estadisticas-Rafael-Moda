@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_SALES_PERIOD, SALES_PERIODS, salesPeriodLabel, salesPeriodRange, customPeriodError } from './salesPeriod.js';
+import { DEFAULT_SALES_PERIOD, SALES_PERIODS, salesPeriodLabel, salesPeriodRange, customPeriodError, periodApplyError, setDateField, isDateFieldInvalid } from './salesPeriod.js';
 
 const today = new Date(2026, 9, 15, 18, 47);
 const firstOfMonth = new Date(2026, 9, 1, 9, 30);
@@ -108,5 +108,102 @@ describe('salesPeriodLabel', () => {
 
     it('Personalizado de un solo día', () => {
         expect(label('custom', new Date(2025, 2, 3), new Date(2025, 2, 3))).toBe('3 de marzo de 2025');
+    });
+});
+
+describe('setDateField', () => {
+    const custom = { key: 'custom', from: '', to: '' };
+
+    it('guarda la fecha elegida', () => {
+        expect(setDateField(custom, 'from', '2026-06-01', false)).toEqual({ key: 'custom', from: '2026-06-01', to: '', bad: [] });
+    });
+
+    it('si el navegador dice que lo escrito no es una fecha (31/06), deja el campo vacío y lo marca como no válido', () => {
+        const result = setDateField({ ...custom, to: '2026-08-31' }, 'to', '', true);
+        expect(result).toEqual({ key: 'custom', from: '', to: '', bad: ['to'] });
+    });
+
+    it('al corregir la fecha deja de estar marcada como no válida', () => {
+        const bad = setDateField(custom, 'to', '', true);
+        expect(setDateField(bad, 'to', '2026-06-30', false).bad).toEqual([]);
+    });
+
+    it('marcar un campo no toca la marca del otro', () => {
+        const both = setDateField(setDateField(custom, 'from', '', true), 'to', '', true);
+        expect(both.bad).toEqual(['from', 'to']);
+        expect(setDateField(both, 'from', '2026-06-01', false).bad).toEqual(['to']);
+    });
+
+    it('vaciar a propósito un campo no es un error: queda incompleto', () => {
+        expect(setDateField({ ...custom, to: '2026-08-31' }, 'to', '', false)).toEqual({ key: 'custom', from: '', to: '', bad: [] });
+    });
+
+    it('un año a medio escribir (0002, 0202) no cuenta como fecha todavía', () => {
+        expect(setDateField(custom, 'from', '0002-06-01', false).from).toBe('');
+        expect(setDateField(custom, 'from', '0202-06-01', false).from).toBe('');
+        expect(setDateField(custom, 'from', '2026-06-01', false).from).toBe('2026-06-01');
+    });
+});
+
+describe('customPeriodError con fechas no válidas', () => {
+    it('avisa de la fecha «Hasta» que no existe', () => {
+        expect(customPeriodError({ key: 'custom', from: '2026-06-01', to: '', bad: ['to'] })).toBe('La fecha «Hasta» no es válida.');
+    });
+
+    it('avisa de la fecha «Desde» que no existe', () => {
+        expect(customPeriodError({ key: 'custom', from: '', to: '2026-06-30', bad: ['from'] })).toBe('La fecha «Desde» no es válida.');
+    });
+
+    it('avisa de las dos', () => {
+        expect(customPeriodError({ key: 'custom', from: '', to: '', bad: ['from', 'to'] })).toBe('Las fechas no son válidas.');
+    });
+
+    it('sin fechas no válidas sigue como antes', () => {
+        expect(customPeriodError({ key: 'custom', from: '2026-06-01', to: '', bad: [] })).toBeNull();
+    });
+});
+
+describe('periodApplyError', () => {
+    it('los periodos que no son Personalizado siempre se pueden aplicar', () => {
+        expect(periodApplyError({ key: 'mes', from: '', to: '' })).toBeNull();
+        expect(periodApplyError({ key: 'ano', from: '', to: '', bad: ['to'] })).toBeNull();
+    });
+
+    it('Personalizado con las dos fechas bien se puede aplicar', () => {
+        expect(periodApplyError({ key: 'custom', from: '2026-06-01', to: '2026-06-30', bad: [] })).toBeNull();
+        expect(periodApplyError({ key: 'custom', from: '2026-06-01', to: '2026-06-01' })).toBeNull();
+    });
+
+    it('con una fecha sin poner pide las dos', () => {
+        expect(periodApplyError({ key: 'custom', from: '2026-06-01', to: '' })).toBe('Elige las dos fechas del periodo.');
+        expect(periodApplyError({ key: 'custom', from: '', to: '' })).toBe('Elige las dos fechas del periodo.');
+    });
+
+    it('con una fecha que no existe lo dice, en vez de pedir que la elijas', () => {
+        expect(periodApplyError({ key: 'custom', from: '2026-06-01', to: '', bad: ['to'] })).toBe('La fecha «Hasta» no es válida.');
+    });
+
+    it('con «Desde» posterior a «Hasta» lo dice', () => {
+        expect(periodApplyError({ key: 'custom', from: '2026-06-30', to: '2026-06-01' })).toBe('«Desde» no puede ser posterior a «Hasta».');
+    });
+});
+
+describe('isDateFieldInvalid', () => {
+    it('marca solo el campo cuya fecha no existe', () => {
+        const period = { key: 'custom', from: '2026-06-01', to: '', bad: ['to'] };
+        expect(isDateFieldInvalid(period, 'to')).toBe(true);
+        expect(isDateFieldInvalid(period, 'from')).toBe(false);
+    });
+
+    it('con «Desde» posterior a «Hasta» marca los dos', () => {
+        const period = { key: 'custom', from: '2026-06-30', to: '2026-06-01' };
+        expect(isDateFieldInvalid(period, 'from')).toBe(true);
+        expect(isDateFieldInvalid(period, 'to')).toBe(true);
+    });
+
+    it('sin problema no marca ninguno', () => {
+        const period = { key: 'custom', from: '2026-06-01', to: '2026-06-30', bad: [] };
+        expect(isDateFieldInvalid(period, 'from')).toBe(false);
+        expect(isDateFieldInvalid(period, 'to')).toBe(false);
     });
 });

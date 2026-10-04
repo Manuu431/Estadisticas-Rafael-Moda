@@ -102,7 +102,10 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   a 6 px del titular (`.panel-heading`). El selector es un campo `.panel-field.is-labelled` de 12,25 rem con la palabra «Periodo»
   dentro (`.panel-field-label`, `text-sm`, `ink-2`), el desplegable en peso normal y `bi-chevron-down`. Con «Personalizado…»
   salen «Desde» y «Hasta» con el mismo campo, en una fila propia bajo la barra; si «Desde» es posterior a «Hasta» no se aplica y
-  `.panel-note.text-negative` lo avisa.
+  `.panel-note.text-negative` lo avisa. Los campos de fecha no se
+  vuelven a escribir desde la app mientras se teclean (si no, el navegador borraría lo que está a medias): una fecha que no existe
+  (31/06) se avisa en vivo («La fecha «Hasta» no es válida.») y no se aplica. En la hoja móvil, «Ver resultados» con el periodo
+  incompleto o inválido no cierra la hoja ni descarta nada: dice qué falta («Elige las dos fechas del periodo.»).
 - **Barra de filtros de Ventas**: una línea con 10 px de separación: buscador (`.panel-field-search`, 300 px, lupa de `text-icon`),
   Periodo (196 px) y Marca (200 px), los dos `.panel-field.is-labelled` con la etiqueta dentro y flecha de `text-base`;
   después Todo / Mujer / Hombre con `.panel-segs.is-plus` (`text-sm-plus`), un hueco y «Más filtros» (`.panel-btn.is-soft`: icono de

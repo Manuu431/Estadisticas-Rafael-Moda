@@ -3,7 +3,7 @@ import { DATABASE_TABLES } from "../config/database.js";
 import { useFetch } from "../hooks/useFetch.js";
 import { useDebouncedValue } from "../hooks/useDebouncedValue.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
-import { DEFAULT_SALES_PERIOD, customPeriodError } from "../utils/salesPeriod.js";
+import { DEFAULT_SALES_PERIOD, customPeriodError, periodApplyError } from "../utils/salesPeriod.js";
 import { EMPTY_PANEL, panelParams } from "../utils/salesPanel.js";
 import BottomSheet from "./BottomSheet.jsx";
 import { BrandSelect, CustomDates, PeriodSelect, SearchField } from "./SalesFields.jsx";
@@ -26,6 +26,7 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
     const [appliedPanel, setAppliedPanel] = useState({});
     const [showMore, setShowMore] = useState(false);
     const [sheetOpen, setSheetOpen] = useState(false);
+    const [sheetError, setSheetError] = useState('');
     const isMobile = useIsMobile();
     const debouncedSearch = useDebouncedValue(search.trim(), SEARCH_DELAY);
     const { data: options } = useFetch(OPTIONS_URL);
@@ -46,6 +47,7 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
 
     const changePeriod = (next) => {
         setDraft(next);
+        setSheetError('');
         if (!isMobile && isReady(next)) onPeriodChange(next);
     };
 
@@ -62,10 +64,14 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
     };
 
     const applySheet = () => {
+        const problem = periodApplyError(draft);
+        if (problem) {
+            setSheetError(problem);
+            return;
+        }
         applyPanel();
         setBrand(sheetBrand);
-        if (isReady(draft)) onPeriodChange(draft);
-        else setDraft(period);
+        onPeriodChange(draft);
         setSheetOpen(false);
     };
 
@@ -74,6 +80,7 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
         setBrand('');
         setSheetBrand('');
         setDraft(DEFAULT_SALES_PERIOD);
+        setSheetError('');
         onPeriodChange(DEFAULT_SALES_PERIOD);
         setSheetOpen(false);
     };
@@ -122,6 +129,7 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
                     <SalesSheet
                         period={draft}
                         onPeriodChange={changePeriod}
+                        applyError={sheetError}
                         brands={options?.brands ?? NO_OPTIONS}
                         brand={sheetBrand}
                         onBrandChange={setSheetBrand}

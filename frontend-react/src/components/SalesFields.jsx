@@ -1,4 +1,4 @@
-import { SALES_PERIODS, customPeriodError } from '../utils/salesPeriod.js';
+import { SALES_PERIODS, customPeriodError, isDateFieldInvalid, setDateField } from '../utils/salesPeriod.js';
 
 export function InlineSelect({ name, label, value, options, onChange, className }) {
     return (
@@ -58,9 +58,9 @@ export function CustomDates({ period, onChange }) {
             <input
                 type="date"
                 name={name}
-                value={period[name]}
-                aria-invalid={Boolean(error)}
-                onChange={(event) => onChange({ ...period, [name]: event.target.value })}
+                defaultValue={period[name]}
+                aria-invalid={isDateFieldInvalid(period, name)}
+                onChange={(event) => onChange(setDateField(period, name, event.target.value, event.target.validity.badInput))}
             />
         </label>
     );

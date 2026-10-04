@@ -115,4 +115,66 @@ describe('SalesFilters en móvil, hoja «Filtros»', () => {
         expect(onPeriodChange).toHaveBeenLastCalledWith(DEFAULT_SALES_PERIOD);
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument(), { timeout: 1500 });
     });
+
+    it('con «Personalizado…» y una fecha sin poner, «Ver resultados» no cierra ni aplica nada y dice qué falta', async () => {
+        const { lastFilters, onPeriodChange } = setup();
+        openSheet();
+        pick('Periodo', 'custom');
+        pick('Familia', 'Camisas');
+        type('Desde', '2026-06-01');
+        press('Ver resultados');
+        expect(within(sheet()).getByRole('alert')).toHaveTextContent('Elige las dos fechas del periodo.');
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+        expect(onPeriodChange).not.toHaveBeenCalled();
+        expect(lastFilters()).toEqual({});
+    });
+
+    it('lo que ya habías puesto en la hoja se conserva tras el aviso', () => {
+        setup();
+        openSheet();
+        pick('Periodo', 'custom');
+        pick('Familia', 'Camisas');
+        type('Desde', '2026-06-01');
+        press('Ver resultados');
+        expect(within(sheet()).getByLabelText('Desde')).toHaveValue('2026-06-01');
+        expect(within(sheet()).getByLabelText('Familia')).toHaveValue('Camisas');
+        expect(within(sheet()).getByLabelText('Periodo')).toHaveValue('custom');
+    });
+
+    it('al completar las fechas el aviso desaparece y «Ver resultados» aplica el periodo', async () => {
+        const { lastFilters, onPeriodChange } = setup();
+        openSheet();
+        pick('Periodo', 'custom');
+        type('Desde', '2026-06-01');
+        press('Ver resultados');
+        expect(within(sheet()).getByRole('alert')).toBeInTheDocument();
+        type('Hasta', '2026-06-30');
+        expect(within(sheet()).queryByRole('alert')).not.toBeInTheDocument();
+        pick('Familia', 'Camisas');
+        press('Ver resultados');
+        expect(onPeriodChange).toHaveBeenLastCalledWith(expect.objectContaining({ key: 'custom', from: '2026-06-01', to: '2026-06-30' }));
+        expect(lastFilters()).toEqual({ family: 'Camisas' });
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument(), { timeout: 1500 });
+    });
+
+    it('con «Desde» posterior a «Hasta» tampoco aplica y lo explica', () => {
+        const { onPeriodChange } = setup();
+        openSheet();
+        pick('Periodo', 'custom');
+        type('Desde', '2026-06-30');
+        type('Hasta', '2026-06-01');
+        press('Ver resultados');
+        expect(within(sheet()).getByRole('alert')).toHaveTextContent('«Desde» no puede ser posterior a «Hasta».');
+        expect(onPeriodChange).not.toHaveBeenCalled();
+    });
+
+    it('cambiar el periodo a otro que no es Personalizado quita el aviso', () => {
+        setup();
+        openSheet();
+        pick('Periodo', 'custom');
+        press('Ver resultados');
+        expect(within(sheet()).getByRole('alert')).toBeInTheDocument();
+        pick('Periodo', 'ano');
+        expect(within(sheet()).queryByRole('alert')).not.toBeInTheDocument();
+    });
 });

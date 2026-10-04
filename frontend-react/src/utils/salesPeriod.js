@@ -23,9 +23,35 @@ export function salesPeriodRange({ key, from, to }, today) {
     return isBefore(range.to, range.from) ? null : range;
 }
 
-export function customPeriodError({ key, from, to }) {
-    if (key !== 'custom' || !from || !to) return null;
-    return isBefore(parseISO(to), parseISO(from)) ? '«Desde» no puede ser posterior a «Hasta».' : null;
+const MIN_YEAR = 1900;
+const BAD_DATE = { from: 'La fecha «Desde» no es válida.', to: 'La fecha «Hasta» no es válida.', both: 'Las fechas no son válidas.' };
+const REVERSED = '«Desde» no puede ser posterior a «Hasta».';
+
+export function setDateField(period, field, value, bad) {
+    const others = (period.bad ?? []).filter((name) => name !== field);
+    const usable = value !== '' && Number(value.slice(0, 4)) >= MIN_YEAR ? value : '';
+    return { ...period, [field]: usable, bad: bad ? [...others, field] : others };
+}
+
+export function customPeriodError({ key, from, to, bad = [] }) {
+    if (key !== 'custom') return null;
+    if (bad.length === 2) return BAD_DATE.both;
+    if (bad.length === 1) return BAD_DATE[bad[0]];
+    if (!from || !to) return null;
+    return isBefore(parseISO(to), parseISO(from)) ? REVERSED : null;
+}
+
+export function isDateFieldInvalid(period, field) {
+    const bad = period.bad ?? [];
+    if (bad.length > 0) return bad.includes(field);
+    return customPeriodError(period) !== null;
+}
+
+export function periodApplyError(period) {
+    if (period.key !== 'custom') return null;
+    const live = customPeriodError(period);
+    if (live) return live;
+    return period.from && period.to ? null : 'Elige las dos fechas del periodo.';
 }
 
 function customLabel({ from, to }) {
