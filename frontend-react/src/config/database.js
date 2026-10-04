@@ -8,7 +8,8 @@ export const DATABASE_TABLES = {
         summary: `${API_BASE}/statistics/summary`,
         daily: `${API_BASE}/statistics/daily`,
         brands: `${API_BASE}/statistics/brands`,
-        compare: `${API_BASE}/statistics/compare`
+        compare: `${API_BASE}/statistics/compare`,
+        expenses: `${API_BASE}/statistics/expenses`
     },
     sales: {
         endpoint: `${API_BASE}/sales`,

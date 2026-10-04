@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const { mergeBreakdown } = require('../utils/compare');
+const { readBy, groupExpression, buildExpenses } = require('../utils/expenses');
 
 const SECTIONS = ['mujer', 'hombre'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -155,4 +156,38 @@ const getCompare = async (req, res, next) => {
   }
 };
 
-module.exports = { getSummary, getDaily, getBrands, getCompare };
+const SUMS = `ROUND(SUM(v.amount), 2) AS amount, ROUND(SUM(v.cost), 2) AS cost, ROUND(SUM(v.profit), 2) AS profit`;
+
+const expenses = async (by, from, to) => {
+  const filtered = from ? `WHERE ${WINDOW}` : '';
+  const params = from ? [from, to] : [];
+  const period = groupExpression(by);
+  const [[rows], [[totals]]] = await Promise.all([
+    pool.query(
+      `SELECT ${period} AS period, ${SUMS}
+       FROM v_sales v ${filtered}
+       GROUP BY ${period} ORDER BY period`,
+      params
+    ),
+    pool.query(`SELECT ${SUMS}, MIN(v.sale_date) AS first, MAX(v.sale_date) AS last FROM v_sales v ${filtered}`, params)
+  ]);
+  return buildExpenses({ by, rows, totals, range: from ? { from, to } : null });
+};
+
+const getExpenses = async (req, res, next) => {
+  const grouping = readBy(req.query.by);
+  if (grouping.error) return res.status(400).json({ error: grouping.error });
+  let dates = {};
+  if (grouping.by === 'month') {
+    const parsed = readQuery(req.query, ['from', 'to']);
+    if (parsed.error) return res.status(400).json({ error: parsed.error });
+    dates = parsed.dates;
+  }
+  try {
+    res.json(await expenses(grouping.by, dates.from, dates.to));
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getSummary, getDaily, getBrands, getCompare, getExpenses };
