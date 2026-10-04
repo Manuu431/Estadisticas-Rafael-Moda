@@ -247,9 +247,12 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Desde / Hasta de Ventas (`CustomDates`) con sus avisos; empieza en el último mes cerrado frente al mismo mes del año anterior.
   En Fechas, mientras la tarjeta mide menos de 996 px (escritorio, container query `compare` sobre `.compare-page`; es el ancho en que
   dos campos Desde / Hasta ya no caben en fila por periodo) las fechas van en columna y «Comparar» también (Fechas / Campañas /
-  Temporadas apiladas), para que no quede aire arriba; por debajo de 992 px manda el diseño de móvil de siempre.
-  KPI (`.compare-kpi`, 4 en fila desde 1200 px y 2 por debajo; de 1100 a 1199 px, con tarjetas anchas, la nota «frente a…» pasa a la derecha
-  de la cifra, alineada a la derecha, en vez de ir debajo; de 992 a 1099 px caben justas y no se reparten): etiqueta en `text-md` 600 con `DeltaPill` a la derecha, cifra en serif
+  Temporadas apiladas). Los tres bloques se centran en vertical, las tres etiquetas («Comparar», «Periodo A», «Periodo B») quedan a la misma
+  altura y «Desde» y «Hasta» se separan 30 px para que su columna mida lo mismo que la de «Comparar»; el «vs.» se centra en vertical
+  respecto a los campos. Por debajo de 992 px manda el diseño de móvil, y por debajo de 576 px Desde y Hasta van en columna.
+  KPI (`.compare-kpi`, 4 en fila desde 1200 px y 2 por debajo; de 1100 a 1199 px y de 576 a 991 px, con tarjetas anchas, la pastilla va arriba
+  a la derecha y la nota «frente a…» (en móvil «2025: X») pasa a la derecha de la cifra, alineada a la derecha; de 992 a 1099 px caben justas
+  y no se reparten, y por debajo de 576 px manda el diseño de móvil con la pastilla bajo la cifra): etiqueta en `text-md` 600 con `DeltaPill` a la derecha, cifra en serif
   `display-sm` y «frente a X en 2025» en `text-sm` `ink-2`. En móvil la pastilla baja bajo la cifra, la cifra es `display-xs` y la nota
   pasa a «2025: X». Ticket medio = ventas / tickets. El nombre corto del periodo B es el año si A y B son de años distintos; si no, el nombre.
   Gráfica y desglose (`.compare-main`, 7/5 desde 1200 px, apiladas por debajo, tarjetas del mismo alto): la gráfica de barras
