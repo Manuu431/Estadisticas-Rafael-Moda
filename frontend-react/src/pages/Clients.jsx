@@ -12,7 +12,7 @@ import { clientsState } from "../utils/clientsState.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
 
 const OPTIONS_URL = DATABASE_TABLES.clients.endpointOptions;
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
 function Clients(props) {
     const [filters, setFilters] = useState({});

@@ -3,7 +3,7 @@ import { formatNumber } from '../../utils/format.js';
 import { clientInitials, clientMeta } from '../../utils/clientsList.js';
 import { remainingCount } from '../../utils/salesDays.js';
 
-const PAGE = 10;
+const PAGE = 12;
 
 function ClientsMobileList({ rows }) {
     const [shown, setShown] = useState({ rows, count: PAGE });

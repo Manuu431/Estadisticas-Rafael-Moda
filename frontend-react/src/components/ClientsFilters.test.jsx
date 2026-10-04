@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import ClientsFilters from './ClientsFilters.jsx';
+import { chosen, pickOption } from '../test/dropdown.js';
 
 const OPTIONS = { provinces: ['Alicante', 'Valencia'], cities: ['Oliva', 'Pego'], total: 486 };
 
@@ -14,7 +15,7 @@ afterEach(() => {
     vi.useRealTimers();
 });
 
-const pick = (label, value) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
+const pick = (label, value) => pickOption(label, value || 'Todas');
 const clearButton = () => screen.queryByRole('button', { name: 'Limpiar filtros' });
 
 describe('ClientsFilters, «Limpiar filtros»', () => {
@@ -43,8 +44,8 @@ describe('ClientsFilters, «Limpiar filtros»', () => {
         fireEvent.change(screen.getByLabelText('Buscar clientes'), { target: { value: 'ali' } });
         fireEvent.click(clearButton());
         expect(screen.getByLabelText('Buscar clientes')).toHaveValue('');
-        expect(screen.getByLabelText('Provincia')).toHaveValue('');
-        expect(screen.getByLabelText('Ciudad')).toHaveValue('');
+        expect(chosen('Provincia')).toBe('Todas');
+        expect(chosen('Ciudad')).toBe('Todas');
         expect(lastFilters()).toEqual({});
         expect(clearButton()).not.toBeInTheDocument();
     });
@@ -63,7 +64,7 @@ describe('ClientsFilters, coherencia entre los filtros', () => {
         pick('Ciudad', 'Pego');
         expect(lastFilters()).toEqual({ province: 'Alicante', city: 'Pego' });
         pick('Provincia', 'Valencia');
-        expect(screen.getByLabelText('Ciudad')).toHaveValue('');
+        expect(chosen('Ciudad')).toBe('Todas');
         expect(lastFilters()).toEqual({ province: 'Valencia' });
     });
 
@@ -72,7 +73,7 @@ describe('ClientsFilters, coherencia entre los filtros', () => {
         pick('Provincia', 'Alicante');
         pick('Ciudad', 'Pego');
         pick('Provincia', '');
-        expect(screen.getByLabelText('Ciudad')).toHaveValue('Pego');
+        expect(chosen('Ciudad')).toBe('Pego');
         expect(lastFilters()).toEqual({ city: 'Pego' });
     });
 

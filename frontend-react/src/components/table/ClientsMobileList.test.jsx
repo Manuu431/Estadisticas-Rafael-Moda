@@ -15,12 +15,12 @@ const items = () => screen.getAllByRole('listitem');
 const moreButton = () => screen.queryByRole('button', { name: /Ver más clientes/ });
 
 describe('ClientsMobileList', () => {
-    it('enseña los 10 primeros y el botón con los que faltan, con separador de miles', () => {
+    it('enseña los 12 primeros y el botón con los que faltan, con separador de miles', () => {
         render(<ClientsMobileList rows={makeRows(486)} />);
-        expect(items()).toHaveLength(10);
-        expect(moreButton()).toHaveTextContent('Ver más clientes (476)');
+        expect(items()).toHaveLength(12);
+        expect(moreButton()).toHaveTextContent('Ver más clientes (474)');
         render(<ClientsMobileList rows={makeRows(1215)} />);
-        expect(screen.getByRole('button', { name: 'Ver más clientes (1.205)' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Ver más clientes (1.203)' })).toBeInTheDocument();
     });
 
     it('cada fila lleva las iniciales, el nombre y la segunda línea', () => {
@@ -37,34 +37,34 @@ describe('ClientsMobileList', () => {
         expect(screen.getByText('C1')).toHaveAttribute('aria-hidden', 'true');
     });
 
-    it('cada pulsación añade 10 y el botón baja con los que faltan', () => {
+    it('cada pulsación añade 12 y el botón baja con los que faltan', () => {
         render(<ClientsMobileList rows={makeRows(486)} />);
         fireEvent.click(moreButton());
-        expect(items()).toHaveLength(20);
-        expect(moreButton()).toHaveTextContent('Ver más clientes (466)');
+        expect(items()).toHaveLength(24);
+        expect(moreButton()).toHaveTextContent('Ver más clientes (462)');
     });
 
     it('al llegar al final el botón desaparece', () => {
-        render(<ClientsMobileList rows={makeRows(25)} />);
+        render(<ClientsMobileList rows={makeRows(27)} />);
         fireEvent.click(moreButton());
-        expect(moreButton()).toHaveTextContent('(5)');
+        expect(moreButton()).toHaveTextContent('(3)');
         fireEvent.click(moreButton());
-        expect(items()).toHaveLength(25);
+        expect(items()).toHaveLength(27);
         expect(moreButton()).not.toBeInTheDocument();
     });
 
-    it('con 10 clientes o menos no hay botón', () => {
-        render(<ClientsMobileList rows={makeRows(10)} />);
-        expect(items()).toHaveLength(10);
+    it('con 12 clientes o menos no hay botón', () => {
+        render(<ClientsMobileList rows={makeRows(12)} />);
+        expect(items()).toHaveLength(12);
         expect(moreButton()).not.toBeInTheDocument();
     });
 
-    it('al cambiar la lista (otro filtro) vuelve a los 10 primeros', () => {
+    it('al cambiar la lista (otro filtro) vuelve a los 12 primeros', () => {
         const { rerender } = render(<ClientsMobileList rows={makeRows(50)} />);
         fireEvent.click(moreButton());
-        expect(items()).toHaveLength(20);
+        expect(items()).toHaveLength(24);
         rerender(<ClientsMobileList rows={makeRows(30)} />);
-        expect(items()).toHaveLength(10);
-        expect(moreButton()).toHaveTextContent('(20)');
+        expect(items()).toHaveLength(12);
+        expect(moreButton()).toHaveTextContent('(18)');
     });
 });

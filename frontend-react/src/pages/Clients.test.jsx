@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import Clients from './Clients.jsx';
+import { chosen, dropdown, pickOption } from '../test/dropdown.js';
 
 const screenSize = vi.hoisted(() => ({ mobile: false }));
 
@@ -17,13 +18,13 @@ describe('Clients', () => {
     it('al pasar de móvil a escritorio no pierde los filtros puestos', () => {
         screenSize.mobile = true;
         const { rerender } = render(<Clients title="Clientes" />);
-        fireEvent.change(screen.getByLabelText('Provincia'), { target: { value: 'Alicante' } });
+        pickOption('Provincia', 'Alicante');
         fireEvent.change(screen.getByLabelText('Buscar clientes'), { target: { value: 'ali' } });
 
         screenSize.mobile = false;
         rerender(<Clients title="Clientes" />);
 
-        expect(screen.getByLabelText('Provincia')).toHaveValue('Alicante');
+        expect(chosen('Provincia')).toBe('Alicante');
         expect(screen.getByLabelText('Buscar clientes')).toHaveValue('ali');
         expect(screen.getByPlaceholderText('Buscar por nombre o código postal')).toBeInTheDocument();
     });
@@ -31,11 +32,11 @@ describe('Clients', () => {
     it('en escritorio la barra va dentro de la tarjeta y en móvil fuera de ella', () => {
         screenSize.mobile = false;
         const { unmount } = render(<Clients title="Clientes" />);
-        expect(screen.getByLabelText('Provincia').closest('.data-card')).not.toBeNull();
+        expect(dropdown('Provincia').closest('.data-card')).not.toBeNull();
         unmount();
 
         screenSize.mobile = true;
         render(<Clients title="Clientes" />);
-        expect(screen.getByLabelText('Provincia').closest('.data-card')).toBeNull();
+        expect(dropdown('Provincia').closest('.data-card')).toBeNull();
     });
 });

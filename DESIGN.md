@@ -219,15 +219,24 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   padding 0 16 px, 12 px entre columnas y borde `--rm-line-soft` salvo la primera. Avatar `.clients-avatar` de 38 px, `--rm-tint`, texto
   `--rm-nav` en `text-sm` 700, con las iniciales de las dos primeras palabras del nombre (una sola letra si hay una palabra). Nombre en
   `text-lg` 600 con «…» y debajo, en `text-sm` `ink-2`, «Ciudad (Provincia) · CP»: la provincia solo sale si no es Valencia y no se llama
-  igual que la ciudad («Pego (Alicante) · 03780», «Oliva · 46780», «Madrid · 28014»). Sin paginación de flechas: 10 clientes y un `.m-btn`
-  a ancho completo «Ver más clientes (N)» con los que faltan, que añade 10 por pulsación y desaparece al llegar al final; al cambiar un
-  filtro vuelve a los 10 primeros. Cargando, sin resultados y error: los mensajes del escritorio, sin cabecera de tabla, en una tarjeta blanca.
+  igual que la ciudad («Pego (Alicante) · 03780», «Oliva · 46780», «Madrid · 28014»). Sin paginación de flechas: 12 clientes y un `.m-btn`
+  a ancho completo «Ver más clientes (N)» con los que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
+  filtro vuelve a los 12 primeros. Cargando, sin resultados y error: los mensajes del escritorio, sin cabecera de tabla, en una tarjeta blanca.
+- **Desplegable de campo** (`FieldDropdown`, `.panel-select`; hoy solo en Clientes): sustituye al `<select>` nativo, cuya lista emergente
+  la dibuja el navegador, no se puede estilar y solo se abre al pulsar sobre el propio `select`. Todo el campo (`.panel-select-toggle`, con la
+  misma forma que `.panel-field.is-labelled`) es el botón: la palabra, el valor y la flecha abren la lista. Al abrir, borde y anillo
+  naranjas y la flecha gira. Lista (`.panel-select-menu`): superficie blanca, borde `--rm-line`, radio `--rm-radius`, `--rm-shadow-raised`,
+  padding 6 px, empieza donde empieza el campo y es al menos igual de ancha (el de Ciudad crece hacia la izquierda para no chocar con el borde
+  de la tarjeta), con 13 rem de alto como máximo y barra de desplazamiento fina: cabe en la tarjeta incluso en el estado «sin resultados».
+  Opciones de `text-md` con radio `--rm-radius-sm`; al pasar el cursor, `--rm-tint`; la elegida, `--rm-orange-tint`, `--rm-orange-ink` y
+  600. Con `large` (móvil) las opciones miden 44 px y usan `text-lg`. Teclado: Enter o ↓ abren, flechas mueven, Enter elige, Escape cierra y
+  el foco vuelve al campo. Nombre accesible «Provincia: Todas».
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
   Los botones (`.data-page`) son de 36 × 36 px, radio `sm`, borde `--rm-line-strong`, con `bi-chevron-double-left/right` en los
   extremos; desactivados, el icono pasa a `--rm-icon-disabled`. En la primera página, primera y anterior están desactivadas; en la
-  última, siguiente y última. Los extremos solo salen en escritorio (`edges`). Ventas pagina de 12 en 12; el resto, de 10 en 10.
+  última, siguiente y última. Los extremos solo salen en escritorio (`edges`). Ventas y Clientes paginan de 12 en 12; el resto, de 10 en 10.
 - **Enlace de tarjeta** (`.panel-link`): «Ver todas» y similares, `text-sm` 600 en `--rm-orange-strong`, con
   `bi-chevron-right` detrás; al pasar el cursor, `--rm-orange-ink`.
 - **Campaña en curso** (`.campaign-current`): caja `--rm-surface-soft` con borde `--rm-line-soft` y radio `--rm-radius`,

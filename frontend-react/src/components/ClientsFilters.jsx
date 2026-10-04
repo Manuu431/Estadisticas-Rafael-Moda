@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDebouncedValue } from "../hooks/useDebouncedValue.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
-import { InlineSelect, SearchField } from "./SalesFields.jsx";
+import { SearchField } from "./SalesFields.jsx";
+import FieldDropdown from "./FieldDropdown.jsx";
 
 const SEARCH_DELAY = 300;
 const NO_OPTIONS = [];
@@ -38,24 +39,25 @@ function ClientsFilters({ options, onFilterChange }) {
     };
 
     const provinceSelect = (
-        <InlineSelect
-            name="province"
+        <FieldDropdown
             label="Provincia"
             value={province}
             options={withAll(options?.provinces ?? NO_OPTIONS)}
             onChange={changeProvince}
-            className={`clients-province${isMobile ? ' is-large' : ''}`}
+            className="clients-province"
+            large={isMobile}
         />
     );
 
     const citySelect = (
-        <InlineSelect
-            name="city"
+        <FieldDropdown
             label="Ciudad"
             value={city}
             options={withAll(options?.cities ?? NO_OPTIONS)}
             onChange={setCity}
-            className={`clients-city${isMobile ? ' is-large' : ''}`}
+            className="clients-city"
+            large={isMobile}
+            alignEnd
         />
     );
 

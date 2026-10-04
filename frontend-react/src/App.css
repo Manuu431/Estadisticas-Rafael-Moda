@@ -2709,3 +2709,91 @@
     font-size: var(--rm-text-sm);
     color: var(--rm-ink-2);
 }
+
+
+.panel-select {
+    position: relative;
+}
+
+.panel-select-toggle {
+    width: 100%;
+    font-family: inherit;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.panel-select-toggle::after {
+    display: none;
+}
+
+.panel-select-value {
+    flex-grow: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--rm-ink);
+}
+
+.panel-select-toggle > .bi-chevron-down {
+    transition: transform 0.2s ease;
+}
+
+.panel-select.show .panel-select-toggle {
+    border-color: var(--rm-orange);
+    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+}
+
+.panel-select.show .panel-select-toggle > .bi-chevron-down {
+    transform: rotate(180deg);
+}
+
+.panel-select-menu {
+    min-width: 100%;
+    max-width: 20rem;
+    max-height: 13rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rm-line-strong) transparent;
+    padding: 0.375rem;
+    border: 1px solid var(--rm-line);
+    border-radius: var(--rm-radius);
+    background-color: var(--rm-surface);
+    box-shadow: var(--rm-shadow-raised);
+    font-size: var(--rm-text-md);
+}
+
+.panel-select-menu .dropdown-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--rm-radius-sm);
+    color: var(--rm-ink);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.panel-select-menu .dropdown-item:hover,
+.panel-select-menu .dropdown-item:focus {
+    background-color: var(--rm-tint);
+    color: var(--rm-ink);
+}
+
+.panel-select-menu .dropdown-item.active {
+    background-color: var(--rm-orange-tint);
+    color: var(--rm-orange-ink);
+    font-weight: 600;
+}
+
+.panel-select-toggle.is-large + .panel-select-menu {
+    font-size: var(--rm-text-lg);
+}
+
+.panel-select-toggle.is-large + .panel-select-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .panel-select-toggle > .bi-chevron-down {
+        transition: none;
+    }
+}
