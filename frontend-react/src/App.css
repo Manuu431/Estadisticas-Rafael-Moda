@@ -74,6 +74,7 @@
     --rm-text-2xl: 1.375rem;
     --rm-display-2xs: 1.5rem;
     --rm-display-xs: 1.75rem;
+    --rm-display-xs-plus: 2.125rem;
     --rm-display-sm: 2.25rem;
     --rm-display-md: 2.5rem;
     --rm-display-lg: 2.625rem;
@@ -3353,6 +3354,10 @@
     white-space: nowrap;
 }
 
+.expenses-tools .panel-segs {
+    display: inline-flex;
+}
+
 .expenses-period .panel-select-value,
 .expenses-pick .panel-select-value {
     font-weight: 600;
@@ -3610,5 +3615,52 @@
 
     .expenses-kpis {
         gap: 0.875rem;
+    }
+
+    .expenses-page .panel-field > .bi-chevron-down {
+        display: none;
+    }
+
+    .expenses-tools .panel-segs {
+        display: flex;
+    }
+
+    .expenses-tools .panel-segs.is-plus .panel-seg {
+        flex: 1;
+        height: 2.5rem;
+        font-size: var(--rm-text-md);
+    }
+
+    .expenses-extra .panel-field {
+        height: 3rem;
+        padding: 0 0.875rem;
+        border-radius: 0.875rem;
+    }
+
+    .expenses-extra .panel-field input {
+        font-size: var(--rm-text-lg);
+    }
+
+    .expenses-kpis-card {
+        padding: 0 1rem;
+    }
+
+    .expenses-kpi-block {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 1rem 0;
+    }
+
+    .expenses-kpi-block + .expenses-kpi-block {
+        border-top: 1px solid var(--rm-line-soft);
+    }
+
+    .expenses-kpi-block .expenses-kpi-value {
+        font-size: var(--rm-display-xs-plus);
+    }
+
+    .expenses-kpi-block .expenses-skeleton-value {
+        height: var(--rm-display-xs-plus);
     }
 }

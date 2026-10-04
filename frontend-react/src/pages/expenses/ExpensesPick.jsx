@@ -5,7 +5,7 @@ import { formatCompactRange } from '../../utils/dates.js';
 
 const LABELS = { campaign: 'Campaña', season: 'Temporada' };
 
-function ExpensesPick({ kind, items, loading, value, onChange, dates, onDatesChange, notice }) {
+function ExpensesPick({ kind, items, loading, value, onChange, dates, onDatesChange, notice, large }) {
     if (kind === 'year') return null;
 
     if (kind === 'dates') {
@@ -27,7 +27,7 @@ function ExpensesPick({ kind, items, loading, value, onChange, dates, onDatesCha
 
     return (
         <div className="expenses-extra">
-            <FieldDropdown label={LABELS[kind]} value={value} options={options} onChange={onChange} className="expenses-pick" />
+            <FieldDropdown label={LABELS[kind]} value={value} options={options} onChange={onChange} className="expenses-pick" large={large} />
         </div>
     );
 }

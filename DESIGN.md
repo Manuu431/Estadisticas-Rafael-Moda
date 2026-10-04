@@ -77,7 +77,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
 - Escala de texto: `--rm-text-2xs` 11 · `2xs-plus` 11,5 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
-- Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
+- Escala display: `--rm-display-2xs` 24 · `xs` 28 · `xs-plus` 34 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
 - Formato español, siempre desde `utils/format.js`: importes con separador de miles y dos decimales
@@ -312,6 +312,12 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   temporadas): el `CardError` de siempre en una sola tarjeta que sustituye a las tres secciones; un error gana a los datos antiguos. **Sin ventas en el periodo**: las tres tarjetas con «0,00 €» y
   «0,0 %» y, en lugar de la gráfica y la tabla, una tarjeta con «No hay ventas en este periodo.» (`.sales-state`), también en «Años». **Periodo sin elegir o no válido**: no se pide nada, se sigue
   enseñando el último periodo válido con su texto y bajo los campos sale el aviso (el de los campos de fecha, o «Elige las dos fechas del periodo.» en `.panel-note`).
+- **Gastos en móvil** (<992 px, `.expenses-page`): 14 px entre bloques y el mismo margen negativo que Clientes (contenido en 6 × 16 × 24 px). Cabecera con las reglas móviles de
+  `.panel-heading` (subtítulo de `text-sm`, «Gastos» en `display-sm`, a 4 px). Sin enlace «‹ Más». Periodo es un `FieldDropdown large` (48 px, radio 14, padding 0 14 px, etiqueta de `text-sm`, valor de
+  `text-lg` en 600, flecha oculta); con campaña, temporada o fechas, la fila de debajo con el mismo campo y `CustomDates` en columna (campos de 48 px). El control segmentado ocupa todo el ancho, con las dos
+  opciones a partes iguales (botones de 40 px y `text-md`, contenedor de 4 px y radio 12). Las cifras van en **una sola tarjeta** (`.expenses-kpis-card`, padding 0 16 px) con tres bloques
+  (`.expenses-kpi-block`, padding 16 × 0, 4 px entre líneas, borde superior `--rm-line-soft` salvo el primero): etiqueta, cifra en serif de **34 px** (`--rm-display-xs-plus`, token nuevo, `line-height` 1) y
+  nota; la del segundo bloque es más corta: «Lo que costó la ropa vendida · 51,6 %». La silueta de carga usa la misma tarjeta, con la cifra a 34 px.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

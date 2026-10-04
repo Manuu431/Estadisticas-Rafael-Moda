@@ -1,18 +1,30 @@
 import { Skeleton } from '../controlPanel/cards/CardState.jsx';
 
 const KPIS = [0, 1, 2];
-function ExpensesSkeleton({ rows }) {
+function ExpensesSkeleton({ rows, compact }) {
     return (
         <>
-            <div className="expenses-kpis">
-                {KPIS.map((index) => (
-                    <section className="panel-card expenses-kpi" aria-busy="true" aria-label="Cargando los totales" key={index}>
-                        <Skeleton className="expenses-skeleton-label" />
-                        <Skeleton className="expenses-skeleton-value" />
-                        <Skeleton className="expenses-skeleton-note" />
-                    </section>
-                ))}
-            </div>
+            {compact ? (
+                <section className="panel-card expenses-kpis-card" aria-busy="true" aria-label="Cargando los totales">
+                    {KPIS.map((index) => (
+                        <div className="expenses-kpi-block" key={index}>
+                            <Skeleton className="expenses-skeleton-label" />
+                            <Skeleton className="expenses-skeleton-value" />
+                            <Skeleton className="expenses-skeleton-note" />
+                        </div>
+                    ))}
+                </section>
+            ) : (
+                <div className="expenses-kpis">
+                    {KPIS.map((index) => (
+                        <section className="panel-card expenses-kpi" aria-busy="true" aria-label="Cargando los totales" key={index}>
+                            <Skeleton className="expenses-skeleton-label" />
+                            <Skeleton className="expenses-skeleton-value" />
+                            <Skeleton className="expenses-skeleton-note" />
+                        </section>
+                    ))}
+                </div>
+            )}
             <div className="expenses-main">
                 <section className="panel-card expenses-card" aria-busy="true" aria-label="Cargando la gráfica">
                     <div className="expenses-card-head">

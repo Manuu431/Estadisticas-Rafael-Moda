@@ -1,6 +1,6 @@
 import FieldDropdown from '../../components/FieldDropdown.jsx';
 
-function ExpensesPeriod({ menu, kind, onKindChange, locked, lockedText, grainOptions, grain, onGrainChange }) {
+function ExpensesPeriod({ menu, kind, onKindChange, locked, lockedText, grainOptions, grain, onGrainChange, large }) {
     return (
         <div className="expenses-tools">
             <FieldDropdown
@@ -10,8 +10,9 @@ function ExpensesPeriod({ menu, kind, onKindChange, locked, lockedText, grainOpt
                 onChange={onKindChange}
                 className="expenses-period"
                 disabled={locked}
+                large={large}
             />
-            <div className="panel-segs is-plus d-inline-flex panel-head-segs" role="group" aria-label="Mostrar por">
+            <div className="panel-segs is-plus panel-head-segs" role="group" aria-label="Mostrar por">
                 {grainOptions.map((option) => (
                     <button
                         key={option.value}

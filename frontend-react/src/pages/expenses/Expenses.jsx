@@ -9,6 +9,7 @@ import ExpensesSkeleton from './ExpensesSkeleton.jsx';
 import { CardError } from '../controlPanel/cards/CardState.jsx';
 import { DATABASE_TABLES } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
+import { useIsMobile } from '../../utils/useIsMobile.js';
 import { chosenPeriod, datesNotice, expensesBuckets, expensesParams, expensesRange, expensesState, expensesTable, monthsLabel, periodMenu, periodText, skeletonRows, startedPeriods, yearsText } from '../../utils/expenses.js';
 
 const LISTS = { campaign: 'campaigns', season: 'seasons' };
@@ -16,6 +17,7 @@ const NO_TOTALS = { amount: 0, cost: 0, profit: 0 };
 
 function Expenses({ title }) {
     const today = useMemo(() => startOfDay(new Date()), []);
+    const isMobile = useIsMobile();
     const [kind, setKind] = useState('year');
     const [picks, setPicks] = useState({ campaign: '', season: '' });
     const [dates, setDates] = useState(() => ({ key: 'custom', from: `${today.getFullYear()}-01-01`, to: format(today, 'yyyy-MM-dd'), bad: [] }));
@@ -55,10 +57,10 @@ function Expenses({ title }) {
                 </section>
             );
         }
-        if (state.kind === 'loading') return <ExpensesSkeleton rows={skeletonRows(grain, period)} />;
+        if (state.kind === 'loading') return <ExpensesSkeleton rows={skeletonRows(grain, period)} compact={isMobile} />;
         return (
             <>
-                <ExpensesKpis totals={totals} />
+                <ExpensesKpis totals={totals} compact={isMobile} />
                 {state.kind === 'empty' ? (
                     <section className="panel-card">
                         <div className="sales-state">
@@ -91,6 +93,7 @@ function Expenses({ title }) {
                     grainOptions={grainOptions}
                     grain={grain}
                     onGrainChange={setGrain}
+                    large={isMobile}
                 />
             </div>
             <ExpensesPick
@@ -102,6 +105,7 @@ function Expenses({ title }) {
                 dates={dates}
                 onDatesChange={setDates}
                 notice={datesNotice(kind, dates)}
+                large={isMobile}
             />
             {content}
         </div>
