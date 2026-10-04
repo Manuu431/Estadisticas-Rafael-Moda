@@ -18,7 +18,13 @@ function ChartTooltip({ active, payload, label }) {
     );
 }
 
+const TICK_CHAR_WIDTH = 7;
+const TICK_PADDING = 12;
+
 function CompareChart({ rows, height, label }) {
+    const peak = Math.max(0, ...rows.flatMap((row) => [row.a, row.b]));
+    const axisWidth = formatNumber(Math.ceil(peak * 2)).length * TICK_CHAR_WIDTH + TICK_PADDING;
+
     return (
         <div className="compare-chart" role="img" aria-label={label}>
             <ResponsiveContainer width="100%" height={height}>
@@ -31,7 +37,7 @@ function CompareChart({ rows, height, label }) {
                         interval="preserveStartEnd"
                     />
                     <YAxis
-                        width={44}
+                        width={axisWidth}
                         tickLine={false}
                         axisLine={false}
                         tickCount={5}
