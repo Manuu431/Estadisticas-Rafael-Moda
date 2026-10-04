@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { mergeBreakdown } = require('../utils/compare');
 
 const SECTIONS = ['mujer', 'hombre'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -66,6 +67,23 @@ const ranking = async (from, to, section) => {
   };
 };
 
+const GROUPS = { brand: 'v.brand', family: 'v.family', section: 'v.section' };
+
+const grouped = async (column, from, to) => {
+  const [rows] = await pool.query(
+    `SELECT ${column} AS name, ROUND(SUM(v.amount), 2) AS total
+     FROM v_sales v WHERE ${WINDOW}
+     GROUP BY ${column}`,
+    [from, to]
+  );
+  return rows.map((row) => ({ name: row.name, total: Number(row.total) }));
+};
+
+const breakdown = async (column, a, b) => {
+  const [rowsA, rowsB] = await Promise.all([grouped(column, a.from, a.to), grouped(column, b.from, b.to)]);
+  return mergeBreakdown(rowsA, rowsB);
+};
+
 const getSummary = async (req, res, next) => {
   const parsed = readQuery(req.query, ['from', 'to', 'comparedFrom', 'comparedTo']);
   if (parsed.error) return res.status(400).json({ error: parsed.error });
@@ -106,4 +124,29 @@ const getBrands = async (req, res, next) => {
   }
 };
 
-module.exports = { getSummary, getDaily, getBrands };
+const getCompare = async (req, res, next) => {
+  const parsed = readQuery(req.query, ['aFrom', 'aTo', 'bFrom', 'bTo']);
+  if (parsed.error) return res.status(400).json({ error: parsed.error });
+  const { aFrom, aTo, bFrom, bTo } = parsed.dates;
+  const a = { from: aFrom, to: aTo };
+  const b = { from: bFrom, to: bTo };
+  try {
+    const [summaryA, summaryB, daysA, daysB, ...groups] = await Promise.all([
+      summarize(aFrom, aTo, null),
+      summarize(bFrom, bTo, null),
+      daily(aFrom, aTo, null),
+      daily(bFrom, bTo, null),
+      ...Object.values(GROUPS).map((column) => breakdown(column, a, b))
+    ]);
+    const [brand, family, section] = groups;
+    res.json({
+      a: { summary: summaryA, days: daysA },
+      b: { summary: summaryB, days: daysB },
+      breakdown: { brand, family, section }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getSummary, getDaily, getBrands, getCompare };
