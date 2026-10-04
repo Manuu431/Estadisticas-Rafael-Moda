@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { SALES_PERIODS, salesPeriodLabel, salesPeriodRange, customPeriodError } from './salesPeriod.js';
+import { DEFAULT_SALES_PERIOD, SALES_PERIODS, salesPeriodLabel, salesPeriodRange, customPeriodError } from './salesPeriod.js';
 
 const today = new Date(2026, 9, 15, 18, 47);
 const firstOfMonth = new Date(2026, 9, 1, 9, 30);
 
 describe('SALES_PERIODS', () => {
-    it('lista las opciones en orden, con «Este mes» la primera', () => {
-        expect(SALES_PERIODS.map((period) => period.label)).toEqual(['Este mes', 'Hoy', 'Últimos 7 días', 'Este año', 'Personalizado…']);
-        expect(SALES_PERIODS[0].value).toBe('mes');
+    it('lista las opciones de menor a mayor periodo, con «Personalizado…» la última', () => {
+        expect(SALES_PERIODS.map((period) => period.label)).toEqual(['Hoy', 'Últimos 7 días', 'Este mes', 'Este año', 'Personalizado…']);
+    });
+
+    it('el periodo por defecto es «Este mes» y está en la lista', () => {
+        expect(DEFAULT_SALES_PERIOD.key).toBe('mes');
+        expect(SALES_PERIODS.map((period) => period.value)).toContain(DEFAULT_SALES_PERIOD.key);
     });
 });
 

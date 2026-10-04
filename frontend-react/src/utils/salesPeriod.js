@@ -3,9 +3,9 @@ import { es } from 'date-fns/locale';
 import { formatLongRange, formatMonthOfYear, periodRange } from './dates.js';
 
 export const SALES_PERIODS = [
-    { value: 'mes', label: 'Este mes' },
     { value: 'hoy', label: 'Hoy' },
     { value: '7d', label: 'Últimos 7 días' },
+    { value: 'mes', label: 'Este mes' },
     { value: 'ano', label: 'Este año' },
     { value: 'custom', label: 'Personalizado…' }
 ];
