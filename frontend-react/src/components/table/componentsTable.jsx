@@ -4,6 +4,7 @@ import { TableIconButton } from '../smallComponents.jsx';
 import { formatDate, handleSort, getSortIconClass } from '../../utils/tableUtils.js';
 import { getValueLabel } from '../../config/labels.js';
 import { formatEuros } from '../../utils/format.js';
+import SalesTable from './SalesTable.jsx';
 
 const isNumericKey = (data, key) => {
     if (key === 'id') return false;
@@ -29,10 +30,6 @@ const cellText = (item, columnKey, isCreateType) => {
 
 function CellValue({ item, columnKey, isCreateType }) {
     const value = getValueLabel(columnKey, item[columnKey]);
-
-    if (columnKey === 'section' && item[columnKey]) {
-        return <span className={`data-pill${item[columnKey] === 'mujer' ? ' is-mujer' : ''}`}>{value}</span>;
-    }
 
     if (isMoney(columnKey, value)) {
         return formatEuros(value);
@@ -81,7 +78,7 @@ function RowActions({ item, type, handleVisualize, handleEdit, handleDelete }) {
     );
 }
 
-export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete, sortConfig, setSortConfig }) {
+function GenericTable({ data, DATABASE_TABLE, type, isCreateType, handleVisualize, handleEdit, handleDelete, sortConfig, setSortConfig }) {
     const { columns, values } = DATABASE_TABLE.tables;
     const numeric = values.map((key) => isNumericKey(data, key));
     const hasActions = type === 'campaigns' || type === 'seasons' || isCreateType;
@@ -133,6 +130,10 @@ export function DesktopTable({ data, DATABASE_TABLE, type, isCreateType, handleV
             </table>
         </div>
     );
+}
+
+export function DesktopTable(props) {
+    return props.type === 'sales' ? <SalesTable data={props.data} /> : <GenericTable {...props} />;
 }
 
 const dayHeading = (value) => {

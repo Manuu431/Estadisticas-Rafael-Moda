@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCompactRange, formatDayTick, formatLongRange, formatShortDay, formatMonthTitle, formatMonthYear, formatMonthOfYear, formatShortRange, apiDate, yearChartRange, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, shiftYear } from './dates.js';
+import { formatCompactRange, formatDayTick, formatLongRange, formatShortDay, formatMonthTitle, formatMonthYear, formatMonthOfYear, formatShortRange, apiDate, yearChartRange, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, shiftYear, formatSaleDay, formatSaleTime } from './dates.js';
 
 describe('lastSevenDays', () => {
     it('devuelve los siete días que terminan hoy', () => {
@@ -176,5 +176,41 @@ describe('formatMonthOfYear', () => {
 
     it('sirve para un mes con tilde', () => {
         expect(formatMonthOfYear(new Date(2025, 11, 1))).toBe('diciembre de 2025');
+    });
+});
+
+
+describe('formatSaleDay', () => {
+    const today = new Date(2026, 9, 2);
+
+    it('escribe día y mes abreviado, sin año, si la venta es de este año', () => {
+        expect(formatSaleDay('2026-09-28', today)).toBe('28 sep');
+        expect(formatSaleDay('2026-01-05', today)).toBe('5 ene');
+    });
+
+    it('añade el año con punto tras el mes si la venta no es de este año', () => {
+        expect(formatSaleDay('2025-09-28', today)).toBe('28 sep. 2025');
+        expect(formatSaleDay('2025-12-31', today)).toBe('31 dic. 2025');
+    });
+
+    it('compara con el año de hoy, no con el de la venta más reciente', () => {
+        expect(formatSaleDay('2026-09-28', new Date(2027, 0, 1))).toBe('28 sep. 2026');
+    });
+
+    it('acepta la fecha completa de la venta', () => {
+        expect(formatSaleDay('2026-09-28T19:37:00', today)).toBe('28 sep');
+    });
+});
+
+describe('formatSaleTime', () => {
+    it('saca la hora y los minutos del momento del ticket', () => {
+        expect(formatSaleTime('2026-09-28 19:37:12')).toBe('19:37');
+        expect(formatSaleTime('2026-09-28T09:05:00')).toBe('09:05');
+    });
+
+    it('devuelve vacío si no hay momento', () => {
+        expect(formatSaleTime(null)).toBe('');
+        expect(formatSaleTime(undefined)).toBe('');
+        expect(formatSaleTime('')).toBe('');
     });
 });

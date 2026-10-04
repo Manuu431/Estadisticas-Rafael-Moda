@@ -12,10 +12,6 @@ export const DATABASE_TABLES = {
     sales: {
         endpoint: `${API_BASE}/sales`,
         endpointOptions: `${API_BASE}/sales/options`,
-        tables: {
-            columns: ["ID", "Sección", "Familia", "Talla", "Marca", "Unidades", "Importe", "Beneficio"],
-            values: ["id", "section", "family", "size", "brand", "units", "amount", "profit"],
-        },
     },
     clients: {
         endpoint: `${API_BASE}/clients`,

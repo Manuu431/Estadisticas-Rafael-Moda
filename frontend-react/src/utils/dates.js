@@ -1,4 +1,4 @@
-import { endOfMonth, format, isSameMonth, isSameYear, startOfDay, startOfMonth, startOfYear, subDays, subMonths } from 'date-fns';
+import { endOfMonth, format, isSameMonth, isSameYear, startOfDay, startOfMonth, parseISO, startOfYear, subDays, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export const COMPARABLE_DAY_OFFSET = 364;
@@ -81,3 +81,10 @@ export function yearChartRange(month, today) {
     const from = startOfYear(month.start);
     return { from, to: isSameYear(month.start, today) ? startOfDay(today) : month.end };
 }
+
+export function formatSaleDay(value, today) {
+    const date = parseISO(value);
+    return shortDay(date, !isSameYear(date, today));
+}
+
+export const formatSaleTime = (soldAt) => (typeof soldAt === 'string' ? soldAt.slice(11, 16) : '');

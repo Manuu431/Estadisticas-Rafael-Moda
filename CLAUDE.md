@@ -13,7 +13,7 @@ navegador (`utils/dates.js`, con tests) y el SQL solo suma.
 
 @DESIGN.md
 
-Todo cambio visual debe seguir DESIGN.md. Si un cambio necesita algo que DESIGN.md no cubre, proponlo y actualiza DESIGN.md en el mismo cambio.
+Antes de cualquier cambio visual (CSS, componentes, gráficas, layout), lee DESIGN.md. Todo cambio visual debe seguirlo. Si un cambio necesita algo que DESIGN.md no cubre, proponlo y actualiza DESIGN.md en el mismo cambio.
 
 ## Forma de trabajar
 

@@ -28,6 +28,9 @@
     --rm-orange-tint-soft: #FDF3EA;
     --rm-orange-border: #E7C3A2;
     --rm-orange-line: #F1CFB0;
+    --rm-row-hover: #FDFAF6;
+    --rm-pill-mujer-ink: #9A4A0A;
+    --rm-pill-hombre: #EDE8E3;
     --rm-event: #FBE3CF;
     --rm-event-hover: #F8D2B1;
     --rm-event-ink: #7A3A06;
@@ -661,7 +664,83 @@
     color: var(--rm-orange);
 }
 
-.data-pill {
+.sales-scroll {
+    overflow-x: auto;
+}
+
+.sales-row {
+    display: grid;
+    min-width: 59.5rem;
+    grid-template-columns: 96px minmax(0, 2.2fr) minmax(0, 1.5fr) 96px 64px 48px 108px 108px;
+    gap: 1rem;
+    align-items: center;
+    height: 58px;
+    padding: 0 1.5rem;
+    border-top: 1px solid var(--rm-line-soft);
+    font-size: var(--rm-text-md);
+    transition: background-color 0.15s ease;
+}
+
+.sales-row:hover {
+    background-color: var(--rm-row-hover);
+}
+
+.sales-row.is-head {
+    height: 46px;
+    border-top: 0;
+    background-color: var(--rm-cream-light);
+    font-size: var(--rm-text-xs-plus);
+    font-weight: 600;
+    color: var(--rm-ink-2);
+}
+
+.sales-row.is-head:hover {
+    background-color: var(--rm-cream-light);
+}
+
+.sales-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sales-strong {
+    font-weight: 600;
+}
+
+.sales-name {
+    font-weight: 500;
+}
+
+.sales-name,
+.sales-trunc,
+.sales-sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sales-sub {
+    font-size: var(--rm-text-xs-plus);
+    color: var(--rm-ink-3);
+}
+
+.sales-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.sales-amount {
+    font-weight: 600;
+}
+
+.sales-profit {
+    font-weight: 500;
+    color: var(--rm-positive);
+}
+
+.sales-pill {
     display: inline-flex;
     align-items: center;
     height: 1.5rem;
@@ -669,13 +748,13 @@
     border-radius: 99px;
     font-size: var(--rm-text-xs);
     font-weight: 600;
-    background-color: var(--rm-tint);
-    color: var(--rm-nav);
+    background-color: var(--rm-pill-hombre);
+    color: var(--rm-section-hombre);
 }
 
-.data-pill.is-mujer {
+.sales-pill.is-mujer {
     background-color: var(--rm-orange-tint);
-    color: var(--rm-orange-ink);
+    color: var(--rm-pill-mujer-ink);
 }
 
 .data-foot {

@@ -28,6 +28,8 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Texto sobre tinte naranja | `--rm-orange-ink` | #8F4509 |
 | Fondo seleccionado | `--rm-orange-tint` / `-soft` | #FBEBDD / #FDF3EA |
 | Borde del botón abierto (Ventas) | `--rm-orange-line` | #F1CFB0 |
+| Fila de la tabla de Ventas al pasar el cursor | `--rm-row-hover` | #FDFAF6 |
+| Pastilla Mujer, texto / Hombre, fondo | `--rm-pill-mujer-ink` / `--rm-pill-hombre` | #9A4A0A / #EDE8E3 |
 | Positivo (ingresos, subidas) | `--rm-positive` + `-tint` | #1E6B45 / #E7F3EC |
 | Negativo (gastos, bajadas) | `--rm-negative` + `-tint` | #A3261B / #FBE9E7 |
 | Coste de la mercancía (serie) | `--rm-cost` | #5E534A |
@@ -147,6 +149,14 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   lateral y 34 px en la cabecera móvil.
 - **Navegación**: barra lateral (≥992 px, 15.5rem de ancho) con grupos en mayúsculas; en móvil, `MobileHeader` + `MobileTabBar` + `BottomSheet`.
 - **Tablas**: superficie blanca, cabecera en `text-xs` mayúsculas `ink-2`, filas separadas con `--rm-line-soft`.
+- **Tabla de Ventas** (`SalesTable`, `.sales-row`): rejilla `96px minmax(0,2.2fr) minmax(0,1.5fr) 96px 64px 48px 108px 108px`
+  con 16 px entre columnas, padding 0 24 px, filas de 58 px separadas con `--rm-line-soft` y texto de `text-md`; cabecera de 46 px
+  en `--rm-cream-light`, `text-xs-plus`, 600, `ink-2`, sin mayúsculas y sin botones de orden (la venta más reciente va primero).
+  Fecha («28 sep», o «28 sep. 2025» si no es del año en curso) y Prenda llevan una segunda línea (hora, color) en `.sales-sub`
+  (`text-xs-plus`, `ink-3`) a 2 px. Uds., Importe y Beneficio, a la derecha con cifras tabulares; Importe en 600 y Beneficio en
+  `--rm-positive` y 500, sin signo. La sección es una pastilla de 24 px (`.sales-pill`): Mujer `--rm-orange-tint` con
+  `--rm-pill-mujer-ink`, Hombre `--rm-pill-hombre` con `--rm-section-hombre`. Al pasar el cursor, `--rm-row-hover`.
+  Por debajo de 1200 px las filas no bajan de 59,5 rem y la tabla se desplaza dentro de su tarjeta (`.sales-scroll`).
 - **Enlace de tarjeta** (`.panel-link`): «Ver todas» y similares, `text-sm` 600 en `--rm-orange-strong`, con
   `bi-chevron-right` detrás; al pasar el cursor, `--rm-orange-ink`.
 - **Campaña en curso** (`.campaign-current`): caja `--rm-surface-soft` con borde `--rm-line-soft` y radio `--rm-radius`,
