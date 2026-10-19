@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dayEvents, daysLabel, limitLanes, monthEvents, monthWeeks, upcomingDates, weekLayout } from './calendar.js';
+import { dayEvents, daysLabel, limitLanes, monthEvents, monthWeeks, outsideRange, upcomingDates, weekLayout } from './calendar.js';
 
 const campaign = (name, start_date, end_date) => ({ name, start_date, end_date });
 const season = (name, start_date, end_date) => ({ name, start_date, end_date });
@@ -231,5 +231,27 @@ describe('daysLabel', () => {
         expect(daysLabel(0)).toBe('hoy');
         expect(daysLabel(1)).toBe('mañana');
         expect(daysLabel(14)).toBe('en 14 días');
+    });
+});
+
+describe('outsideRange', () => {
+    const [first, , , , last] = monthWeeks(new Date(2026, 8, 1));
+
+    it('cuenta los días de fuera del mes al principio del tramo', () => {
+        expect(outsideRange(first, new Date(2026, 8, 1), 0, 6)).toEqual({ before: 1, after: 0 });
+    });
+
+    it('cuenta los días de fuera del mes al final del tramo', () => {
+        expect(outsideRange(last, new Date(2026, 8, 1), 0, 6)).toEqual({ before: 0, after: 4 });
+    });
+
+    it('solo mira las columnas del tramo', () => {
+        expect(outsideRange(first, new Date(2026, 8, 1), 1, 6)).toEqual({ before: 0, after: 0 });
+        expect(outsideRange(last, new Date(2026, 8, 1), 0, 2)).toEqual({ before: 0, after: 0 });
+    });
+
+    it('un tramo entero fuera del mes cuenta como «antes»', () => {
+        expect(outsideRange(first, new Date(2026, 8, 1), 0, 0)).toEqual({ before: 1, after: 0 });
+        expect(outsideRange(last, new Date(2026, 8, 1), 3, 5)).toEqual({ before: 3, after: 0 });
     });
 });

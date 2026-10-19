@@ -1,4 +1,4 @@
-import { addDays, differenceInCalendarDays, endOfMonth, endOfWeek, format, parseISO, startOfDay, startOfMonth, startOfWeek } from 'date-fns';
+import { addDays, differenceInCalendarDays, endOfMonth, endOfWeek, format, isSameMonth, parseISO, startOfDay, startOfMonth, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const WEEK = { weekStartsOn: 1 };
@@ -160,4 +160,15 @@ export function daysLabel(days) {
     if (days === 0) return 'hoy';
     if (days === 1) return 'mañana';
     return `en ${days} días`;
+}
+
+// Cuántos días del tramo [startCol, endCol] caen fuera del mes, al principio y al final, para pintar esa
+// parte de la barra más clara. Un tramo entero fuera del mes se cuenta como «antes».
+export function outsideRange(week, month, startCol, endCol) {
+    const outside = (col) => !isSameMonth(week[col], month);
+    let before = 0;
+    while (startCol + before <= endCol && outside(startCol + before)) before += 1;
+    let after = 0;
+    while (before + after < endCol - startCol + 1 && outside(endCol - after)) after += 1;
+    return { before, after };
 }

@@ -41,6 +41,10 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Periodo comparado (línea fina) | `--rm-compare-line` | #B7ACA1 |
 | Bordes | `--rm-line` · `-strong` · `-soft` · `-dashed` | |
 | Fondo del control segmentado | `--rm-segs-bg` | #E4D9CA |
+| Calendario: campaña, texto / hover | `--rm-event` · `--rm-event-ink` / `-hover` | #FBE3CF · #7A3A06 / #F8D2B1 |
+| Calendario: campaña fuera del mes, barra / texto | `--rm-cal-event-out` / `--rm-cal-event-ink-out` | #FDF0E5 / #B69376 |
+| Calendario móvil: barra / barra fuera del mes | `--rm-cal-bar` / `--rm-cal-bar-out` | #F2B786 / #F8DBC2 |
+| Calendario: línea, fin de semana, día de fuera | `--rm-cal-line` · `--rm-cal-weekend` · `--rm-cal-out` | #F0E8DE · #FDFBF8 · #A89C90 |
 
 - El naranja es el **único** acento: acción principal, elemento activo, foco. No usarlo para decorar.
 - Botón relleno = `--rm-orange-strong` (el `--rm-orange` puro no da contraste suficiente con texto blanco).
@@ -76,7 +80,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-2xs` 11 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -86,7 +90,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 ## Forma, sombra y espacio
 
-- Radios: `--rm-radius-sm` 10 · `--rm-radius-btn` 11 · `--rm-radius` 12 · `--rm-radius-lg` 18 px (tarjetas = `lg`).
+- Radios: `--rm-radius-xs` 6 · `--rm-radius-sm` 10 · `--rm-radius-btn` 11 · `--rm-radius` 12 · `--rm-radius-lg` 18 px (tarjetas = `lg`).
 - Sombras: `--rm-shadow` (tarjetas en reposo), `--rm-shadow-raised` (elementos flotantes). Tonos marrones, nunca negro.
 - Espaciado en múltiplos de 0.125rem (2 px); los habituales: 0.375, 0.5, 0.875, 1, 1.25, 1.5, 1.75 rem.
 - Contenido principal: `padding: 2.25rem 2.75rem 2.75rem 1.25rem` (escritorio), `1.5rem 1rem 2rem` (<992px).
@@ -280,6 +284,53 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Desde / Hasta de Ventas (`CustomDates`). Por defecto, la última que ya terminó. Todo se aplica al momento; si las fechas no valen no se
   pide nada y se sigue enseñando el último periodo válido con su texto. El rango se recorta a hoy (una campaña en curso no pinta meses futuros).
   El rango se escribe con `formatBucketRange` («1 ene – 4 oct 2026»), no con `formatShortRange`, que pone un punto tras el mes.
+- **Calendario** (`.calendar-page`, 24 px entre bloques en escritorio, 14 px en móvil con el mismo margen negativo que Clientes, aquí de −14 px
+  arriba y −8 px abajo). Rejilla propia de CSS (sin librería): la lógica (semanas empezando en lunes, tramos de cada campaña por semana con
+  su carril, eventos del mes, próximas fechas) vive en `utils/calendar.js` con tests y los componentes solo pintan (`CalendarGrid`,
+  `CalendarCompact`, `CalendarToolbar`). Los datos son los de `/campaigns` y `/seasons`; las fechas llegan como `YYYY-MM-DD` y se leen
+  con `parseISO` (fecha local, no UTC).
+  Escritorio: encabezado `.calendar-head-row` con el `.panel-heading` a la izquierda (el kicker lleva `line-height` 1 rem para clavar
+  el alto del diseño) y, alineada por abajo, la barra `.calendar-toolbar` a 10 px: **Hoy · ‹ · Mes año · ›**. Los botones (`.calendar-btn`)
+  miden 40 px, borde `--rm-line-strong`, radio `--rm-radius-btn`; «Hoy» con padding 0 14 px, `text-md` 600; las flechas son cuadradas.
+  El mes va en serif `display-xs`, centrado en 12,5 rem fijos, con `aria-live="polite"`. Debajo, `.calendar-layout`: la tarjeta del mes
+  ocupa el espacio libre y «Próximas fechas» (`.calendar-side`) mide 16,5 rem, con 24 px entre las dos, y no se estira. Por debajo de
+  1200 px la lateral baja bajo el calendario a ancho completo (con menos, las siete columnas no caben).
+  Tarjeta del mes (`.calendar-card`, `.data-card` sin padding): cabecera de 42 px con LUN…DOM en `text-xs` 600 mayúsculas, `ink-2`,
+  `letter-spacing` 0,08em y 16 px a la izquierda; cada semana (`.calendar-week`) mide 140 px con borde superior `--rm-cal-line` (el
+  primero hace de línea de la cabecera). Sale el número de semanas que pida el mes (4, 5 o 6). Cada semana son tres capas: las celdas
+  (`.calendar-cell`, fondo `--rm-cal-weekend` el sábado y el domingo; el número va en una caja de 28 px a 8 px del borde, `text-sm` 500;
+  hoy es un círculo `--rm-orange-strong` con el número blanco en 600; fuera del mes, `--rm-cal-out`), los eventos
+  (`.calendar-events`, rejilla de 7 columnas y carriles de 24 px que empiezan a 41 px del borde de arriba) y, encima, las líneas
+  verticales (`.calendar-lines`, 1 px `--rm-cal-line`), que **cruzan las barras**: así la barra se ve continua por debajo y la línea por
+  encima, como en el diseño. Una campaña es un `.calendar-bar` de 24 px: fondo `--rm-event`, texto `--rm-event-ink` en `text-xs` 500 con 8 px de
+  padding, el nombre una vez por semana al principio del tramo y **cortado con «…» al ancho de un solo día** aunque la barra siga. Solo se redondea
+  (`--rm-radius-xs`) y se separa 6 px del borde donde la campaña empieza o termina de verdad (`.starts` / `.ends`); si sigue en la semana
+  siguiente, la barra llega al borde de la tarjeta. La parte que cae fuera del mes se pinta con `--rm-cal-event-out` y su texto con
+  `--rm-cal-event-ink-out` (un degradado duro por tramo, con las variables `--before`, `--after` y `--span`). Al pasar el cursor, `--rm-event-hover`.
+  Un cambio de temporada (`.calendar-season`) no es una barra: punto de 6 px y «Empieza X» / «Termina X» en `text-2xs` 500 con `--rm-nav`
+  (fuera del mes, `--rm-cal-out`), una celda de ancho, **cortado sin puntos suspensivos** (así sale en el diseño). Las campañas ocupan los
+  carriles de arriba y los cambios de temporada rellenan los huecos. Todo lo que se pulsa es un `<button>` que llama a `openItem`, con foco
+  `--rm-orange-strong` dentro del elemento. **Si no caben** (más de 4 carriles) se enseñan 3 y el cuarto lleva «+N más» por día
+  (`.calendar-more`, `text-xs` 600, `ink-2`), que abre `.calendar-pop`: tarjeta de 15 rem con el día en `.panel-label` y un botón por evento;
+  se cierra con Escape (el foco vuelve a «+N más»), con un clic fuera o al cambiar de mes.
+  «Próximas fechas» (`.calendar-side`, padding 22 px): título `.panel-card-title` y 5 filas `.calendar-next` (botón, padding 16 px, borde superior
+  `--rm-line-soft` también en la primera, radio `sm`): ficha `.calendar-chip` de 46 px (borde `--rm-line`, radio `sm`, día en `text-lg` 700 y mes
+  en `text-2xs` 600 mayúsculas `ink-3`; la primera, `--rm-orange-tint` sin borde y texto `--rm-orange-ink`), a 12 px el nombre en `text-md` 500
+  (hasta dos líneas) y «en 14 días» / «mañana» / «hoy» en `text-sm` `ink-2`. Regla: de cada campaña futura, su inicio; de la que está en curso, su
+  final («Termina …»); de las temporadas, inicio y final. Debajo, una línea `--rm-line-soft` y la leyenda (`text-xs-plus`, `ink-2`): muestra de
+  barra de 22 × 12 px en `--rm-event`, punto `--rm-nav` y «Pulsa una campaña para ver sus datos.».
+  Móvil (<992 px): encabezado con las reglas móviles de `.panel-heading` y debajo **‹ · Mes año · › · Hoy** con botones de 44 px y el mes
+  en el espacio libre. Tarjeta compacta (`.calendar-compact`, padding 12 × 5 px, radio `lg`): iniciales L M X J V S D en `text-xs` `ink-3`,
+  semanas de 56 px, números de 32 px centrados en `text-md-plus` 500 (hoy, círculo naranja con el número blanco en 600), sin líneas, sin fondo de
+  fin de semana y sin texto. La campaña es una barra de 5 px bajo el número (`--rm-cal-bar`, más clara fuera del mes con `--rm-cal-bar-out`;
+  redondeada solo en el inicio y el final reales) y el cambio de temporada, un punto de 5 px `--rm-nav` más abajo. Pulsar un día no hace nada.
+  Debajo, «En septiembre» (`.calendar-month-card`: título en minúscula, una fila por evento con barra de 14 × 6 px o punto de 10 px,
+  nombre en `text-lg` 600 y «Campaña · 15 sep – 12 oct» / «Temporada · 1 sep» en `text-sm` `ink-2`; sin eventos, «No hay campañas ni cambios de
+  temporada este mes.» en `.panel-muted`). Después el título «Próximas fechas» **fuera** de la tarjeta (`text-md` 600, 4 px de sangría) y una
+  `.m-list` con las mismas 5 fechas (filas de 64 px, ficha de 44 px, nombre en una línea con «…», sin abreviar los nombres de temporada) y, por
+  último, la leyenda en una fila (sin la frase «Pulsa…»).
+  Estados: cargando, la rejilla se pinta sin eventos y «Próximas fechas» y «En <mes>» dibujan `.panel-skeleton`; con error, `CardError` en esas dos
+  tarjetas (reintenta la petición que falló); sin fechas, «No hay fechas próximas.» en `.panel-muted`.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
