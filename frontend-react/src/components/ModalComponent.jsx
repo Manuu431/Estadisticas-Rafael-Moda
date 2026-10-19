@@ -18,7 +18,7 @@ const validationSchemas = {
     start_month: Yup.number().required('El mes de inicio es obligatorio'),
     end_day: Yup.number().required('El día de fin es obligatorio'),
     end_month: Yup.number().required('El mes de fin es obligatorio'),
-    start_year: Yup.number()
+    first_year: Yup.number()
         .typeError('El año debe ser un número')
         .required('El año de inicio es obligatorio')
         .min(1975, 'Debe ser mayor a 1975')
@@ -39,7 +39,7 @@ const validationSchemas = {
 const labels = {
     id: "ID", name: "Nombre", start_date: "Fecha de inicio", end_date: "Fecha de finalización",
     expenses: "Gastos", profits: "Beneficios", start_day: "Día de inicio", start_month: "Mes de inicio",
-    end_day: "Día de fin", end_month: "Mes de fin", start_year: "Año de inicio"
+    end_day: "Día de fin", end_month: "Mes de fin", first_year: "Año de inicio"
 };
 
 function ModalComponent({ show, onHide, data = {}, mode, type }) {
@@ -59,10 +59,10 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
 
   const initialValues = isCreate
     ? isCreateType
-        ? { name: '', start_year: '', start_month: '', start_day: '', end_month: '', end_day: '' }
+        ? { name: '', first_year: '', start_month: '', start_day: '', end_month: '', end_day: '' }
         : { name: '', start_date: '', end_date: '', expenses: '', profits: '' }
     : isCreateType
-        ? { id: data.id, name: data.name, start_year: data.start_year ?? '', start_month: data.start_month, start_day: data.start_day, end_month: data.end_month, end_day: data.end_day }
+        ? { id: data.id, name: data.name, first_year: data.first_year ?? '', start_month: data.start_month, start_day: data.start_day, end_month: data.end_month, end_day: data.end_day }
         : { ...data };
 
   const create = async (values) => {
@@ -96,7 +96,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                 const isStart = key === 'start_day';
                 const month = isStart ? values.start_month : values.end_month;
                 const crossesYear = !isStart && values.start_month !== '' && values.end_month !== '' && values.end_month < values.start_month;
-                const year = values.start_year === '' ? '' : crossesYear ? Number(values.start_year) + 1 : values.start_year;
+                const year = values.first_year === '' ? '' : crossesYear ? Number(values.first_year) + 1 : values.first_year;
                 return (
                     <Col xs={6} md={3} key={key}>
                     <Form.Group>
@@ -139,6 +139,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                 );
             }
 
+            const computed = !isCreateType && (key === 'name' || key === 'profits');
             if (key === 'name') {
                 const colSize = isCreate ? 12 : 6;
                 return (
@@ -149,7 +150,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                             as={Form.Control}
                             type="text"
                             name={key}
-                            readOnly={isView}
+                            readOnly={isView || computed}
                             plaintext={isView}
                             className={`form-control ${isView ? 'bg-white border-0 ps-0' : ''}`}
                         />
@@ -170,7 +171,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                             as={Form.Control}
                             type={isDate ? 'date' : isNumber ? 'number' : 'text'}
                             name={key}
-                            readOnly={isView || key === 'id'}
+                            readOnly={isView || computed || key === 'id'}
                             plaintext={isView}
                             className={`form-control ${isView ? 'bg-white border-0 ps-0' : ''}`}
                         />
