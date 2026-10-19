@@ -28,6 +28,15 @@ export function yearLabel(startDate, endDate) {
     return endYear > startYear ? `${startYear}-${String(endYear % 100).padStart(2, '0')}` : String(startYear);
 }
 
+// «7 ene – 28 feb 2026»; si cruza de año, el año va en los dos extremos.
+export function editionDates(startDate, endDate) {
+    const start = day(startDate);
+    const end = day(endDate);
+    const sameYear = start.getFullYear() === end.getFullYear();
+    const short = (date, withYear) => format(date, withYear ? 'd MMM yyyy' : 'd MMM', { locale: es });
+    return `${short(start, !sameYear)} – ${short(end, true)}`;
+}
+
 export function sortEditions(editions) {
     return [...editions].sort((a, b) => b.start_date.localeCompare(a.start_date));
 }

@@ -44,6 +44,9 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Calendario: campaña, texto / hover | `--rm-event` · `--rm-event-ink` / `-hover` | #FBE3CF · #7A3A06 / #F8D2B1 |
 | Calendario: campaña fuera del mes, barra / texto | `--rm-cal-event-out` / `--rm-cal-event-ink-out` | #FDF0E5 / #B69376 |
 | Calendario móvil: barra / barra fuera del mes | `--rm-cal-bar` / `--rm-cal-bar-out` | #F2B786 / #F8DBC2 |
+| Campañas y temporadas: línea bajo las pestañas | `--rm-tabs-line` | #E0D5C7 |
+| Campañas y temporadas: fila abierta / borde de la caja de ediciones | `--rm-row-open` / `--rm-line-box` | #FFFDFA / #F0E8DE |
+| Campañas y temporadas, móvil: borde de la tarjeta abierta | `--rm-orange-line-soft` | #F1D9C4 |
 | Calendario: línea, fin de semana, día de fuera | `--rm-cal-line` · `--rm-cal-weekend` · `--rm-cal-out` | #F0E8DE · #FDFBF8 · #A89C90 |
 
 - El naranja es el **único** acento: acción principal, elemento activo, foco. No usarlo para decorar.
@@ -331,6 +334,55 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   último, la leyenda en una fila (sin la frase «Pulsa…»).
   Estados: cargando, la rejilla se pinta sin eventos y «Próximas fechas» y «En <mes>» dibujan `.panel-skeleton`; con error, `CardError` en esas dos
   tarjetas (reintenta la petición que falló); sin fechas, «No hay fechas próximas.» en `.panel-muted`.
+- **Campañas y temporadas** (`.planning-page`, 24 px entre bloques; en móvil 14 px y margen de −15 px arriba y −8 px abajo sobre `.app-main`).
+  Una sola ruta, `/planificacion/campanas` o `/planificacion/temporadas`; las rutas viejas de «Tipos de…» redirigen a la pestaña que les toca.
+  Cada **fila es un tipo** (`period_types`) y al desplegarla salen sus **ediciones** (`periods`); el navegador las agrupa por `period_type_id`
+  con `/campaign_types` + `/campaigns` (o los de temporadas), sin endpoint nuevo. La lógica (orden por día del año, estado, «Última vez»,
+  recuentos, textos de aviso) está en `utils/planning.js` con tests y los componentes solo pintan (`PlanningTable`, `PlanningCards`).
+  Encabezado: kicker «Planificación del año» (con `line-height` 1 rem, como en el Calendario) y titular. **Pestañas** (`.planning-tabs`,
+  `role="tablist"`): «Campañas» y «Temporadas» a 32 px, `text-md-plus`, 42 px de alto, activa en `ink` 600 con raya de 2 px `--rm-orange`, inactiva
+  `ink-2` 500; la fila lleva una línea de 1 px `--rm-tabs-line` debajo, y la tarjeta queda 20 px más abajo. Cada pestaña lleva el **número de
+  tipos** en `.planning-count` (pastilla de 16 px, `text-2xs` 600: `--rm-segs-bg` / `--rm-ink-2` inactiva, `--rm-orange-tint` / `--rm-orange-ink`
+  activa); no se enseña hasta tener el dato y cuenta también los tipos que no se repiten.
+  Tarjeta (`.planning-card`, `.data-card` con 14 px de padding abajo). **Barra superior** (`.planning-bar`, padding 20 × 24 px): el texto de
+  introducción en `text-md` `ink-2` (máx. 32,5 rem, dos líneas) a la izquierda y, a 10 px, «Generar años pendientes» (`.panel-btn`, 42 px, `bi-arrow-clockwise`;
+  mientras trabaja, desactivado y con `.spinner-border-sm` naranja) y «Nueva campaña / temporada» (`.btn-brand` a 42 px, radio `--rm-radius-btn`, `text-md`,
+  `bi-plus-lg`; crea un tipo). El resultado de generar sale debajo del texto en `.panel-note` con `role="status"` («Se han creado 2 ediciones.»,
+  «Se ha creado 1 edición.», «Ya estaba todo al día.») y se quita a los 6 s; nada de `alert()`.
+  **Tabla** (`.planning-table`, dentro de `.sales-scroll`; no baja de 58 rem y por debajo se desplaza dentro de su tarjeta): rejilla
+  `14px 350fr 240fr 190fr 133fr 70px` con 16 px entre columnas y padding 0 24 px (flecha · Nombre · Estado · Última vez · Ediciones · Acciones).
+  Cabecera de 44 px en `--rm-cream-light`, `text-xs-plus` 600 `ink-2`, sin mayúsculas ni orden; «Acciones» a la derecha. **Fila de tipo** (`.planning-type`,
+  borde superior `--rm-line-soft`; `.planning-row` de 68 px): flecha `bi-chevron-right` `ink-2` (desplegada, `bi-chevron-down` en `--rm-orange`),
+  nombre en `text-lg` 500 y debajo el rango «7 ene → 28 feb» en `text-xs-plus` `ink-2`; **estado** en `.planning-pill` de 26 px (`text-xs-plus` 600:
+  `--rm-tint` / `--rm-nav` para «Empieza en N días», «Empieza mañana», «Empieza hoy» y «Terminada»; la de «En curso · quedan N días» usa los colores
+  y el punto de `.campaign-pill` / `.campaign-dot`); **última vez**: el beneficio (no el balance) de la última edición ya terminada, redondeado y con signo en 600
+  (`+6.215 €`, `--rm-positive`; con pérdidas, «−» y `--rm-negative`) y «de beneficio en 2026» (o «2025-26» si cruza de año) debajo; sin ediciones terminadas,
+  «—» y «sin ediciones terminadas»; **ediciones**: «7 campañas» (singular con 1) en `text-md` `ink-2`, cuenta todas las guardadas; **acciones**: lápiz y papelera
+  (`.planning-icon-btn`, 32 px, sin borde, `ink-2`, `--rm-orange-strong` al pasar) que editan o eliminan el **tipo**. El estado sale de las ediciones guardadas más
+  las que saldrían de las fechas del tipo para los años que aún no existen (así no depende de «Generar años pendientes»): una edición está en curso desde
+  el día siguiente a su inicio hasta su fin y el día que empieza dice «Empieza hoy». Un tipo que no se repite y ya pasó queda «Terminada». El orden es el del
+  día del año en que empieza el tipo (enero primero), no el de hoy. Pulsar la fila (salvo las acciones) la despliega; el botón que lleva el nombre
+  (`.planning-toggle`) tiene `aria-expanded` y `aria-controls`. **Solo hay una fila abierta a la vez**, todas plegadas al entrar.
+  **Ediciones desplegadas** (`.planning-open`, la fila se pone en `--rm-row-open`): caja `.planning-editions` en `--rm-cream-light` con borde `--rm-line-box` y radio
+  `--rm-radius`, que empieza en la columna Nombre (54 px) y acaba a 24 px del borde, pegada a la fila y a la siguiente. Cabecera de 39 px (`text-xs` 600 `ink-2`) y
+  filas de 47 px separadas por `--rm-line-box`, en `text-sm-plus`; rejilla `280fr 252fr 118px 118px 128px 44px`: Edición (500) · Fechas («7 ene – 28 feb 2026», `ink-2`) ·
+  Gastos · Beneficio · Balance (a la derecha, cifras tabulares, balance en 600 con signo y `--rm-positive` / `--rm-negative`) · lápiz que edita **esa edición**
+  (no hay papelera por edición). Un tipo sin ediciones dice «Sin ediciones. Pulsa «Generar años pendientes» para crearlas.» en `.panel-muted`.
+  **Diálogos**: se sigue usando `ModalComponent` (deuda conocida más abajo). Para el tipo manda el campo `first_year` («Año de inicio»), que es la columna que existe;
+  en una edición el nombre y el beneficio salen de solo lectura (el nombre se calcula y el beneficio viene de las ventas). Eliminar un tipo pregunta con
+  `window.confirm` y avisa de cuántas ediciones se borran con él (la clave foránea es `ON DELETE CASCADE`).
+  **Desde el Calendario**: `openItem` guarda la edición en `temporalItem`; al llegar se abre la pestaña, se despliega su tipo, se baja hasta la edición
+  (`scrollIntoView`, sin animación con `prefers-reduced-motion`) y se marca 2,5 s con `--rm-orange-tint-soft`; después se borra `temporalItem`.
+  **Móvil** (<992 px): las pestañas son un control segmentado (`.planning-segs` sobre `.panel-segs`, padding 3 px, botones de 44 px en `text-lg`) con el mismo
+  recuento; debajo el texto de introducción en `text-sm-plus` `ink-2` **fuera** de cualquier tarjeta y «Nueva campaña» a ancho completo (`.btn-brand`, 50 px).
+  Cada tipo es su tarjeta (`.planning-m-card`, radio `lg`, `--rm-shadow`, 12 px entre tarjetas; abierta, borde `--rm-orange-line-soft`). La cabecera es un botón
+  (`.planning-m-head`, padding 15 × 16 px): nombre en `text-lg` 600, «7 ene → 28 feb · 7 campañas» en `text-sm` `ink-2`, y en una fila que se parte
+  (`flex-wrap`) la pastilla (24 px, `text-xs`) y «Última: +6.215 € en 2026» en `text-sm`; a la derecha, `bi-chevron-right` / `bi-chevron-down` naranja centrada en vertical.
+  Desplegada: cada edición en un bloque con línea `--rm-line-box` (nombre en `text-md` 600 con el lápiz de 44 px a la derecha, fechas en `text-sm` `ink-2` y tres columnas
+  Gastos · Beneficio · Balance con la etiqueta en `text-xs` y el valor en `text-sm`) y, al final, «Editar» y «Eliminar» (`.planning-m-action`, 44 px, con borde) que actúan
+  sobre el **tipo**. Como en el diseño, «Generar años pendientes» no sale arriba; por decisión añadida, va al final de la lista como `.m-btn` a ancho completo.
+  **Estados**: cargando, la cabecera de la tabla se queda y el cuerpo dibuja filas de `.panel-skeleton` (en móvil, tarjetas); las pastillas del recuento no
+  salen hasta tener el dato. Error: `CardError` («Reintentar» repite la petición que falló). Vacío: «Todavía no hay campañas.» / «Todavía no hay temporadas.» centrado en `.sales-state`.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.

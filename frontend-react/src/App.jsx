@@ -29,13 +29,15 @@ function App() {
                                 <Route path="/comparativa" element={<Comparative title="Comparativa" />} />
                                 <Route path="/calendario" element={<Calendar title="Calendario" />} />
                                 <Route path="/planificacion" element={<Planning title="Campañas y temporadas" />} />
+                                <Route path="/planificacion/tipos-campanas" element={<Navigate to="/planificacion/campanas" replace />} />
+                                <Route path="/planificacion/tipos-temporadas" element={<Navigate to="/planificacion/temporadas" replace />} />
                                 <Route path="/planificacion/:tab" element={<Planning title="Campañas y temporadas" />} />
                                 <Route path="/gastos" element={<Expenses title="Gastos" />} />
                                 <Route path="/mas" element={<More title="Más" />} />
                                 <Route path="/campañas" element={<Navigate to="/planificacion/campanas" replace />} />
                                 <Route path="/temporadas" element={<Navigate to="/planificacion/temporadas" replace />} />
-                                <Route path="/tipos-campañas" element={<Navigate to="/planificacion/tipos-campanas" replace />} />
-                                <Route path="/tipos-temporadas" element={<Navigate to="/planificacion/tipos-temporadas" replace />} />
+                                <Route path="/tipos-campañas" element={<Navigate to="/planificacion/campanas" replace />} />
+                                <Route path="/tipos-temporadas" element={<Navigate to="/planificacion/temporadas" replace />} />
                                 </Routes>
                             </Layout>
                         </PrivateRoute>

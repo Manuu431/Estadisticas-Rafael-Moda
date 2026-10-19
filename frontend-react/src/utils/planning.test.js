@@ -3,6 +3,7 @@ import {
     buildRows,
     countLabel,
     deleteMessage,
+    editionDates,
     sortEditions,
     sortTypes,
     syncMessage,
@@ -154,6 +155,16 @@ describe('countLabel', () => {
         expect(countLabel(2, 'seasons')).toBe('2 temporadas');
         expect(countLabel(1, 'seasons')).toBe('1 temporada');
         expect(countLabel(0, 'campaigns')).toBe('0 campañas');
+    });
+});
+
+describe('editionDates', () => {
+    it('pone el año solo al final si es el mismo', () => {
+        expect(editionDates('2026-01-07', '2026-02-28')).toBe('7 ene – 28 feb 2026');
+    });
+
+    it('pone el año en los dos extremos si cruza de año', () => {
+        expect(editionDates('2025-12-05', '2026-01-06')).toBe('5 dic 2025 – 6 ene 2026');
     });
 });
 
