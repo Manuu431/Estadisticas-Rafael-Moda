@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_PANEL, isPanelEmpty, panelParams } from './salesPanel.js';
+import { EMPTY_PANEL, panelParams } from './salesPanel.js';
 
 describe('EMPTY_PANEL', () => {
     it('empieza sin ningún filtro puesto', () => {
-        expect(isPanelEmpty(EMPTY_PANEL)).toBe(true);
         expect(panelParams(EMPTY_PANEL)).toEqual({});
     });
 });
@@ -34,12 +33,5 @@ describe('panelParams', () => {
 
     it('ignora los espacios en blanco', () => {
         expect(panelParams({ ...EMPTY_PANEL, family: '  ', priceFrom: ' ' })).toEqual({});
-    });
-});
-
-describe('isPanelEmpty', () => {
-    it('detecta que hay algo puesto en cualquier campo', () => {
-        expect(isPanelEmpty({ ...EMPTY_PANEL, size: 'M' })).toBe(false);
-        expect(isPanelEmpty({ ...EMPTY_PANEL, profitTo: '0' })).toBe(false);
     });
 });

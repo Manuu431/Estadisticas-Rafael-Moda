@@ -532,58 +532,9 @@
 .panel-btn:focus-visible,
 .panel-primary:focus-visible,
 .panel-ghost:focus-visible,
-.data-page:focus-visible,
-.data-sort:focus-visible {
+.data-page:focus-visible {
     outline: 2px solid var(--rm-orange-strong);
     outline-offset: 2px;
-}
-
-.react-select__control {
-    min-height: 2.625rem !important;
-    border: 1px solid var(--rm-line-strong) !important;
-    border-radius: var(--rm-radius) !important;
-    background-color: var(--rm-surface) !important;
-    box-shadow: none !important;
-    font-size: var(--rm-text-md) !important;
-}
-
-.react-select__control--is-focused {
-    border-color: var(--rm-orange) !important;
-    box-shadow: 0 0 0 3px var(--rm-orange-focus) !important;
-}
-
-.react-select-container:focus-within {
-    z-index: 3 !important;
-}
-
-.react-select__placeholder {
-    color: var(--rm-placeholder) !important;
-}
-
-.react-select__multi-value {
-    background-color: var(--rm-tint) !important;
-    border-radius: 0.375rem !important;
-}
-
-.react-select__multi-value__label {
-    color: var(--rm-ink) !important;
-}
-
-.react-select__menu {
-    border: 1px solid var(--rm-line) !important;
-    border-radius: var(--rm-radius) !important;
-    box-shadow: var(--rm-shadow) !important;
-    font-size: var(--rm-text-md) !important;
-    overflow: hidden !important;
-}
-
-.react-select__option--is-focused {
-    background-color: var(--rm-orange-tint-soft) !important;
-}
-
-.react-select__option--is-selected {
-    background-color: var(--rm-orange) !important;
-    color: var(--rm-on-accent) !important;
 }
 
 @keyframes filters-drop {
@@ -606,80 +557,6 @@
     border-radius: var(--rm-radius-lg);
     box-shadow: var(--rm-shadow);
     overflow: hidden;
-}
-
-.data-table {
-    width: 100%;
-    margin: 0;
-    font-size: var(--rm-text-md);
-    color: var(--rm-ink);
-}
-
-.data-table thead th {
-    background-color: var(--rm-cream-light);
-    padding: 0.75rem;
-    font-size: var(--rm-text-xs);
-    font-weight: 600;
-    color: var(--rm-ink-2);
-    white-space: nowrap;
-}
-
-.data-table tbody td {
-    border-top: 1px solid var(--rm-line-soft);
-    padding: 0.875rem 0.75rem;
-    vertical-align: middle;
-}
-
-.data-table tbody tr:hover td {
-    background-color: var(--rm-orange-tint-soft);
-}
-
-.data-table th:first-child,
-.data-table td:first-child {
-    padding-left: 1.5rem;
-}
-
-.data-table th:last-child,
-.data-table td:last-child {
-    padding-right: 1.5rem;
-}
-
-.data-numeric {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-}
-
-.data-positive {
-    color: var(--rm-positive);
-    font-weight: 500;
-}
-
-.data-sort {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0;
-    border: 0;
-    background-color: transparent;
-    font: inherit;
-    color: inherit;
-}
-
-.data-sort:hover {
-    color: var(--rm-ink);
-}
-
-.data-sort i {
-    font-size: var(--rm-text-sm);
-    color: var(--rm-line-dashed);
-}
-
-.data-sort.is-sorted {
-    color: var(--rm-ink);
-}
-
-.data-sort.is-sorted i {
-    color: var(--rm-orange);
 }
 
 .sales-scroll {

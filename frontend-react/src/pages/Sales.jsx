@@ -34,7 +34,7 @@ function Sales(props) {
             </header>
             {isMobile ? <SalesSummaryCard kind={state.kind} summary={summary} /> : null}
             <SalesFilters period={period} onPeriodChange={setPeriod} onFilterChange={setFilters} />
-            {state.kind !== 'ready' ? <SalesPlaceholder state={state} onRetry={refetch} /> : isMobile ? <SalesMobileList rows={data} /> : <Table type="sales" rows={data} />}
+            {state.kind !== 'ready' ? <SalesPlaceholder state={state} onRetry={refetch} /> : isMobile ? <SalesMobileList rows={data} /> : <Table rows={data} />}
         </div>
     );
 }

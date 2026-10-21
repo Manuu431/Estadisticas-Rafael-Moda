@@ -1,6 +1,6 @@
 import { SALES_PERIODS, customPeriodError, isDateFieldInvalid, setDateField } from '../utils/salesPeriod.js';
 
-export function InlineSelect({ name, label, value, options, onChange, className }) {
+function InlineSelect({ name, label, value, options, onChange, className }) {
     return (
         <label className={`panel-field is-labelled ${className}`}>
             <span className="panel-field-label">{label}</span>

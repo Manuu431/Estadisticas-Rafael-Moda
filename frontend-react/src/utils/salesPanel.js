@@ -18,5 +18,3 @@ export function panelParams(panel) {
     });
     return params;
 }
-
-export const isPanelEmpty = (panel) => Object.keys(panelParams(panel)).length === 0;
