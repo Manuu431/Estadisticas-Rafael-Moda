@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from '../config/axios.js';
-import { serializeParams } from '../utils/tableUtils.js';
+const serializeParams = (params) => {
+    return Object.entries(params)
+        .map(([key, val]) => {
+            if (Array.isArray(val)) {
+                return val.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+            }
+            return `${encodeURIComponent(key)}=${encodeURIComponent(val)}`;
+        }).join('&');
+};
 export function useFetch(url, params) {
     const [result, setResult] = useState({ url: null, key: null, data: null });
     const [loading, setLoading] = useState(Boolean(url));
