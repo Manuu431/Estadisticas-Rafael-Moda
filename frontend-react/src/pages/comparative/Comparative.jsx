@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { startOfDay } from 'date-fns';
+import Segments from '../../components/Segments.jsx';
 import ComparePeriods from './ComparePeriods.jsx';
 import CompareKpis from './CompareKpis.jsx';
 import CompareChart from './CompareChart.jsx';
@@ -123,7 +124,7 @@ function Comparative({ title }) {
                                     {isMobile ? names.shortB : names.legendB}
                                 </span>
                             </span>
-                            <Segs label="Mostrar por" options={COMPARE_BUCKETS} value={bucket} onChange={setBucket} />
+                            <Segments label="Mostrar por" options={COMPARE_BUCKETS} value={bucket} onChange={setBucket} className="d-flex compare-segs" />
                         </div>
                         <CompareChart
                             rows={rows}
@@ -137,7 +138,7 @@ function Comparative({ title }) {
                             <span className="panel-muted compare-head-note">
                                 {isMobile ? `Por ${groupLabel} · ${names.shortA} frente a ${names.shortB}` : `Por ${groupLabel}`}
                             </span>
-                            <Segs label="Desglosar por" options={COMPARE_GROUPS} value={group} onChange={setGroup} />
+                            <Segments label="Desglosar por" options={COMPARE_GROUPS} value={group} onChange={setGroup} className="d-flex compare-segs" />
                         </div>
                         <CompareBreakdown key={`${group}-${a.from}-${a.to}-${b.from}-${b.to}`} rows={breakdown[group]} group={group} names={names} isMobile={isMobile} />
                     </section>
@@ -162,24 +163,6 @@ function Comparative({ title }) {
                 onDatesChange={changeDates}
             />
             {content}
-        </div>
-    );
-}
-
-function Segs({ label, options, value, onChange }) {
-    return (
-        <div className="d-flex panel-segs compare-segs" role="group" aria-label={label}>
-            {options.map((option) => (
-                <button
-                    key={option.value}
-                    type="button"
-                    className={`panel-seg${value === option.value ? ' is-on' : ''}`}
-                    aria-pressed={value === option.value}
-                    onClick={() => onChange(option.value)}
-                >
-                    {option.label}
-                </button>
-            ))}
         </div>
     );
 }

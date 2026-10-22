@@ -1,27 +1,10 @@
+import Segments from '../../../components/Segments.jsx';
 import { PERIOD_SEGMENTS, SECTION_SEGMENTS } from './filterOptions.js';
 
-function Segments({ segments, value, onChange, label, className }) {
-    return (
-        <div className={`panel-segs d-inline-flex${className ? ` ${className}` : ''}`} role="group" aria-label={label}>
-            {segments.map((segment) => (
-                <button
-                    key={segment.value || 'todo'}
-                    type="button"
-                    className={`panel-seg${segment.value === value ? ' is-on' : ''}`}
-                    aria-pressed={segment.value === value}
-                    onClick={() => onChange(segment.value)}
-                >
-                    {segment.label}
-                </button>
-            ))}
-        </div>
-    );
-}
-
 export function SectionFilter({ section, setSection }) {
-    return <Segments segments={SECTION_SEGMENTS} value={section} onChange={setSection} label="Sección de la tienda" className="panel-head-segs" />;
+    return <Segments options={SECTION_SEGMENTS} value={section} onChange={setSection} label="Sección de la tienda" className="d-inline-flex panel-head-segs" />;
 }
 
 export function PeriodFilter({ period, setPeriod }) {
-    return <Segments segments={PERIOD_SEGMENTS} value={period} onChange={setPeriod} label="Periodo" />;
+    return <Segments options={PERIOD_SEGMENTS} value={period} onChange={setPeriod} label="Periodo" className="d-inline-flex" />;
 }

@@ -1,3 +1,4 @@
+import Segments from '../../components/Segments.jsx';
 import FieldDropdown from '../../components/FieldDropdown.jsx';
 import { CustomDates } from '../../components/SalesFields.jsx';
 import { COMPARE_MODES } from '../../utils/compare.js';
@@ -43,19 +44,7 @@ function ComparePeriods({ mode, onModeChange, options, a, b, onChoose, dates, on
         <section className={`panel-card compare-controls${mode === 'dates' ? ' is-dates' : ''}`} aria-label="Periodos a comparar">
             <div className="compare-mode">
                 <span className="compare-slot-label">Comparar</span>
-                <div className="d-flex panel-segs" role="group" aria-label="Comparar por">
-                    {COMPARE_MODES.map((item) => (
-                        <button
-                            key={item.value}
-                            type="button"
-                            className={`panel-seg${mode === item.value ? ' is-on' : ''}`}
-                            aria-pressed={mode === item.value}
-                            onClick={() => onModeChange(item.value)}
-                        >
-                            {item.label}
-                        </button>
-                    ))}
-                </div>
+                <Segments options={COMPARE_MODES} value={mode} onChange={onModeChange} label="Comparar por" className="d-flex" />
             </div>
             {mode === 'dates' ? (
                 <>
