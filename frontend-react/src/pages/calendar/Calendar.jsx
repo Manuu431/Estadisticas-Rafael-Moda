@@ -109,8 +109,9 @@ function Calendar(props) {
         if (campaignsFetch.error) campaignsFetch.refetch();
         if (seasonsFetch.error) seasonsFetch.refetch();
     };
-    const today = startOfDay(new Date());
-    const upcoming = useMemo(() => upcomingDates(campaigns, seasons, today), [campaigns, seasons, today.getTime()]);
+    const todayKey = startOfDay(new Date()).getTime();
+    const today = useMemo(() => new Date(todayKey), [todayKey]);
+    const upcoming = useMemo(() => upcomingDates(campaigns, seasons, today), [campaigns, seasons, today]);
     const events = useMemo(() => monthEvents(campaigns, seasons, month), [campaigns, seasons, month]);
     const onOpen = (item) => openItem(navigate, item);
     const heading = (
