@@ -48,6 +48,8 @@
     --rm-cal-bar: #F2B786;
     --rm-cal-bar-out: #F8DBC2;
     --rm-orange-focus: rgba(221, 108, 16, .15);
+    --rm-focus-ring: 0 0 0 3px var(--rm-orange-focus);
+    --rm-tabbar-bg: rgba(255, 255, 255, .94);
     --rm-cost: #5E534A;
     --rm-compare: #CFC3B5;
     --rm-compare-line: #B7ACA1;
@@ -64,6 +66,7 @@
     --rm-radius-btn: 11px;
     --rm-radius-lg: 18px;
     --rm-radius-dialog: 20px;
+    --rm-radius-field: 0.875rem;
     --rm-backdrop: rgba(74, 66, 59, .45);
     --rm-on-accent: #FFFFFF;
     --rm-nav-hover: rgba(255, 255, 255, .65);
@@ -185,7 +188,7 @@
 
 .login-input:focus {
     border-color: var(--rm-orange);
-    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+    box-shadow: var(--rm-focus-ring);
 }
 
 .login-input.is-invalid {
@@ -359,7 +362,7 @@
 .app-session {
     padding: 0.625rem 0.625rem 0.625rem 0.75rem;
     border: 1px solid var(--rm-line);
-    border-radius: 0.875rem;
+    border-radius: var(--rm-radius-field);
     background-color: var(--rm-surface);
     font-size: var(--rm-text-sm);
 }
@@ -452,7 +455,7 @@
 
 .panel-field:focus-within {
     border-color: var(--rm-orange);
-    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+    box-shadow: var(--rm-focus-ring);
 }
 
 .panel-field input {
@@ -864,7 +867,7 @@
 
 .panel-bar-col:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+    box-shadow: var(--rm-focus-ring);
 }
 
 .panel-bar-col:focus .panel-bar-tip,
@@ -924,7 +927,7 @@
 
 .panel-icon-btn:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+    box-shadow: var(--rm-focus-ring);
 }
 
 .panel-icon-btn:disabled {
@@ -2516,7 +2519,7 @@
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     padding: 0.375rem 0.375rem 1.125rem;
-    background-color: rgba(255, 255, 255, .94);
+    background-color: var(--rm-tabbar-bg);
     backdrop-filter: blur(14px);
     border-top: 1px solid var(--rm-line-strong);
 }
@@ -2638,7 +2641,7 @@
     height: 3rem;
     padding: 0 1rem;
     border: 1px solid var(--rm-line-strong);
-    border-radius: 0.875rem;
+    border-radius: var(--rm-radius-field);
     background-color: var(--rm-surface);
     color: var(--rm-ink);
     font-size: var(--rm-text-lg);
@@ -2649,7 +2652,7 @@
     flex-grow: 1;
     height: 3.125rem;
     border: 0;
-    border-radius: 0.875rem;
+    border-radius: var(--rm-radius-field);
     background-color: var(--rm-orange-strong);
     color: var(--rm-on-accent);
     font-size: var(--rm-text-lg);
@@ -2664,7 +2667,7 @@
     height: 3.125rem;
     padding: 0 1.125rem;
     border: 0;
-    border-radius: 0.875rem;
+    border-radius: var(--rm-radius-field);
     background-color: var(--rm-tint);
     color: var(--rm-nav);
     font-size: var(--rm-text-lg);
@@ -3167,7 +3170,7 @@
 .panel-field.is-large {
     height: 3rem;
     padding: 0 0.875rem;
-    border-radius: 0.875rem;
+    border-radius: var(--rm-radius-field);
     font-size: var(--rm-text-lg);
 }
 
@@ -3552,7 +3555,7 @@
 
 .panel-select.show .panel-select-toggle {
     border-color: var(--rm-orange);
-    box-shadow: 0 0 0 3px var(--rm-orange-focus);
+    box-shadow: var(--rm-focus-ring);
 }
 
 .panel-select.show .panel-select-toggle > .bi-chevron-down {
@@ -4488,7 +4491,7 @@
     .expenses-extra .panel-field {
         height: 3rem;
         padding: 0 0.875rem;
-        border-radius: 0.875rem;
+        border-radius: var(--rm-radius-field);
     }
 
     .expenses-extra .panel-field input {
@@ -4606,4 +4609,30 @@
     .expenses-skeleton-foot {
         margin-top: 0.25rem;
     }
+}
+
+.panel-fill,
+.panel-split-fill {
+    width: var(--w);
+}
+
+.panel-bar {
+    height: var(--h);
+}
+
+.calendar-bar,
+.calendar-season,
+.calendar-more,
+.calendar-compact-bar {
+    grid-column: var(--col);
+    grid-row: var(--row);
+}
+
+.chart-tooltip .panel-dot {
+    background-color: var(--dot);
+}
+
+.year-chart .recharts-cartesian-axis-tick-value {
+    fill: var(--rm-ink-3);
+    font-size: var(--rm-text-2xs);
 }

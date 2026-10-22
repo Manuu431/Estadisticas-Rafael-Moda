@@ -8,7 +8,7 @@ const MAX_LANES = 4;
 
 const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
-const gridPlace = (event) => ({ gridColumn: `${event.startCol + 1} / ${event.endCol + 2}`, gridRow: event.lane + 1 });
+const gridPlace = (event) => ({ '--col': `${event.startCol + 1} / ${event.endCol + 2}`, '--row': event.lane + 1 });
 
 function EventButton({ event, week, month, onOpen }) {
     if (event.type === 'season') {
@@ -126,7 +126,7 @@ export function CalendarGrid({ campaigns, seasons, month, today, onOpen }) {
                                     type="button"
                                     className="calendar-more"
                                     key={col}
-                                    style={{ gridColumn: col + 1, gridRow: MAX_LANES }}
+                                    style={{ '--col': col + 1, '--row': MAX_LANES }}
                                     aria-label={`${count} más el ${format(week[col], "d 'de' MMMM", { locale: es })}`}
                                     aria-expanded={popover?.col === col && popover?.weekIndex === weekIndex}
                                     onClick={(event) => {

@@ -48,11 +48,12 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Campañas y temporadas: fila abierta / borde de la caja de ediciones | `--rm-row-open` / `--rm-line-box` | #FFFDFA / #F0E8DE |
 | Campañas y temporadas, móvil: borde de la tarjeta abierta | `--rm-orange-line-soft` | #F1D9C4 |
 | Calendario: línea, fin de semana, día de fuera | `--rm-cal-line` · `--rm-cal-weekend` · `--rm-cal-out` | #F0E8DE · #FDFBF8 · #A89C90 |
+| Barra de pestañas móvil | `--rm-tabbar-bg` | rgba(255, 255, 255, .94) |
 
 - El naranja es el **único** acento: acción principal, elemento activo, foco. No usarlo para decorar.
 - Botón relleno = `--rm-orange-strong` (el `--rm-orange` puro no da contraste suficiente con texto blanco).
 - Positivo/negativo siempre con el token, nunca verde/rojo puros (`#008000`, `#ff0000`).
-- Foco: `--rm-orange-focus` como anillo.
+- Foco: `--rm-focus-ring` (`0 0 0 3px` de `--rm-orange-focus`) como anillo.
 
 ### Gráficas (Recharts)
 
@@ -83,7 +84,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 - Interfaz y datos: `--rm-font` (Figtree 400/500/600/700).
 - Titulares de página y cifras destacadas: `--rm-font-display` (Instrument Serif, peso 400, `line-height` ~1).
-- Escala de texto: `--rm-text-2xs` 11 · `--rm-text-3xs` 10 · `--rm-text-2xs` 11 · `2xs-plus` 11,5 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
+- Escala de texto: `--rm-text-3xs` 10 · `--rm-text-2xs` 11 · `2xs-plus` 11,5 · `--rm-text-xs` 12 · `xs-plus` 12,5 · `sm` 13 · `sm-plus` 13,5 · `md` 14 · `md-plus` 14,5 · `lg` 15 · `base` 16 · `icon` 17 · `icon-plus` 18 · `lg-plus` 19 · `xl` 20 · `2xl` 22 px.
 - Escala display: `--rm-display-2xs` 24 · `xs` 28 · `xs-plus` 34 · `sm` 36 · `md` 40 · `lg` 42 · `xl` 46 · `2xl` 52 · `3xl` 58 px.
 - Etiquetas / kickers: `--rm-text-xs`, 600, MAYÚSCULAS, `letter-spacing: 0.08em` (0.12em en login).
 - Cifras en tablas: alinear a la derecha y usar `font-variant-numeric: tabular-nums`.
@@ -93,7 +94,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 
 ## Forma, sombra y espacio
 
-- Radios: `--rm-radius-xs` 6 · `--rm-radius-sm` 10 · `--rm-radius-btn` 11 · `--rm-radius` 12 · `--rm-radius-lg` 18 px (tarjetas = `lg`).
+- Radios: `--rm-radius-xs` 6 · `--rm-radius-sm` 10 · `--rm-radius-btn` 11 · `--rm-radius` 12 · `--rm-radius-lg` 18 px (tarjetas = `lg`) · `--rm-radius-field` 14 px (campos grandes del móvil) · `--rm-radius-dialog` 20 px (diálogos).
 - Sombras: `--rm-shadow` (tarjetas en reposo), `--rm-shadow-raised` (elementos flotantes). Tonos marrones, nunca negro.
 - Espaciado en múltiplos de 0.125rem (2 px); los habituales: 0.375, 0.5, 0.875, 1, 1.25, 1.5, 1.75 rem.
 - Contenido principal: `padding: 2.25rem 2.75rem 2.75rem 1.25rem` (escritorio), `1.5rem 1rem 2rem` (<992px).
@@ -178,7 +179,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Los bloques van a 14 px y el contenido con padding 10 × 16 × 24 px: Ventas compensa con margen negativo el padding general de
   `.app-main` (24 × 16 × 32 px) en vez de cambiarlo para todas las pantallas. Buscador a ancho completo (`.panel-field.is-large`:
   48 px, radio 14, `text-lg`, lupa de `icon-plus`), después Todo / Mujer / Hombre (botones de 40 px y `text-md`) y «Filtros»
-  (`.m-btn`, 48 px) a 10 px. Buscador y sección se aplican al momento; la hoja, al pulsar «Ver resultados».
+  (`.m-btn`, 48 px) a 10 px. El buscador se aplica a los 300 ms (como en escritorio, para no lanzar una petición por tecla) y la sección al momento; la hoja, al pulsar «Ver resultados».
 - **Hoja «Filtros» de Ventas** (`.m-sheet.is-sales`, `SalesSheet`): título en `display-xs` y «Cerrar» sin relleno. Periodo a ancho
   completo (con «Desde» y «Hasta» si es «Personalizado…»), rejilla de 2 columnas a 10 px con Marca, Familia, Talla y Color, y Precio
   de venta (€) y Beneficio (€) con sus dos campos iguales. Etiqueta encima (`.sheet-label`, `text-sm`, 600, `--rm-nav`, a 6 px),
@@ -207,7 +208,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   artboard: solo sale cuando hay buscador, provincia o ciudad puestos y los vacía los tres. El buscador se aplica a los 300 ms; Provincia y Ciudad, al momento. Ciudad solo ofrece las ciudades de la
   provincia elegida; al elegir otra provincia la ciudad se vacía (al volver a «Todas» se conserva) y «Limpiar filtros» quita también
   el texto del buscador de la consulta sin esperar los 300 ms. La barra se queda montada al cruzar los 992 px, así que no se pierden
-  los filtros ( es  en móvil).
+  los filtros al pasar de escritorio a móvil.
   Tabla (`ClientsTable`, `.clients-row`): Nombre · Ciudad · Provincia · CP en la rejilla `minmax(0,1.8fr) minmax(0,1.4fr) minmax(0,1fr) 80px`
   con 16 px entre columnas y padding 0 24 px. Cabecera de 44 px en `--rm-cream-light`, `text-xs-plus`, 600, `ink-2`, sin mayúsculas y sin
   botones de orden (el orden alfabético lo da el SQL); filas de 52 px con borde superior `--rm-line-soft` y `text-md`. Nombre en 500, Ciudad
@@ -276,7 +277,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   (`.compare-foot`, sin padding lateral, abajo del todo con `mt-auto`) y «Mostrando 1–5 de 9 marcas»; `.compare-body` reserva el alto
   de 5 filas (16,9375 rem en escritorio, 17,5 rem en móvil) para que las tarjetas no cambien de alto con Sección (2 filas) ni con
   la última página, y la gráfica no se queda con un hueco blanco enorme. Cambiar de pestaña o de periodo vuelve a la página 1. Cargando:
-  siluetas por tarjeta; error: `CardError` en una tarjeta; sin dos periodos válidos: «Elige los dos periodos para compararlos.».
+  siluetas por tarjeta; error: `CardError` en una tarjeta; sin dos periodos válidos: «Elige los dos periodos para compararlos.»; desglose sin ventas: «No hay ventas en estos periodos.».
 - **Gastos, cabecera y periodo** (`.expenses-page`, 24 px entre bloques; en móvil 14 px y el mismo margen negativo que Clientes). Los datos salen de
   `/api/statistics/expenses` (ingresos = `amount`, gastos = `cost`, beneficio = `profit` de `v_sales`, agrupados por mes o por año en el SQL).
   Cabecera `.expenses-head` (`align-items: flex-end`, `space-between`, 24 px, se parte en dos líneas): a la izquierda `.panel-heading` con
@@ -403,7 +404,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `--rm-tint` / `--rm-nav` para «Empieza en N días», «Empieza mañana», «Empieza hoy» y «Terminada»; la de «En curso · quedan N días» usa los colores
   y el punto de `.campaign-pill` / `.campaign-dot`); **última vez**: el beneficio (no el balance) de la última edición ya terminada, redondeado y con signo en 600
   (`+6.215 €`, `--rm-positive`; con pérdidas, «−» y `--rm-negative`) y «de beneficio en 2026» (o «2025-26» si cruza de año) debajo; sin ediciones terminadas,
-  «—» y «sin ediciones terminadas»; **ediciones**: «7 campañas» (singular con 1) en `text-md` `ink-2`, cuenta todas las guardadas; **acciones**: lápiz y papelera
+  «—» y «sin ediciones terminadas» (en móvil, con mayúscula: «Sin ediciones terminadas»); **ediciones**: «7 campañas» (singular con 1) en `text-md` `ink-2`, cuenta todas las guardadas; **acciones**: lápiz y papelera
   (`.planning-icon-btn`, 32 px, sin borde, `ink-2`, `--rm-orange-strong` al pasar) que editan o eliminan el **tipo**. El estado sale de las ediciones guardadas más
   las que saldrían de las fechas del tipo para los años que aún no existen (así no depende de «Generar años pendientes»): una edición está en curso desde
   el día siguiente a su inicio hasta su fin y el día que empieza dice «Empieza hoy». Un tipo que no se repite y ya pasó queda «Terminada». El orden es el del
@@ -427,7 +428,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Desplegada: cada edición en un bloque con línea `--rm-line-box` (nombre en `text-md` 600 con el lápiz de 44 px a la derecha, fechas en `text-sm` `ink-2` y tres columnas
   Gastos · Beneficio · Balance con la etiqueta en `text-xs` y el valor en `text-sm`) y, al final, «Editar» y «Eliminar» (`.planning-m-action`, 44 px, con borde) que actúan
   sobre el **tipo**. Como en el diseño, «Generar años pendientes» no sale arriba; por decisión añadida, va al final de la lista como `.m-btn` a ancho completo.
-  **Repetición, saltos y edición** (el histórico no se reescribe): el diálogo del tipo lleva la casilla «Se repite cada año» (`repeats`; sin marcar solo existe la edición del año de inicio, p. ej. «50 aniversario») y, si se repite, «Último año (opcional)» (`last_year`; el sync no crea años posteriores). Una edición se puede **saltar** (`skipped`, botón `bi-slash-circle`; «Recuperar» con `bi-arrow-counterclockwise`): sale en la lista de ediciones en `--rm-ink-3` con «· saltada», no cuenta en el recuento ni en «Última vez», el sync no la recrea y el resto de pantallas no la reciben (el servidor la oculta salvo con `include_skipped=1`, que solo pide Planificación). Editar un tipo reescribe únicamente las ediciones que aún no han empezado; una edición que ya empezó tiene las fechas de solo lectura (con la nota que lo explica) y solo admite corregir los gastos, y el botón de saltar no sale. Un tipo con ediciones empezadas no se puede eliminar (409): se le pone un «último año». Los días que no existen (29 feb, 31 abr) se recortan al último día del mes.
+  **Repetición, saltos y edición** (el histórico no se reescribe): el diálogo del tipo lleva la casilla «Se repite cada año» (`repeats`; sin marcar solo existe la edición del año de inicio, p. ej. «50 aniversario») y, si se repite, «Último año (opcional)» (`last_year`; el sync no crea años posteriores). Una edición se puede **saltar** (`skipped`, botón `bi-slash-circle`; «Recuperar» con `bi-arrow-counterclockwise`): sale en la lista de ediciones en `--rm-ink-3` con «· saltada», no cuenta en el recuento ni en «Última vez», el sync no la recrea y el resto de pantallas no la reciben (el servidor la oculta salvo con `include_skipped=1`, que solo pide Planificación). Editar un tipo reescribe únicamente las ediciones que aún no han empezado; una edición que ya empezó tiene las fechas de solo lectura (con la nota que lo explica) y solo admite corregir los gastos, y el botón de saltar no sale. Un tipo con ediciones empezadas no se puede eliminar (409): se le pone un «último año», y el aviso dice ««<nombre>» ya tiene ediciones empezadas y no se puede eliminar. Edítala y ponle un «último año» para que deje de repetirse.». El 29 de febrero se recorta al 28 en los años que no son bisiestos; un día que no existe en ningún año (31 abr) se rechaza al guardar el tipo.
   **Estados**: cargando, la cabecera de la tabla se queda y el cuerpo dibuja filas de `.panel-skeleton` (en móvil, tarjetas); las pastillas del recuento no
   salen hasta tener el dato. Error: `CardError` («Reintentar» repite la petición que falló). Vacío: «Todavía no hay campañas.» / «Todavía no hay temporadas.» centrado en `.sales-state`.
 - **Diálogo de crear / editar** (`ModalComponent`, `.rm-dialog`; tipos y ediciones de Campañas y temporadas): tarjeta en `--rm-cream` (como el fondo de la app; los campos quedan blancos) de radio

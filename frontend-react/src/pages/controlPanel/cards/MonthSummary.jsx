@@ -18,10 +18,6 @@ import { formatNumber, formatEuros, formatShare } from '../../../utils/format.js
 import DeltaPill from '../../../components/DeltaPill.jsx';
 import { CardError, Skeleton } from './CardState.jsx';
 
-const SURFACE = '#FFFFFF';
-const GRID_COLOR = '#F2ECE5';
-const AXIS_COLOR = '#756D66';
-
 function YearTooltip({ active, payload, years }) {
     if (!active || !payload?.length) return null;
     const point = payload[0].payload;
@@ -111,9 +107,9 @@ export default function MonthSummary({ summary, daily, month, chart, error, onRe
                     <span className="panel-muted">Margen {formatShare(current.profit, current.total)}</span>
                 </div>
             </div>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer className="year-chart" width="100%" height={200}>
                 <ComposedChart data={points} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-                    <CartesianGrid stroke={GRID_COLOR} vertical={false} />
+                    <CartesianGrid stroke="var(--rm-line-soft)" vertical={false} />
                     <XAxis
                         dataKey="day"
                         type="number"
@@ -121,15 +117,13 @@ export default function MonthSummary({ summary, daily, month, chart, error, onRe
                         ticks={data.monthTicks}
                         tickFormatter={(day) => format(points[day - 1].date, 'MMM', { locale: es })}
                         tickLine={false}
-                        axisLine={{ stroke: GRID_COLOR }}
-                        tick={{ fill: AXIS_COLOR, fontSize: 11 }}
+                        axisLine={{ stroke: 'var(--rm-line-soft)' }}
                     />
                     <YAxis
                         width={56}
                         tickCount={5}
                         tickLine={false}
                         axisLine={false}
-                        tick={{ fill: AXIS_COLOR, fontSize: 11 }}
                         tickFormatter={(value) => formatNumber(Math.round(value))}
                     />
                     <Tooltip content={<YearTooltip years={{ current: chart.to.getFullYear(), previous: chart.to.getFullYear() - 1 }} />} />
@@ -152,7 +146,7 @@ export default function MonthSummary({ summary, daily, month, chart, error, onRe
                         dot={false}
                         isAnimationActive={false}
                     />
-                    <ReferenceDot x={last.day} y={last.current} r={5} fill={SURFACE} stroke="var(--rm-orange)" strokeWidth={2.5} />
+                    <ReferenceDot x={last.day} y={last.current} r={5} fill="var(--rm-surface)" stroke="var(--rm-orange)" strokeWidth={2.5} />
                 </ComposedChart>
             </ResponsiveContainer>
             <div className="d-flex flex-column gap-2 mt-auto">
@@ -167,7 +161,7 @@ export default function MonthSummary({ summary, daily, month, chart, error, onRe
                     <span className="fw-semibold text-nowrap">{formatShare(data.progress, 100)}</span>
                 </div>
                 <span className="panel-track is-thin d-block">
-                    <span className="panel-fill d-block" style={{ width: `${data.progress}%` }} />
+                    <span className="panel-fill d-block" style={{ '--w': `${data.progress}%` }} />
                 </span>
             </div>
         </div>

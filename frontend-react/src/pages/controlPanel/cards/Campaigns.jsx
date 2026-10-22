@@ -45,7 +45,7 @@ function CurrentCampaign({ campaign, today, section }) {
                 <span className="panel-note fw-semibold text-nowrap">{remainingLabel(progress.remaining)}</span>
             </div>
             <span className="panel-track is-thin d-block">
-                <span className="panel-fill d-block" style={{ width: `${progress.percent}%` }} />
+                <span className="panel-fill d-block" style={{ '--w': `${progress.percent}%` }} />
             </span>
             <div className="row g-3">
                 <div className="col-4 d-flex flex-column gap-1">

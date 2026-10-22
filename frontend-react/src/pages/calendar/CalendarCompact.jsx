@@ -43,8 +43,8 @@ export function CalendarCompact({ campaigns, seasons, month, today }) {
                                         key={event.label}
                                         className={classes.join(' ')}
                                         style={{
-                                            gridColumn: `${event.startCol + 1} / ${event.endCol + 2}`,
-                                            gridRow: lanes.indexOf(event.lane) + 1,
+                                            '--col': `${event.startCol + 1} / ${event.endCol + 2}`,
+                                            '--row': lanes.indexOf(event.lane) + 1,
                                             '--before': before,
                                             '--after': after,
                                             '--span': event.endCol - event.startCol + 1,

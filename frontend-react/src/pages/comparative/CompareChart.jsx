@@ -9,7 +9,7 @@ function ChartTooltip({ active, payload, label }) {
             <span className="fw-semibold">{label}</span>
             {payload.map((item) => (
                 <span className="d-flex align-items-center gap-2" key={item.dataKey}>
-                    <span className="panel-dot" style={{ backgroundColor: item.color }} aria-hidden="true" />
+                    <span className="panel-dot" style={{ '--dot': item.color }} aria-hidden="true" />
                     {item.payload[item.dataKey === 'a' ? 'rangeA' : 'rangeB']}
                     <strong className="ms-auto">{formatEuros(item.value)}</strong>
                 </span>
