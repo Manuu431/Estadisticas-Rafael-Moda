@@ -15,10 +15,7 @@ const clientsRouter = require('./src/routes/clients');
 const brandsRouter = require('./src/routes/brands');
 const familiesRouter = require('./src/routes/families');
 const productsRouter = require('./src/routes/products');
-const campaignsRouter = require('./src/routes/campaigns');
-const seasonsRouter = require('./src/routes/seasons');
-const seasonTypesRouter = require('./src/routes/seasonTypes');
-const campaignTypesRouter = require('./src/routes/campaignTypes');
+const { periodRouter, typeRouter } = require('./src/routes/periodRouters');
 const { dailyDemoUpdate } = require('./src/controllers/dailyDemoUpdateController');
 
 const app = express();
@@ -38,10 +35,10 @@ app.use('/api/clients', clientsRouter);
 app.use('/api/brands', brandsRouter);
 app.use('/api/families', familiesRouter);
 app.use('/api/products', productsRouter);
-app.use('/api/campaigns', campaignsRouter);
-app.use('/api/seasons', seasonsRouter);
-app.use('/api/season_types', seasonTypesRouter);
-app.use('/api/campaign_types', campaignTypesRouter);
+app.use('/api/campaigns', periodRouter('campaign'));
+app.use('/api/seasons', periodRouter('season'));
+app.use('/api/season_types', typeRouter('season'));
+app.use('/api/campaign_types', typeRouter('campaign'));
 app.use(errorHandler);
 
 if (require.main === module) app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
