@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import Pagination from '../../components/Pagination.jsx';
-import { TABLE_ROWS, tablePage } from '../../utils/expenses.js';
+import { TABLE_ROWS } from '../../utils/expenses.js';
+import { paginate } from '../../utils/paginate.js';
 
 const FOOT = 'En rebajas el porcentaje baja porque se vende con descuento.';
 
 function ExpensesTable({ title, itemLabel, table }) {
     const [requested, setRequested] = useState(1);
-    const { rows, pages, page } = tablePage(table.rows, requested);
+    const { rows, pages, page } = paginate(table.rows, requested, TABLE_ROWS);
     const paged = pages > 1;
     return (
         <section className="panel-card expenses-card is-table" aria-label={title}>

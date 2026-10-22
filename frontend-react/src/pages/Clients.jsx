@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import ClientsFilters from "../components/ClientsFilters.jsx";
+import { paginate } from "../utils/paginate.js";
 import ClientsTable from "../components/table/ClientsTable.jsx";
 import ClientsMobileList from "../components/table/ClientsMobileList.jsx";
 import TablePlaceholder from "../components/table/TablePlaceholder.jsx";
@@ -21,7 +22,7 @@ function Clients(props) {
     const { data: options, error: optionsError } = useFetch(OPTIONS_URL, filters.province ? { province: filters.province } : undefined);
     const { data: clients, settled, error, refetch } = useFetch(DATABASE_TABLES.clients.endpoint, filters);
     const state = clientsState({ data: clients, settled, error });
-    const totalPages = Math.ceil((clients?.length ?? 0) / PAGE_SIZE);
+    const { rows: pageRows, pages: totalPages, page: currentPage } = paginate(clients ?? [], page, PAGE_SIZE);
     const changeFilters = useCallback((next) => {
         setFilters(next);
         setPage(1);
@@ -29,9 +30,9 @@ function Clients(props) {
     const filtersBar = <ClientsFilters options={options} onFilterChange={changeFilters} />;
     const desktopList = state.kind === 'ready' ? (
         <>
-            <ClientsTable data={clients.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)} />
+            <ClientsTable data={pageRows} />
             <Pagination
-                currentPage={page}
+                currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setPage}
                 totalItems={clients.length}

@@ -12,6 +12,7 @@ import { buildRows, deleteMessage, syncMessage } from "../utils/planning.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
 import { PlanningCards } from './planning/PlanningCards.jsx';
 import { PlanningTable } from './planning/PlanningTable.jsx';
+import { paginate } from '../utils/paginate.js';
 
 const TABS = [
     {
@@ -101,9 +102,7 @@ function Planning(props) {
     const failed = Boolean(types.error || editions.error);
     const loading = !failed && (types.data === null || editions.data === null);
     const state = failed ? 'error' : loading ? 'loading' : rows.length === 0 ? 'empty' : 'ready';
-    const totalPages = Math.max(Math.ceil(rows.length / PAGE_SIZE), 1);
-    const currentPage = Math.min(page, totalPages);
-    const visibleRows = rows.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+    const { rows: visibleRows, pages: totalPages, page: currentPage } = paginate(rows, page, PAGE_SIZE);
     const pagination = state === 'ready' && rows.length > PAGE_SIZE ? (
         <Pagination
             currentPage={currentPage}

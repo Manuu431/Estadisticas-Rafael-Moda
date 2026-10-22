@@ -250,9 +250,3 @@ export function periodCount(grain, period) {
 export function skeletonRows(grain, period) {
     return Math.min(TABLE_ROWS, periodCount(grain, period) ?? TABLE_ROWS);
 }
-
-export function tablePage(rows, page) {
-    const pages = Math.max(1, Math.ceil(rows.length / TABLE_ROWS));
-    const current = Math.min(Math.max(page, 1), pages);
-    return { rows: rows.slice((current - 1) * TABLE_ROWS, current * TABLE_ROWS), pages, page: current };
-}

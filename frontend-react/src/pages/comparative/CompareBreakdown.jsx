@@ -3,13 +3,13 @@ import DeltaPill from '../../components/DeltaPill.jsx';
 import { getValueLabel } from '../../config/labels.js';
 import Pagination from '../../components/Pagination.jsx';
 import { BREAKDOWN_PAGE_SIZE, COMPARE_GROUPS, deltaPercent } from '../../utils/compare.js';
+import { paginate } from '../../utils/paginate.js';
 import { formatEurosRound } from '../../utils/format.js';
 
 function CompareBreakdown({ rows, group, names, isMobile }) {
     const [page, setPage] = useState(1);
     const { label, plural } = COMPARE_GROUPS.find((item) => item.value === group);
-    const totalPages = Math.ceil(rows.length / BREAKDOWN_PAGE_SIZE);
-    const visible = rows.slice((page - 1) * BREAKDOWN_PAGE_SIZE, page * BREAKDOWN_PAGE_SIZE);
+    const { rows: visible, pages: totalPages, page: currentPage } = paginate(rows, page, BREAKDOWN_PAGE_SIZE);
     const nameOf = (row) => getValueLabel(group, row.name);
     if (rows.length === 0) return <p className="m-0 panel-note">No hay ventas en estos periodos.</p>;
     const list = isMobile ? (
@@ -50,7 +50,7 @@ function CompareBreakdown({ rows, group, names, isMobile }) {
             <div className="compare-body">{list}</div>
             <div className="compare-foot">
                 <Pagination
-                    currentPage={page}
+                    currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={setPage}
                     totalItems={rows.length}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_MESSAGE, GRAINS, LOW_MARGIN, TABLE_ROWS, axisLabel, chartPeak, chosenPeriod, datesNotice, expensesBuckets, expensesKpis, expensesState, expensesTable, expensesParams, expensesRange, periodCount, periodMenu, periodText, skeletonRows, startedPeriods, tablePage, wholeRange, yAxisScale } from './expenses.js';
+import { EMPTY_MESSAGE, GRAINS, LOW_MARGIN, TABLE_ROWS, axisLabel, chartPeak, chosenPeriod, datesNotice, expensesBuckets, expensesKpis, expensesState, expensesTable, expensesParams, expensesRange, periodCount, periodMenu, periodText, skeletonRows, startedPeriods, wholeRange, yAxisScale } from './expenses.js';
 
 const today = new Date(2026, 8, 28, 12, 30);
 const custom = (from, to) => ({ key: 'custom', from, to, bad: [] });
@@ -548,26 +548,6 @@ describe('datesNotice', () => {
         expect(datesNotice('campaign', custom('', ''))).toBeNull();
     });
 });
-
-describe('tablePage', () => {
-    const rows = Array.from({ length: 16 }, (_, index) => index + 1);
-
-    it('trocea de siete en siete y dice cuántas páginas hay', () => {
-        expect(tablePage(rows, 1)).toEqual({ rows: [1, 2, 3, 4, 5, 6, 7], pages: 3, page: 1 });
-        expect(tablePage(rows, 3)).toEqual({ rows: [15, 16], pages: 3, page: 3 });
-    });
-
-    it('una página fuera de rango se queda en la primera o en la última', () => {
-        expect(tablePage(rows, 9).page).toBe(3);
-        expect(tablePage(rows, 0).page).toBe(1);
-    });
-
-    it('con siete filas o menos hay una sola página, y sin filas también', () => {
-        expect(tablePage(rows.slice(0, 7), 1).pages).toBe(1);
-        expect(tablePage([], 1)).toEqual({ rows: [], pages: 1, page: 1 });
-    });
-});
-
 describe('periodCount', () => {
     it('cuenta las barras que saldrán en cada control', () => {
         const period = { from: '2026-09-20', to: '2026-10-04' };
