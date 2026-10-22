@@ -1,11 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-
-if (!process.env.JWT_SECRET) {
-  console.error('Missing JWT_SECRET in .env');
-  process.exit(1);
-}
+process.env.TZ = 'Europe/Madrid';
+const { secretProblem, parseOrigins } = require('./src/config/env');
+const problem = secretProblem(process.env.JWT_SECRET);
+if (problem) throw new Error(problem);
 
 const authMiddleware = require('./src/middleware/auth');
 const errorHandler = require('./src/middleware/errorHandler');
@@ -24,7 +23,8 @@ const campaignTypesRouter = require('./src/routes/campaignTypes');
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-app.use(cors());
+app.disable('x-powered-by');
+app.use(cors({ origin: parseOrigins(process.env.CORS_ORIGIN) }));
 app.use(express.json());
 
 app.use('/api/users', usersRouter);
@@ -41,6 +41,5 @@ app.use('/api/season_types', seasonTypesRouter);
 app.use('/api/campaign_types', campaignTypesRouter);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+if (require.main === module) app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+module.exports = app;

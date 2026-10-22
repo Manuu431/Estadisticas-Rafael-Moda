@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { searchColumns, exactColumns, orderBy } = require('./columns');
+const { searchColumns, exactColumns, orderBy, filterColumns } = require('./columns');
 const { likeSearch } = require('./search');
 
 test('los clientes se buscan por nombre y código postal', () => {
@@ -22,4 +22,9 @@ test('las columnas exactas que ya existían siguen igual', () => {
 test('los clientes salen ordenados por nombre y, a igualdad, por id', () => {
   assert.equal(orderBy.clients, '`name`, `id`');
   assert.equal(orderBy.sales, undefined);
+});
+
+test('filterColumns descarta los valores que son objetos o listas', () => {
+  const data = filterColumns({ name: { toSqlString: 'x' }, start_day: [1, 2], end_day: 5, last_year: null }, 'period_types');
+  assert.deepEqual(data, { end_day: 5, last_year: null });
 });

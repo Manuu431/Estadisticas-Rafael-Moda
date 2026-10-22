@@ -33,7 +33,8 @@ const filterColumns = (data, resource) => {
   const columns = allowedColumns[resource] || [];
   const filtered = {};
   for (const key in data) {
-    if (key !== 'id' && columns.includes(key)) filtered[key] = data[key];
+    const isPlain = data[key] === null || typeof data[key] !== 'object';
+    if (key !== 'id' && columns.includes(key) && isPlain) filtered[key] = data[key];
   }
   return filtered;
 };
