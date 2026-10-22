@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { formatEuros, formatNumber, formatMoney } from '../../utils/format.js';
+import { formatEuros, formatEurosSigned, formatNumber, formatMoney } from '../../utils/format.js';
 import { formatSaleTime } from '../../utils/dates.js';
 import { dayTitle, groupByDay, remainingCount, saleMeta, sortLatestFirst } from '../../utils/salesDays.js';
 
@@ -31,7 +31,7 @@ function SalesMobileList({ rows }) {
                                 </span>
                                 <span className="sales-item-side">
                                     <span className="sales-item-amount">{formatEuros(item.amount)}</span>
-                                    <span className="sales-item-profit">+{formatEuros(item.profit)}</span>
+                                    <span className={`sales-item-profit${item.profit < 0 ? ' is-negative' : ''}`}>{formatEurosSigned(item.profit)}</span>
                                 </span>
                             </li>
                         ))}

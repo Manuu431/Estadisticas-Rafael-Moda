@@ -18,8 +18,8 @@ export function sortTypes(types) {
 }
 
 export function typeRange(type) {
-    const start = new Date(2001, type.start_month - 1, type.start_day);
-    const end = new Date(2001, type.end_month - 1, type.end_day);
+    const start = new Date(2000, type.start_month - 1, type.start_day);
+    const end = new Date(2000, type.end_month - 1, type.end_day);
     return `${shortDate(start)} → ${shortDate(end)}`;
 }
 

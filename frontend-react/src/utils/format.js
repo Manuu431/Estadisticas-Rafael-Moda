@@ -5,7 +5,15 @@ export const formatEuros = (value) => `${Number(value ?? 0).toLocaleString('es-E
 export const formatEurosRound = (value) => `${Math.round(Number(value ?? 0)).toLocaleString('es-ES', { useGrouping: 'always' })}\u00a0€`;
 const PERCENT = { minimumFractionDigits: 1, maximumFractionDigits: 1, useGrouping: 'always' };
 export const formatShare = (value, total) => `${(total > 0 ? (value / total) * 100 : 0).toLocaleString('es-ES', PERCENT)} %`;
-export const formatPercent = (value) => `${value >= 0 ? '+' : '−'}${Math.abs(value).toLocaleString('es-ES', PERCENT)} %`;
+export const percentDirection = (value) => {
+    const shown = Math.round(value * 10) / 10;
+    if (shown === 0) return 'flat';
+    return shown > 0 ? 'up' : 'down';
+};
+export const formatPercent = (value) => {
+    const sign = { up: '+', down: '−', flat: '' }[percentDirection(value)];
+    return `${sign}${Math.abs(value).toLocaleString('es-ES', PERCENT)} %`;
+};
 export const formatEurosSigned = (value, { round = false } = {}) => (value < 0 ? '\u2212' : '+') + (round ? formatEurosRound : formatEuros)(Math.abs(value));
 export const formatSalesLines = (lines) => formatNumber(lines) + (lines === 1 ? ' línea' : ' líneas') + ' de venta';
 export const formatUnits = (units) => formatNumber(units) + ' prenda' + (units === 1 ? '' : 's');

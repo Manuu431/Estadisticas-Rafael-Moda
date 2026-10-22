@@ -19,8 +19,8 @@ function Clients(props) {
     const [page, setPage] = useState(1);
     const isMobile = useIsMobile();
     const { data: options, error: optionsError } = useFetch(OPTIONS_URL, filters.province ? { province: filters.province } : undefined);
-    const { data: clients, error, refetch } = useFetch(DATABASE_TABLES.clients.endpoint, filters);
-    const state = clientsState({ data: clients, error });
+    const { data: clients, settled, error, refetch } = useFetch(DATABASE_TABLES.clients.endpoint, filters);
+    const state = clientsState({ data: clients, settled, error });
     const totalPages = Math.ceil((clients?.length ?? 0) / PAGE_SIZE);
 
     const changeFilters = useCallback((next) => {

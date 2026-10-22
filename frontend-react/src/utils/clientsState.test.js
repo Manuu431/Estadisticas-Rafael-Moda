@@ -26,3 +26,9 @@ describe('clientsState', () => {
         expect(EMPTY_MESSAGE).toBe('No hay clientes con estos filtros.');
     });
 });
+
+describe('clientsState mientras llegan otros filtros', () => {
+    it('con los datos del filtro anterior todavía en pantalla, está cargando', () => {
+        expect(clientsState({ data: [client], settled: false, error: null }).kind).toBe('loading');
+    });
+});

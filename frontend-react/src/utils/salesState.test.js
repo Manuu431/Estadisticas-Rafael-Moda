@@ -43,3 +43,9 @@ describe('salesState', () => {
         expect(salesState({ data: [], error: null, period: { key: '7d', from: '', to: '' }, filters: {} }).message).toBe(EMPTY_MESSAGE);
     });
 });
+
+describe('salesState mientras llegan otros filtros', () => {
+    it('con los datos del filtro anterior todavía en pantalla, está cargando', () => {
+        expect(salesState({ data: [{ id: 1 }], settled: false, error: null, period: mes, filters: {} }).kind).toBe('loading');
+    });
+});

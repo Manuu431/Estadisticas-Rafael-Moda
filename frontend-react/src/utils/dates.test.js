@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCompactRange, formatDayTick, formatLongRange, formatShortDay, formatMonthTitle, formatMonthYear, formatMonthOfYear, formatShortRange, apiDate, yearChartRange, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, shiftYear, formatSaleDay, formatSaleTime } from './dates.js';
+import { formatCompactRange, formatDayTick, formatLongRange, formatShortDay, formatMonthTitle, formatMonthYear, formatMonthOfYear, formatShortRange, apiDate, yearChartRange, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, shiftYear, formatSaleDay, formatSaleTime, previousYearMonth } from './dates.js';
 
 describe('lastSevenDays', () => {
     it('devuelve los siete días que terminan hoy', () => {
@@ -212,5 +212,18 @@ describe('formatSaleTime', () => {
         expect(formatSaleTime(null)).toBe('');
         expect(formatSaleTime(undefined)).toBe('');
         expect(formatSaleTime('')).toBe('');
+    });
+});
+
+describe('previousYearMonth', () => {
+    it('el febrero anterior bisiesto llega hasta el 29', () => {
+        const range = previousYearMonth(lastFinishedMonth(new Date(2029, 2, 10)));
+        expect(range.start).toEqual(new Date(2028, 1, 1));
+        expect(range.end).toEqual(new Date(2028, 1, 29));
+    });
+    it('un mes normal es el mismo mes del año anterior entero', () => {
+        const range = previousYearMonth(lastFinishedMonth(new Date(2026, 9, 22)));
+        expect(range.start).toEqual(new Date(2025, 8, 1));
+        expect(range.end).toEqual(new Date(2025, 8, 30));
     });
 });

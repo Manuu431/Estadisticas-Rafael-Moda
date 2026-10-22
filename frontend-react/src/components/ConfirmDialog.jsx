@@ -9,7 +9,11 @@ function ConfirmDialog({ title, message, confirmLabel = 'Eliminar', onConfirm, o
 
     const confirm = async () => {
         setBusy(true);
-        await onConfirm();
+        try {
+            await onConfirm();
+        } finally {
+            setBusy(false);
+        }
     };
 
     const actions = (

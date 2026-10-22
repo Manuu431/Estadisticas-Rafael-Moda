@@ -6,6 +6,7 @@ import axios from 'axios';
 import { DATABASE_TABLES } from "../config/database.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
 import BottomSheet from "./BottomSheet.jsx";
+import { writeError } from '../utils/errors.js';
 
 const monthNames = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -50,7 +51,7 @@ const labels = {
     last_year: "Último año (opcional)"
 };
 
-const wideKeys = ['name', 'first_year', 'last_year'];
+const wideKeys = ['name', 'first_year'];
 
 function DialogField({ name, label, wide, large, children }) {
   return (
@@ -70,7 +71,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const isMobile = useIsMobile();
   const [error, setError] = useState('');
 
-  const getDays = (month, year) => (month === '' ? [] : Array.from({ length: new Date(Number(year) || 2001, month, 0).getDate() }, (_, i) => i + 1));
+  const getDays = (month) => (month === '' ? [] : Array.from({ length: new Date(2000, month, 0).getDate() }, (_, i) => i + 1));
 
   const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campaña" };
   const heading = `${isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear'} ${types[type]}`;
@@ -101,13 +102,11 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
             if (['start_day', 'end_day'].includes(key)) {
                 const isStart = key === 'start_day';
                 const month = isStart ? values.start_month : values.end_month;
-                const crossesYear = !isStart && values.start_month !== '' && values.end_month !== '' && values.end_month < values.start_month;
-                const year = values.first_year === '' ? '' : crossesYear ? Number(values.first_year) + 1 : values.first_year;
                 return (
                     <DialogField key={key} name={key} label={label} large={isMobile}>
                         <Field as="select" id={id} name={key} disabled={isView}>
                             <option value="">Día</option>
-                            {getDays(month, year).map(day => (
+                            {getDays(month).map(day => (
                                 <option key={day} value={day}>{day}</option>
                             ))}
                         </Field>
@@ -197,7 +196,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
           await save(values);
         } catch (err) {
           console.error('Error al guardar:', err);
-          setError(isCreate ? 'No se ha podido crear.' : 'No se han podido guardar los cambios.');
+          setError(writeError(err, isCreate ? 'No se ha podido crear.' : 'No se han podido guardar los cambios.'));
           return;
         }
         onHide();

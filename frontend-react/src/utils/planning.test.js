@@ -260,3 +260,9 @@ describe('ediciones saltadas y tipos con último año', () => {
         expect(isStarted(edition(5, '2026-09-29', '2026-10-30'), today)).toBe(false);
     });
 });
+
+describe('typeRange con el 29 de febrero', () => {
+    it('no se convierte en 1 de marzo', () => {
+        expect(typeRange({ start_month: 2, start_day: 29, end_month: 3, end_day: 10 })).toBe('29 feb → 10 mar');
+    });
+});

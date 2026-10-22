@@ -1,4 +1,4 @@
-import { endOfMonth, format, isSameMonth, isSameYear, startOfDay, startOfMonth, parseISO, startOfYear, subDays, subMonths } from 'date-fns';
+import { endOfMonth, format, isSameMonth, isSameYear, startOfDay, startOfMonth, parseISO, startOfYear, subDays, subMonths, subYears } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 export const COMPARABLE_DAY_OFFSET = 364;
@@ -43,6 +43,11 @@ export function formatDayTick(date) {
 
 export function lastFinishedMonth(today) {
     const start = startOfMonth(subMonths(startOfDay(today), 1));
+    return { start, end: startOfDay(endOfMonth(start)) };
+}
+
+export function previousYearMonth(month) {
+    const start = subYears(month.start, 1);
     return { start, end: startOfDay(endOfMonth(start)) };
 }
 

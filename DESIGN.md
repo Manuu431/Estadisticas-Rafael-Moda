@@ -134,7 +134,8 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `.panel-display-hero` (`display-2xl`) para la cifra que manda en la tarjeta.
 - **Comparativa bajo una cifra**: `DeltaPill` (pastilla positiva/negativa con flecha) seguida de la frase
   `vs. <periodo> · <importe>` en `.panel-note` (`text-sm`, `ink-2`). Sin dato con el que comparar, la pastilla
-  se sustituye por «sin comparación».
+  se sustituye por «sin comparación». Si la variación redondeada a un decimal es 0, la pastilla es neutra
+  (`.delta-pill.is-flat`: `--rm-tint` con `--rm-nav`), sin flecha y sin signo: «0,0 %».
 - **Barras por periodo**: columna `.panel-bar-col` con `.panel-bar-slot` (4,75 rem de alto) y `.panel-bar` dentro;
   los tramos sin ventas usan `.panel-bar.is-empty`. Junto a cada barra naranja va la del mismo tramo del año
   anterior en `.panel-bar.is-compare` (`--rm-compare`), las dos a la misma escala (el pico de las dos series).
@@ -167,7 +168,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   en `--rm-cream-light`, `text-xs-plus`, 600, `ink-2`, sin mayúsculas y sin botones de orden (la venta más reciente va primero).
   Fecha («28 sep», o «28 sep. 2025» si no es del año en curso) y Prenda llevan una segunda línea (hora, color) en `.sales-sub`
   (`text-xs-plus`, `ink-3`) a 2 px. Uds., Importe y Beneficio, a la derecha con cifras tabulares; Importe en 600 y Beneficio en
-  `--rm-positive` y 500, sin signo. La sección es una pastilla de 24 px (`.sales-pill`): Mujer `--rm-orange-tint` con
+  `--rm-positive` y 500, sin signo; una pérdida va en `--rm-negative` con «−» (`.sales-profit.is-negative`). La sección es una pastilla de 24 px (`.sales-pill`): Mujer `--rm-orange-tint` con
   `--rm-pill-mujer-ink`, Hombre `--rm-pill-hombre` con `--rm-section-hombre`. Al pasar el cursor, `--rm-row-hover`.
   Por debajo de 1200 px las filas no bajan de 59,5 rem y la tabla se desplaza dentro de su tarjeta (`.sales-scroll`).
 - **Ventas en móvil** (<992 px, `.sales-page`): cabecera con el periodo en `text-sm` y «Ventas» en `display-sm`, a 4 px; el párrafo de
@@ -188,7 +189,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   de otro año) y, a la derecha, el total del día **completo** en `text-sm` `ink-2` (no cambia al ver más). Cada venta (`.sales-item`):
   mínimo 4,25 rem (68 px), padding 0 16 px y 12 px entre columnas; hora en 40 px (`xs-plus`, 600, `ink-3`), nombre en `md-plus` 600
   cortado con «…», debajo «Marca · Sección · T. X · N uds.» (las unidades solo si son más de una) en `xs-plus` `ink-3`, y a la derecha el
-  importe en `md-plus` 600 y el beneficio con signo en `text-xs`, 600, `--rm-positive`. Sin paginación de flechas: 12 ventas y debajo un
+  importe en `md-plus` 600 y el beneficio con signo en `text-xs`, 600, `--rm-positive` (una pérdida, «−» y `--rm-negative`). Sin paginación de flechas: 12 ventas y debajo un
   `.m-btn` a ancho completo «Ver más ventas (N)» con las que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
   filtro vuelve a las 12 primeras.
 - **Estados de Ventas** (`SalesPlaceholder`, `.sales-state`): la cabecera de la tabla se queda y el cuerpo, de unas tres filas de alto

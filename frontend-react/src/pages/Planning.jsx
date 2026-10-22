@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { startOfDay } from 'date-fns';
 import ConfirmDialog from '../components/ConfirmDialog.jsx';
+import { writeError } from '../utils/errors.js';
 import ModalComponent from '../components/ModalComponent.jsx';
 import Pagination from '../components/Pagination.jsx';
 import { DATABASE_TABLES } from "../config/database.js";
@@ -184,14 +185,13 @@ function Planning(props) {
             setMessage(syncMessage(data.created));
         } catch (error) {
             console.error('Error generating editions:', error.response ? error.response.data : error);
-            setMessage('No se han podido generar las ediciones.');
+            setMessage(writeError(error, 'No se han podido generar las ediciones.'));
         } finally {
             setSyncing(false);
         }
     };
 
     const remove = async (row) => {
-        setPendingDelete(null);
         try {
             await axios.delete(`${DATABASE_TABLES[tab.typeKey].endpoint}/${row.type.id}`);
             if (openId === row.type.id) setOpenId(null);
@@ -200,7 +200,9 @@ function Planning(props) {
             console.error('Error deleting type:', error.response ? error.response.data : error);
             setMessage(error.response?.status === 409
                 ? `«${row.type.name}» ya tiene ediciones empezadas y no se puede eliminar. Edítala y ponle un «último año» para que deje de repetirse.`
-                : `No se ha podido eliminar «${row.type.name}».`);
+                : writeError(error, `No se ha podido eliminar «${row.type.name}».`));
+        } finally {
+            setPendingDelete(null);
         }
     };
 
@@ -210,7 +212,7 @@ function Planning(props) {
             await refetchAll();
         } catch (error) {
             console.error('Error skipping edition:', error.response ? error.response.data : error);
-            setMessage('No se ha podido cambiar esta edición.');
+            setMessage(writeError(error, 'No se ha podido cambiar esta edición.'));
         }
     };
 

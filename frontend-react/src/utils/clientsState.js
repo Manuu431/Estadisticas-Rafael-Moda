@@ -1,8 +1,8 @@
 export const EMPTY_MESSAGE = 'No hay clientes con estos filtros.';
 
-export function clientsState({ data, error }) {
+export function clientsState({ data, settled, error }) {
     if (error) return { kind: 'error' };
-    if (data === null) return { kind: 'loading' };
+    if (data === null || settled === false) return { kind: 'loading' };
     if (data.length > 0) return { kind: 'ready' };
     return { kind: 'empty', message: EMPTY_MESSAGE };
 }

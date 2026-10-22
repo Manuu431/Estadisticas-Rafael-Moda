@@ -18,9 +18,9 @@ function Sales(props) {
     const [filters, setFilters] = useState({});
     const [period, setPeriod] = useState(DEFAULT_SALES_PERIOD);
     const range = salesPeriodRange(period, new Date());
-    const { data, error, refetch } = useFetch(DATABASE_TABLES["sales"].endpoint, { ...filters, sale_date_min: apiDate(range.from), sale_date_max: apiDate(range.to) });
+    const { data, settled, error, refetch } = useFetch(DATABASE_TABLES["sales"].endpoint, { ...filters, sale_date_min: apiDate(range.from), sale_date_max: apiDate(range.to) });
     const summary = useMemo(() => summarizeSales(data ?? NO_ROWS), [data]);
-    const state = salesState({ data, error, period, filters });
+    const state = salesState({ data, settled, error, period, filters });
     const isMobile = useIsMobile();
 
     return (

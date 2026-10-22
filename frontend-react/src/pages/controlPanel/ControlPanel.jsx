@@ -11,7 +11,7 @@ import { PeriodFilter, SectionFilter } from './cards/Filters.jsx';
 import { PERIOD_VALUES, SECTION_VALUES } from './cards/filterOptions.js';
 import { DATABASE_TABLES } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
-import { apiDate, formatLongRange, formatMonthTitle, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, shiftYear, yearChartRange } from '../../utils/dates.js';
+import { apiDate, formatLongRange, formatMonthTitle, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, previousYearMonth, shiftYear, yearChartRange } from '../../utils/dates.js';
 
 const STATISTICS = DATABASE_TABLES.statistics;
 const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -50,7 +50,7 @@ function ControlPanel(props) {
     const weekQuery = query(week.from, week.to, shiftYear(week.from), shiftYear(week.to));
     const weekSummary = useFetch(STATISTICS.summary, weekQuery);
     const weekDaily = useFetch(STATISTICS.daily, weekQuery);
-    const monthSummary = useFetch(STATISTICS.summary, query(month.start, month.end, subYears(month.start, 1), subYears(month.end, 1)));
+    const monthSummary = useFetch(STATISTICS.summary, query(month.start, month.end, previousYearMonth(month).start, previousYearMonth(month).end));
     const monthDaily = useFetch(STATISTICS.daily, query(chart.from, chart.to, subYears(chart.from, 1), subYears(chart.to, 1)));
     const brands = useFetch(STATISTICS.brands, { from: apiDate(brandRange.from), to: apiDate(brandRange.to), ...(section ? { section } : {}) });
     const campaigns = useFetch(DATABASE_TABLES.campaigns.endpoint, section ? { section } : undefined);

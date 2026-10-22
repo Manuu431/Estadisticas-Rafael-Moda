@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatClientsRegistered, formatEuros, formatEurosSigned, formatMoney, formatNumber, formatPercent, formatSalesLines, formatShare, formatUnits } from './format.js';
+import { formatClientsRegistered, formatEuros, formatEurosSigned, formatMoney, formatNumber, formatPercent, percentDirection, formatSalesLines, formatShare, formatUnits } from './format.js';
 
 describe('formatEuros', () => {
     it('agrupa los miles también con cuatro cifras', () => {
@@ -85,5 +85,17 @@ describe('formatEurosSigned', () => {
         expect(formatEurosSigned(3960.4, { round: true })).toBe('+3.960\u00a0€');
         expect(formatEurosSigned(-1200, { round: true })).toBe('−1.200\u00a0€');
         expect(formatEurosSigned(0, { round: true })).toBe('+0\u00a0€');
+    });
+});
+
+describe('porcentajes que se redondean a cero', () => {
+    it('se escriben sin signo', () => {
+        expect(formatPercent(-0.04)).toBe('0,0 %');
+        expect(formatPercent(0.04)).toBe('0,0 %');
+    });
+    it('la dirección se decide con el número que se ve', () => {
+        expect(percentDirection(-0.04)).toBe('flat');
+        expect(percentDirection(0.05)).toBe('up');
+        expect(percentDirection(-0.06)).toBe('down');
     });
 });

@@ -1,5 +1,5 @@
 import { getValueLabel } from '../../config/labels.js';
-import { formatEuros } from '../../utils/format.js';
+import { formatEuros, formatEurosSigned } from '../../utils/format.js';
 import { formatSaleDay, formatSaleTime } from '../../utils/dates.js';
 
 const COLUMNS = ['Fecha', 'Prenda', 'Marca', 'Sección', 'Talla', 'Uds.', 'Importe', 'Beneficio'];
@@ -32,7 +32,7 @@ function SalesTable({ data }) {
                     <span role="cell">{item.size}</span>
                     <span role="cell" className="sales-num">{item.units}</span>
                     <span role="cell" className="sales-num sales-amount">{formatEuros(item.amount)}</span>
-                    <span role="cell" className="sales-num sales-profit">{formatEuros(item.profit)}</span>
+                    <span role="cell" className={`sales-num sales-profit${item.profit < 0 ? ' is-negative' : ''}`}>{item.profit < 0 ? formatEurosSigned(item.profit) : formatEuros(item.profit)}</span>
                 </div>
             ))}
         </div>

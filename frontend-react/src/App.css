@@ -3080,6 +3080,11 @@
     color: var(--rm-negative);
 }
 
+.delta-pill.is-flat {
+    background-color: var(--rm-tint);
+    color: var(--rm-nav);
+}
+
 .chart-tooltip {
     padding: 0.625rem 0.75rem;
     border: 1px solid var(--rm-line);
@@ -3334,6 +3339,11 @@
     font-weight: 600;
     color: var(--rm-positive);
     white-space: nowrap;
+}
+
+.sales-profit.is-negative,
+.sales-item-profit.is-negative {
+    color: var(--rm-negative);
 }
 
 .clients-page {
