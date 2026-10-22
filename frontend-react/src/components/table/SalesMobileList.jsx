@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { formatEuros, formatEurosSigned, formatNumber, formatMoney } from '../../utils/format.js';
+import ShowMoreButton from './ShowMoreButton.jsx';
+import { formatEuros, formatEurosSigned, formatMoney } from '../../utils/format.js';
 import { formatSaleTime } from '../../utils/dates.js';
 import { dayTitle, groupByDay, remainingCount, saleMeta, sortLatestFirst } from '../../utils/salesDays.js';
 
@@ -33,11 +34,7 @@ function SalesMobileList({ rows, total, days, onMore }) {
                     </ul>
                 </section>
             ))}
-            {remaining > 0 && (
-                <button type="button" className="m-btn w-100" onClick={onMore}>
-                    Ver más ventas ({formatNumber(remaining)})
-                </button>
-            )}
+            <ShowMoreButton remaining={remaining} noun="ventas" onClick={onMore} />
         </div>
     );
 }
