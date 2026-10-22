@@ -12,19 +12,7 @@ const datePartsInMadrid = (date) => Object.fromEntries(
 
 const formatDate = ({ year, month, day }) => `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-const previousMadridDate = (now = new Date()) => {
-  const { year, month, day } = datePartsInMadrid(now);
-  const previous = new Date(Date.UTC(year, month - 1, day - 1));
-  return formatDate({ year: previous.getUTCFullYear(), month: previous.getUTCMonth() + 1, day: previous.getUTCDate() });
-};
-
-const dailyProcessDate = (now = new Date()) => {
-  const local = Object.fromEntries(
-    new Intl.DateTimeFormat('en-GB', { timeZone: TIME_ZONE, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
-      .formatToParts(now).filter((part) => part.type !== 'literal').map(({ type, value }) => [type, Number(value)])
-  );
-  return local.hour * 60 + local.minute >= 20 * 60 + 30 ? formatDate(datePartsInMadrid(now)) : previousMadridDate(now);
-};
+const dailyProcessDate = (now = new Date()) => formatDate(datePartsInMadrid(now));
 
 const seededRandom = (date) => {
   let state = [...date].reduce((value, char) => (Math.imul(value, 31) + char.charCodeAt(0)) | 0, 7);
@@ -59,10 +47,6 @@ const buildDailySales = ({ date, catalog, now = new Date() }) => {
   if (weekday === 0) return { tickets: [], lines: [] };
 
   const random = seededRandom(date);
-  const localNow = Object.fromEntries(
-    new Intl.DateTimeFormat('en-GB', { timeZone: TIME_ZONE, hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
-      .formatToParts(now).filter((part) => part.type !== 'literal').map(({ type, value }) => [type, Number(value)])
-  );
   const between = (min, max) => min + random() * (max - min);
   const intBetween = (min, max) => Math.floor(between(min, max + 1));
   const monthlyWeight = MONTH_WEIGHT[month - 1];
@@ -76,7 +60,6 @@ const buildDailySales = ({ date, catalog, now = new Date() }) => {
     const slot = weighted(HOUR_SLOTS.map((entry) => [entry, entry[2]]), random);
     const minute = intBetween(0, slot[1] - 1);
     const second = intBetween(0, 59);
-    if (date === todayInMadrid && slot[0] * 3600 + minute * 60 + second > localNow.hour * 3600 + localNow.minute * 60 + localNow.second) continue;
     const saleTicketIndex = tickets.length;
     tickets.push({ soldAt: `${date} ${String(slot[0]).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')}` });
     const lineCount = weighted([[1, 60], [2, 28], [3, 9], [4, 3]], random);
@@ -117,4 +100,4 @@ const buildCurrentYearEditions = ({ types, existingPeriods, date }) => {
   return rows;
 };
 
-module.exports = { TIME_ZONE, datePartsInMadrid, previousMadridDate, dailyProcessDate, buildDailySales, buildCurrentYearEditions };
+module.exports = { TIME_ZONE, datePartsInMadrid, dailyProcessDate, buildDailySales, buildCurrentYearEditions };

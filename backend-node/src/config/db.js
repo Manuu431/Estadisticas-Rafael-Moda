@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const { madridUtcOffset } = require('../utils/timezone');
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -15,5 +16,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
   ssl: process.env.DB_CA ? { ca: process.env.DB_CA.replace(/\\n/g, '\n'), rejectUnauthorized: true } : undefined
 });
+
+pool.pool.on('connection', (connection) => connection.query('SET time_zone = ?', [madridUtcOffset()]));
 
 module.exports = pool;

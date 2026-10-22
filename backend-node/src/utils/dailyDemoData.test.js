@@ -1,14 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { previousMadridDate, dailyProcessDate, buildDailySales, buildCurrentYearEditions } = require('./dailyDemoData');
+const { dailyProcessDate, buildDailySales, buildCurrentYearEditions } = require('./dailyDemoData');
 
-test('Madrid day selection handles UTC rollover, year change, and daylight saving offsets', () => {
-  assert.equal(previousMadridDate(new Date('2026-01-01T00:30:00Z')), '2025-12-31');
-  assert.equal(previousMadridDate(new Date('2026-01-01T02:30:00Z')), '2025-12-31');
-  assert.equal(previousMadridDate(new Date('2026-07-01T01:30:00Z')), '2026-06-30');
-  assert.equal(dailyProcessDate(new Date('2026-01-01T18:00:00Z')), '2025-12-31');
-  assert.equal(dailyProcessDate(new Date('2026-01-01T20:00:00Z')), '2026-01-01');
-  assert.equal(dailyProcessDate(new Date('2026-07-01T18:30:00Z')), '2026-07-01');
+test('The processed day is always today in Madrid, including UTC rollover and year change', () => {
+  assert.equal(dailyProcessDate(new Date('2026-01-01T18:00:00Z')), '2026-01-01');
+  assert.equal(dailyProcessDate(new Date('2026-01-01T06:00:00Z')), '2026-01-01');
+  assert.equal(dailyProcessDate(new Date('2025-12-31T23:30:00Z')), '2026-01-01');
+  assert.equal(dailyProcessDate(new Date('2026-07-01T06:00:00Z')), '2026-07-01');
 });
 
 test('daily generation is deterministic for the requested Madrid date', () => {
@@ -20,7 +18,15 @@ test('daily generation is deterministic for the requested Madrid date', () => {
   assert.ok(generated.lines.every((line) => line.productId === 4 && line.size === 'M'));
 });
 
-test('generation accepts elapsed times from today and rejects future and invalid dates', () => {
+test('the whole day is generated whatever the time it runs, so the morning run fills today', () => {
+  const catalog = [{ product_id: 1, size: 'S', unit_price: 50, unit_cost: 25 }];
+  const morning = buildDailySales({ date: '2026-10-22', now: new Date('2026-10-22T06:00:00Z'), catalog });
+  const evening = buildDailySales({ date: '2026-10-22', now: new Date('2026-10-22T21:00:00Z'), catalog });
+  assert.deepEqual(morning, evening);
+  assert.ok(morning.tickets.some((ticket) => ticket.soldAt.slice(11, 13) >= '17'));
+});
+
+test('generation accepts today and rejects future and invalid dates', () => {
   const common = { now: new Date('2026-10-22T21:00:00Z'), catalog: [{ product_id: 1, size: 'S', unit_price: 50, unit_cost: 25 }] };
   const today = buildDailySales({ ...common, date: '2026-10-22' });
   assert.ok(today.tickets.length > 0);

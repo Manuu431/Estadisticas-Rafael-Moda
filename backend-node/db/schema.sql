@@ -157,4 +157,5 @@ FROM sale_lines l
 JOIN tickets t ON t.id = l.ticket_id
 JOIN products p ON p.id = l.product_id
 JOIN brands b ON b.id = p.brand_id
-JOIN families f ON f.id = p.family_id;
+JOIN families f ON f.id = p.family_id
+WHERE t.sold_at <= NOW();
