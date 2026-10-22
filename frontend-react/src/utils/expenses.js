@@ -2,7 +2,7 @@ import { differenceInCalendarDays, format, getDaysInMonth, parseISO, startOfDay 
 import { es } from 'date-fns/locale';
 import { apiDate } from './dates.js';
 import { bucketLabel, bucketRanges, bucketStarts, defaultPair, formatBucketRange } from './compare.js';
-import { formatEuros, formatEurosRound, formatNumber, formatShare } from './format.js';
+import { capitalize, formatEuros, formatEurosRound, formatNumber, formatShare, round2 } from './format.js';
 import { customPeriodError, periodApplyError, salesPeriodRange } from './salesPeriod.js';
 
 export const TABLE_ROWS = 7;
@@ -102,8 +102,6 @@ export function axisLabel(value) {
 
 export const chartPeak = (buckets) => Math.max(0, ...buckets.flatMap((bucket) => [bucket.amount, bucket.cost]));
 
-const round = (value) => Math.round(value * 100) / 100;
-
 const bucket = (key, label, name, found, short = label) => {
     const amount = found?.amount ?? 0;
     const profit = found?.profit ?? 0;
@@ -125,8 +123,7 @@ function monthKeys(from, to) {
 }
 
 const weekdayName = (date) => {
-    const name = format(parseISO(date), 'EEEE', { locale: es });
-    return name.charAt(0).toUpperCase() + name.slice(1);
+    return capitalize(format(parseISO(date), 'EEEE', { locale: es }));
 };
 
 function dayBuckets(grain, data) {
@@ -137,7 +134,7 @@ function dayBuckets(grain, data) {
         const name = formatBucketRange(span);
         if (grain === 'day') return bucket(span.from, label, name, found.get(span.from), `${weekdayName(span.from)} ${label}`);
         const days = data.rows.filter((row) => row.key >= span.from && row.key <= span.to);
-        const total = (field) => round(days.reduce((sum, row) => sum + row[field], 0));
+        const total = (field) => round2(days.reduce((sum, row) => sum + row[field], 0));
         const sameMonth = span.from.slice(0, 7) === span.to.slice(0, 7);
         const short = `${sameMonth ? Number(span.from.slice(8, 10)) : label} – ${bucketLabel(span.to, grain, false)}`;
         return bucket(span.from, label, name, { amount: total('amount'), cost: total('cost'), profit: total('profit') }, short);

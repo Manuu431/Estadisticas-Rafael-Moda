@@ -2,8 +2,7 @@ import { format, isSameDay, isSameMonth, isSameYear, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { getValueLabel } from '../config/labels.js';
 import { summarizeSales } from './statisticsData.js';
-
-const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+import { capitalize } from './format.js';
 
 export function dayTitle(value, today) {
     const date = parseISO(value.slice(0, 10));

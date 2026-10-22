@@ -1,6 +1,6 @@
 import { parseISO, startOfDay, eachDayOfInterval } from 'date-fns';
+import { round2 } from './format.js';
 
-const round = (value) => Math.round(value * 100) / 100;
 const dayKey = (date) => `${date.getMonth()}-${date.getDate()}`;
 
 const groupByDay = (rows) => {
@@ -26,7 +26,7 @@ export function summarizeSales(sales) {
 export function fillDays(rows, from, to) {
     const days = eachDayOfInterval({ start: startOfDay(from), end: startOfDay(to) });
     const totals = new Map(rows.map((row) => [startOfDay(parseISO(row.date)).getTime(), Number(row.total)]));
-    return days.map((date) => ({ date, total: round(totals.get(date.getTime()) ?? 0) }));
+    return days.map((date) => ({ date, total: round2(totals.get(date.getTime()) ?? 0) }));
 }
 
 export function accumulate(rows, previousRows, from, to) {
@@ -38,7 +38,7 @@ export function accumulate(rows, previousRows, from, to) {
     return days.map((date) => {
         totalCurrent += current.get(dayKey(date)) ?? 0;
         totalPrevious += previous.get(dayKey(date)) ?? 0;
-        return { date, current: round(totalCurrent), previous: round(totalPrevious) };
+        return { date, current: round2(totalCurrent), previous: round2(totalPrevious) };
     });
 }
 
@@ -47,7 +47,7 @@ export function monthComparison(total, previousTotal) {
     const hasPrevious = previousTotal > 0;
     return {
         beaten,
-        difference: round(Math.abs(total - previousTotal)),
+        difference: round2(Math.abs(total - previousTotal)),
         delta: hasPrevious ? (total / previousTotal - 1) * 100 : null,
         progress: hasPrevious ? Math.min(100, (total / previousTotal) * 100) : (total > 0 ? 100 : 0)
     };

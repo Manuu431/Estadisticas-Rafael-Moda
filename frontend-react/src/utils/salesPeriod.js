@@ -1,6 +1,7 @@
 import { format, isBefore, isSameDay, isSameMonth, isSameYear, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { formatLongRange, formatMonthOfYear, periodRange } from './dates.js';
+import { capitalize } from './format.js';
 
 export const SALES_PERIODS = [
     { value: 'hoy', label: 'Hoy' },
@@ -12,7 +13,6 @@ export const SALES_PERIODS = [
 
 export const DEFAULT_SALES_PERIOD = { key: 'mes', from: '', to: '' };
 
-const capitalize =(text) => text.charAt(0).toUpperCase() + text.slice(1);
 const dayMonth = (date) => format(date, "d 'de' MMMM", { locale: es });
 const dayMonthYear = (date) => format(date, "d 'de' MMMM 'de' yyyy", { locale: es });
 

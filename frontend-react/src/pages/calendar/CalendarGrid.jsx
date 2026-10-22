@@ -2,11 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { format, isSameDay, isSameMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { dayEvents, limitLanes, monthWeeks, outsideRange, weekLayout } from '../../utils/calendar.js';
+import { capitalize } from '../../utils/format.js';
 
 
 const MAX_LANES = 4;
-
-const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
 const gridPlace = (event) => ({ '--col': `${event.startCol + 1} / ${event.endCol + 2}`, '--row': event.lane + 1 });
 

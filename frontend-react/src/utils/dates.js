@@ -1,9 +1,12 @@
 import { endOfMonth, format, isSameMonth, isSameYear, startOfDay, startOfMonth, parseISO, startOfYear, subDays, subMonths, subYears } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { capitalize } from './format.js';
 
 export const COMPARABLE_DAY_OFFSET = 364;
 
-const SHORT_MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+export const SHORT_MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+export const parseDay = (value) => startOfDay(parseISO(value));
 
 const shortDay = (date, withYear) => {
     const month = SHORT_MONTHS[date.getMonth()];
@@ -52,8 +55,7 @@ export function previousYearMonth(month) {
 }
 
 export function formatMonthTitle(date) {
-    const name = format(date, 'MMMM', { locale: es });
-    return name.charAt(0).toUpperCase() + name.slice(1);
+    return capitalize(format(date, 'MMMM', { locale: es }));
 }
 
 export function formatMonthOfYear(date) {

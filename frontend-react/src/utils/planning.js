@@ -1,7 +1,7 @@
-import { differenceInCalendarDays, format, parseISO, startOfDay } from 'date-fns';
+import { differenceInCalendarDays, format, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { parseDay } from './dates.js';
 
-const day = (value) => startOfDay(parseISO(value));
 const shortDate = (date) => format(date, 'd MMM', { locale: es });
 
 const NOUNS = {
@@ -32,8 +32,8 @@ export function yearLabel(startDate, endDate) {
 
 
 export function editionDates(startDate, endDate) {
-    const start = day(startDate);
-    const end = day(endDate);
+    const start = parseDay(startDate);
+    const end = parseDay(endDate);
     const sameYear = start.getFullYear() === end.getFullYear();
     const short = (date, withYear) => format(date, withYear ? 'd MMM yyyy' : 'd MMM', { locale: es });
     return `${short(start, !sameYear)} – ${short(end, true)}`;
@@ -47,8 +47,8 @@ export function sortEditions(editions) {
 
 
 function occurrences(type, editions, today) {
-    const savedYears = new Set(editions.map((edition) => day(edition.start_date).getFullYear()));
-    const saved = editions.filter((edition) => !edition.skipped).map((edition) => ({ start: day(edition.start_date), end: day(edition.end_date) }));
+    const savedYears = new Set(editions.map((edition) => parseDay(edition.start_date).getFullYear()));
+    const saved = editions.filter((edition) => !edition.skipped).map((edition) => ({ start: parseDay(edition.start_date), end: parseDay(edition.end_date) }));
     const year = today.getFullYear();
     const first = type.repeats ? Math.max(type.first_year, year - 1) : type.first_year;
     const limit = type.last_year ? Math.min(type.last_year, year + 1) : year + 1;
@@ -88,7 +88,7 @@ export function typeStatus(type, editions, today) {
 
 export function lastResult(editions, today) {
     const now = startOfDay(today);
-    const finished = editions.filter((edition) => !edition.skipped && day(edition.end_date) < now).sort((a, b) => b.end_date.localeCompare(a.end_date));
+    const finished = editions.filter((edition) => !edition.skipped && parseDay(edition.end_date) < now).sort((a, b) => b.end_date.localeCompare(a.end_date));
     if (finished.length === 0) return null;
     const [last] = finished;
     return { profit: Number(last.profits), year: yearLabel(last.start_date, last.end_date) };
@@ -96,7 +96,7 @@ export function lastResult(editions, today) {
 
 
 export function isStarted(edition, today) {
-    return day(edition.start_date) <= startOfDay(today);
+    return parseDay(edition.start_date) <= startOfDay(today);
 }
 
 export function countLabel(count, kind) {

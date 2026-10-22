@@ -1,7 +1,6 @@
 import { addMonths, format, startOfMonth, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
-
-const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+import { capitalize } from '../../utils/format.js';
 
 
 export function CalendarToolbar({ date, onNavigate, mobile = false }) {

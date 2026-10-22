@@ -12,10 +12,9 @@ import { PERIOD_VALUES, SECTION_VALUES } from './cards/filterOptions.js';
 import { DATABASE_TABLES } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
 import { apiDate, formatLongRange, formatMonthTitle, lastFinishedMonth, lastSevenDays, periodRange, periodSubtitle, previousYearMonth, shiftYear, yearChartRange } from '../../utils/dates.js';
+import { capitalize } from '../../utils/format.js';
 
 const STATISTICS = DATABASE_TABLES.statistics;
-const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
-
 function lastSaleLabel(lastSale) {
     if (!lastSale) return 'Sin ventas todavía';
     const moment = parseISO(lastSale.replace(' ', 'T'));

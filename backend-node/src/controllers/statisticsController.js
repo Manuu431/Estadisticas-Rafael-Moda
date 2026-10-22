@@ -1,8 +1,8 @@
 const pool = require('../config/db');
+const { SECTIONS } = require('../utils/sections');
 const { mergeBreakdown } = require('../utils/compare');
 const { readBy, groupExpression, buildExpenses } = require('../utils/expenses');
 
-const SECTIONS = ['mujer', 'hombre'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const WINDOW = 'v.sold_at >= ? AND v.sold_at < DATE_ADD(?, INTERVAL 1 DAY)';
 

@@ -1,5 +1,5 @@
 import { addDays, addMonths, addYears, differenceInCalendarDays, differenceInCalendarMonths, differenceInCalendarYears, endOfMonth, format, isBefore, parseISO, startOfDay, startOfMonth, startOfYear, subYears } from 'date-fns';
-import { apiDate, formatShortDay } from './dates.js';
+import { SHORT_MONTHS, apiDate, formatShortDay } from './dates.js';
 import { previousEdition } from './campaigns.js';
 
 export const COMPARE_MODES = [
@@ -25,7 +25,6 @@ export const COMPARE_GROUPS = [
     { value: 'color', label: 'Color', plural: 'colores' }
 ];
 
-const SHORT_MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const mondayFirst = (date) => (date.getDay() + 6) % 7;
 
 const NEXT_START = {

@@ -1,8 +1,8 @@
 const pool = require('../config/db');
+const { SECTIONS } = require('../utils/sections');
 const { filterColumns, normalizeDecimalFields } = require('../utils/columns');
 const { formatDateISO, periodLabel, buildPeriodInserts, validateType, isFrozen, parseType, planTypeUpdate } = require('../utils/dates');
 
-const SECTIONS = ['mujer', 'hombre'];
 const WINDOW = 'v.sold_at >= p.start_date AND v.sold_at < DATE_ADD(p.end_date, INTERVAL 1 DAY)';
 const PROFIT_SUM = `ROUND(COALESCE((SELECT SUM(v.profit) FROM v_sales v WHERE ${WINDOW}), 0), 2)`;
 const SECTION_PROFIT_SUM = `ROUND(COALESCE((SELECT SUM(v.profit) FROM v_sales v WHERE ${WINDOW} AND v.section = ?), 0), 2)`;

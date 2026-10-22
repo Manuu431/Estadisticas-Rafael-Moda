@@ -1,9 +1,9 @@
-import { addDays, differenceInCalendarDays, endOfMonth, endOfWeek, format, isSameMonth, parseISO, startOfDay, startOfMonth, startOfWeek } from 'date-fns';
+import { addDays, differenceInCalendarDays, endOfMonth, endOfWeek, format, isSameMonth, startOfDay, startOfMonth, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { parseDay } from './dates.js';
 
 const WEEK = { weekStartsOn: 1 };
 
-const day = (value) => startOfDay(parseISO(value));
 const shortDate = (date) => format(date, 'd MMM', { locale: es });
 const seasonLabel = (name, isStart) => `${isStart ? 'Empieza' : 'Termina'} ${name}`;
 
@@ -24,8 +24,8 @@ export function weekLayout(week, campaigns, seasons) {
     const col = (date) => differenceInCalendarDays(date, weekStart);
     const events = [];
     campaigns.forEach((campaign) => {
-        const start = day(campaign.start_date);
-        const end = day(campaign.end_date);
+        const start = parseDay(campaign.start_date);
+        const end = parseDay(campaign.end_date);
         if (end < weekStart || start > weekEnd) return;
         events.push({
             type: 'campaign',
@@ -41,7 +41,7 @@ export function weekLayout(week, campaigns, seasons) {
     const points = [];
     seasons.forEach((season) => {
         [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
-            const date = day(value);
+            const date = parseDay(value);
             if (date < weekStart || date > weekEnd) return;
             points.push({
                 type: 'season',
@@ -96,8 +96,8 @@ export function monthEvents(campaigns, seasons, month) {
     const to = endOfMonth(month);
     const events = [];
     campaigns.forEach((campaign) => {
-        const start = day(campaign.start_date);
-        const end = day(campaign.end_date);
+        const start = parseDay(campaign.start_date);
+        const end = parseDay(campaign.end_date);
         if (end < from || start > to) return;
         events.push({
             name: campaign.name,
@@ -110,7 +110,7 @@ export function monthEvents(campaigns, seasons, month) {
     });
     seasons.forEach((season) => {
         [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
-            const date = day(value);
+            const date = parseDay(value);
             if (date < from || date > to) return;
             events.push({
                 name: seasonLabel(season.name, isStart),
@@ -131,14 +131,14 @@ export function upcomingDates(campaigns, seasons, today, limit = 5) {
     const now = startOfDay(today);
     const dates = [];
     campaigns.forEach((campaign) => {
-        const start = day(campaign.start_date);
-        const end = day(campaign.end_date);
+        const start = parseDay(campaign.start_date);
+        const end = parseDay(campaign.end_date);
         if (start >= now) dates.push({ date: start, label: campaign.name, type: 'campaign', original: campaign });
         else if (end >= now) dates.push({ date: end, label: `Termina ${campaign.name}`, type: 'campaign', original: campaign });
     });
     seasons.forEach((season) => {
         [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
-            const date = day(value);
+            const date = parseDay(value);
             if (date >= now) dates.push({ date, label: seasonLabel(season.name, isStart), type: 'season', original: season });
         });
     });
