@@ -1,16 +1,27 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import Login from './pages/Login';
-import ControlPanel from './pages/controlPanel/ControlPanel';
-import Sales from './pages/Sales';
-import Clients from './pages/Clients';
-import Comparative from './pages/comparative/Comparative';
-import Calendar from './pages/calendar/Calendar';
-import Expenses from './pages/expenses/Expenses';
-import Planning from './pages/Planning';
-import More from './pages/More';
+
+const ControlPanel = lazy(() => import('./pages/controlPanel/ControlPanel'));
+const Sales = lazy(() => import('./pages/Sales'));
+const Clients = lazy(() => import('./pages/Clients'));
+const Comparative = lazy(() => import('./pages/comparative/Comparative'));
+const Calendar = lazy(() => import('./pages/calendar/Calendar'));
+const Expenses = lazy(() => import('./pages/expenses/Expenses'));
+const Planning = lazy(() => import('./pages/Planning'));
+const More = lazy(() => import('./pages/More'));
+
+function RouteLoading() {
+    return (
+        <div className="sales-state" role="status">
+            <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+            Cargando…
+        </div>
+    );
+}
 
 function App() {
     return (
@@ -22,6 +33,7 @@ function App() {
                     element={
                         <PrivateRoute>
                             <Layout>
+                                <Suspense fallback={<RouteLoading />}>
                                 <Routes>
                                 <Route path="/" element={<ControlPanel title="Hoy en la tienda" />} />
                                 <Route path="/ventas" element={<Sales title="Ventas" />} />
@@ -40,6 +52,7 @@ function App() {
                                 <Route path="/tipos-temporadas" element={<Navigate to="/planificacion/temporadas" replace />} />
                                 <Route path="*" element={<Navigate to="/" replace />} />
                                 </Routes>
+                                </Suspense>
                             </Layout>
                         </PrivateRoute>
                     }

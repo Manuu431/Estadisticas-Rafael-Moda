@@ -1,4 +1,5 @@
 const API_BASE = import.meta.env.VITE_API_URL;
+export const DATES_ONLY = { fields: 'dates' };
 export const DATABASE_TABLES = {
     users: {
         endpoint: `${API_BASE}/users`,

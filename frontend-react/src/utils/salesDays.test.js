@@ -71,6 +71,11 @@ describe('groupByDay', () => {
         expect(after).toBe(before);
     });
 
+    it('con los totales del servidor usa esos y no los de las líneas que tiene', () => {
+        const groups = groupByDay(rows.slice(0, 2), 2, { '2026-10-01': 217.18 });
+        expect(groups[0].sumCents).toBe(21718);
+    });
+
     it('no saca días de los que no se ve ninguna línea', () => {
         expect(groupByDay(rows, 3).map((group) => group.date)).toEqual(['2026-10-01']);
     });

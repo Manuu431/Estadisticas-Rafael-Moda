@@ -1,16 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { formatEuros, formatEurosSigned, formatNumber, formatMoney } from '../../utils/format.js';
 import { formatSaleTime } from '../../utils/dates.js';
 import { dayTitle, groupByDay, remainingCount, saleMeta, sortLatestFirst } from '../../utils/salesDays.js';
 
-const PAGE = 12;
-
-function SalesMobileList({ rows }) {
-    const [shown, setShown] = useState({ rows, count: PAGE });
-    const count = shown.rows === rows ? shown.count : PAGE;
+function SalesMobileList({ rows, total, days, onMore }) {
     const sorted = useMemo(() => sortLatestFirst(rows), [rows]);
-    const groups = groupByDay(sorted, count);
-    const remaining = remainingCount(sorted.length, count);
+    const groups = groupByDay(sorted, sorted.length, days);
+    const remaining = remainingCount(total, sorted.length);
     const today = new Date();
 
     return (
@@ -39,7 +35,7 @@ function SalesMobileList({ rows }) {
                 </section>
             ))}
             {remaining > 0 && (
-                <button type="button" className="m-btn w-100" onClick={() => setShown({ rows, count: count + PAGE })}>
+                <button type="button" className="m-btn w-100" onClick={onMore}>
                     Ver más ventas ({formatNumber(remaining)})
                 </button>
             )}

@@ -61,33 +61,34 @@ const generateEditions = async (type, existingKeys) => {
 const listPeriods = (kind) => async (req, res, next) => {
   const section = req.query.section ?? '';
   const includeSkipped = req.query.include_skipped === '1';
+  const datesOnly = req.query.fields === 'dates';
   if (section !== '' && !SECTIONS.includes(section)) return res.status(400).json({ error: 'Unknown section' });
   try {
-    const [rows] = await pool.query(
-      `SELECT p.id, p.period_type_id, p.start_date, p.end_date, p.expenses, p.skipped, t.name AS type_name,
+    const money = datesOnly ? '' : `,
               ${section ? SECTION_PROFIT_SUM : PROFIT_SUM} AS profits,
-              ${section ? SECTION_SHARE : 1} AS expense_share
+              ${section ? SECTION_SHARE : 1} AS expense_share`;
+    const [rows] = await pool.query(
+      `SELECT p.id, p.period_type_id, p.start_date, p.end_date, p.expenses, p.skipped, t.name AS type_name${money}
        FROM periods p
        JOIN period_types t ON t.id = p.period_type_id
        WHERE t.kind = ?${includeSkipped ? '' : ' AND p.skipped = 0'}
        ORDER BY p.start_date DESC`,
-      section ? [section, section, kind] : [kind]
+      section && !datesOnly ? [section, section, kind] : [kind]
     );
     const periods = rows.map((row) => {
-      const profits = Number(row.profits);
-      const expenses = round2(Number(row.expenses) * Number(row.expense_share));
-      return {
+      const edition = {
         id: row.id,
         period_type_id: row.period_type_id,
         name: periodLabel(row.type_name, row.start_date, row.end_date),
         type_name: row.type_name,
         start_date: row.start_date,
         end_date: row.end_date,
-        skipped: row.skipped === 1,
-        expenses,
-        profits,
-        balance: round2(profits - expenses)
+        skipped: row.skipped === 1
       };
+      if (datesOnly) return edition;
+      const profits = Number(row.profits);
+      const expenses = round2(Number(row.expenses) * Number(row.expense_share));
+      return { ...edition, expenses, profits, balance: round2(profits - expenses) };
     });
     res.json(periods.filter((period) => matchesFilters(period, req.query)));
   } catch (err) {

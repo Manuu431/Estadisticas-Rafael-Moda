@@ -7,7 +7,7 @@ import ExpensesChart from './ExpensesChart.jsx';
 import ExpensesTable from './ExpensesTable.jsx';
 import ExpensesSkeleton from './ExpensesSkeleton.jsx';
 import { CardError } from '../controlPanel/cards/CardState.jsx';
-import { DATABASE_TABLES } from '../../config/database.js';
+import { DATABASE_TABLES, DATES_ONLY } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
 import { useIsMobile } from '../../utils/useIsMobile.js';
 import { GRAINS, chosenPeriod, datesNotice, expensesBuckets, expensesParams, expensesRange, expensesState, expensesTable, periodCount, periodMenu, periodText, skeletonRows, TABLE_ROWS, startedPeriods, wholeRange } from '../../utils/expenses.js';
@@ -24,7 +24,7 @@ function Expenses({ title }) {
     const [grain, setGrain] = useState('month');
     const [shown, setShown] = useState(null);
 
-    const list = useFetch(LISTS[kind] ? DATABASE_TABLES[LISTS[kind]].endpoint : null);
+    const list = useFetch(LISTS[kind] ? DATABASE_TABLES[LISTS[kind]].endpoint : null, DATES_ONLY);
     const started = useMemo(() => startedPeriods(list.data, today), [list.data, today]);
     const item = LISTS[kind] ? chosenPeriod(started, picks[kind], today) : null;
 

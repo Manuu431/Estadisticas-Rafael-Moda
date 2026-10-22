@@ -5,7 +5,7 @@ import CompareKpis from './CompareKpis.jsx';
 import CompareChart from './CompareChart.jsx';
 import CompareBreakdown from './CompareBreakdown.jsx';
 import { CardError, Skeleton } from '../controlPanel/cards/CardState.jsx';
-import { DATABASE_TABLES } from '../../config/database.js';
+import { DATABASE_TABLES, DATES_ONLY } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
 import { previousEdition } from '../../utils/campaigns.js';
 import {
@@ -46,7 +46,7 @@ function Comparative({ title }) {
     const [bucket, setBucket] = useState('week');
     const [group, setGroup] = useState('brand');
 
-    const list = useFetch(mode === 'dates' ? null : DATABASE_TABLES[mode].endpoint);
+    const list = useFetch(mode === 'dates' ? null : DATABASE_TABLES[mode].endpoint, DATES_ONLY);
     const started = useMemo(
         () => (list.data ?? []).filter((item) => item.start_date <= apiDate(today)),
         [list.data, today]

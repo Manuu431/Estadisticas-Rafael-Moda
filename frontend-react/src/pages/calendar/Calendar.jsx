@@ -7,7 +7,7 @@ import { CalendarGrid } from './CalendarGrid.jsx';
 import { CalendarToolbar } from './CalendarToolbar.jsx';
 import { openItem } from './calendarEvents.js';
 import { CardError, Skeleton } from '../controlPanel/cards/CardState.jsx';
-import { DATABASE_TABLES } from "../../config/database.js";
+import { DATABASE_TABLES, DATES_ONLY } from "../../config/database.js";
 import { useFetch } from "../../hooks/useFetch.js";
 import { daysLabel, monthEvents, upcomingDates } from "../../utils/calendar.js";
 import { useIsMobile } from "../../utils/useIsMobile.js";
@@ -96,8 +96,8 @@ function MonthList({ state, events, month, onRetry }) {
 }
 
 function Calendar(props) {
-    const campaignsFetch = useFetch(DATABASE_TABLES['campaigns'].endpoint);
-    const seasonsFetch = useFetch(DATABASE_TABLES['seasons'].endpoint);
+    const campaignsFetch = useFetch(DATABASE_TABLES['campaigns'].endpoint, DATES_ONLY);
+    const seasonsFetch = useFetch(DATABASE_TABLES['seasons'].endpoint, DATES_ONLY);
     const [month, setMonth] = useState(startOfMonth(new Date()));
     const navigate = useNavigate();
     const isMobile = useIsMobile();

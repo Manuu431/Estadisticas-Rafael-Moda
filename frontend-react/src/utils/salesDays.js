@@ -16,7 +16,7 @@ export function dayTitle(value, today) {
 export const sortLatestFirst = (rows) =>
     [...rows].sort((a, b) => b.sold_at.localeCompare(a.sold_at) || b.id - a.id);
 
-export function groupByDay(rows, visible) {
+export function groupByDay(rows, visible, dayTotals) {
     const fullDays = new Map();
     rows.forEach((row) => {
         if (!fullDays.has(row.sale_date)) fullDays.set(row.sale_date, []);
@@ -26,7 +26,7 @@ export function groupByDay(rows, visible) {
     rows.slice(0, visible).forEach((row) => {
         let group = groups.find((entry) => entry.date === row.sale_date);
         if (!group) {
-            group = { date: row.sale_date, sumCents: summarizeSales(fullDays.get(row.sale_date)).amountCents, items: [] };
+            group = { date: row.sale_date, sumCents: dayTotals?.[row.sale_date] !== undefined ? Math.round(dayTotals[row.sale_date] * 100) : summarizeSales(fullDays.get(row.sale_date)).amountCents, items: [] };
             groups.push(group);
         }
         group.items.push(row);

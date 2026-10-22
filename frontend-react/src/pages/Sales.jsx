@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import SalesFilters from "../components/SalesFilters.jsx";
 import Table from "../components/table/Table.jsx";
 import SalesPlaceholder from "../components/table/SalesPlaceholder.jsx";
@@ -6,22 +6,44 @@ import SalesMobileList from "../components/table/SalesMobileList.jsx";
 import SalesSummary, { SalesSummaryCard } from "../components/SalesSummary.jsx";
 import { DATABASE_TABLES } from "../config/database.js";
 import { useFetch } from "../hooks/useFetch.js";
-import { summarizeSales } from "../utils/statisticsData.js";
 import { apiDate } from "../utils/dates.js";
 import { DEFAULT_SALES_PERIOD, salesPeriodLabel, salesPeriodRange } from "../utils/salesPeriod.js";
+import { PAGE_SIZE, salesRequest, salesSummary } from "../utils/salesPage.js";
 import { salesState } from "../utils/salesState.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
-
-const NO_ROWS = [];
 
 function Sales(props) {
     const [filters, setFilters] = useState({});
     const [period, setPeriod] = useState(DEFAULT_SALES_PERIOD);
-    const range = salesPeriodRange(period, new Date());
-    const { data, settled, error, refetch } = useFetch(DATABASE_TABLES["sales"].endpoint, { ...filters, sale_date_min: apiDate(range.from), sale_date_max: apiDate(range.to) });
-    const summary = useMemo(() => summarizeSales(data ?? NO_ROWS), [data]);
-    const state = salesState({ data, settled, error, period, filters });
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(PAGE_SIZE);
+    const [ready, setReady] = useState({ key: null, data: null });
     const isMobile = useIsMobile();
+    const range = salesPeriodRange(period, new Date());
+    const dates = { sale_date_min: apiDate(range.from), sale_date_max: apiDate(range.to) };
+    const filterKey = JSON.stringify({ ...filters, ...dates });
+    const { data, settled, error, refetch } = useFetch(DATABASE_TABLES["sales"].endpoint, salesRequest({ ...filters, ...dates }, { isMobile, page, count }));
+
+    useEffect(() => {
+        if (settled && data) setReady({ key: filterKey, data });
+    }, [settled, data, filterKey]);
+
+    const previous = !settled && ready.key === filterKey ? ready.data : null;
+    const shown = settled ? data : previous;
+    const state = salesState({ data: shown?.rows ?? null, settled: settled || previous !== null, error, period, filters });
+    const summary = salesSummary(shown?.summary);
+
+    const changeFilters = useCallback((next) => {
+        setFilters(next);
+        setPage(1);
+        setCount(PAGE_SIZE);
+    }, []);
+
+    const changePeriod = (next) => {
+        setPeriod(next);
+        setPage(1);
+        setCount(PAGE_SIZE);
+    };
 
     return (
         <div className="sales-page">
@@ -33,8 +55,12 @@ function Sales(props) {
                 {isMobile ? null : <SalesSummary kind={state.kind} summary={summary} />}
             </header>
             {isMobile ? <SalesSummaryCard kind={state.kind} summary={summary} /> : null}
-            <SalesFilters period={period} onPeriodChange={setPeriod} onFilterChange={setFilters} />
-            {state.kind !== 'ready' ? <SalesPlaceholder state={state} onRetry={refetch} /> : isMobile ? <SalesMobileList rows={data} /> : <Table rows={data} />}
+            <SalesFilters period={period} onPeriodChange={changePeriod} onFilterChange={changeFilters} />
+            {state.kind !== 'ready' ? <SalesPlaceholder state={state} onRetry={refetch} /> : isMobile ? (
+                <SalesMobileList rows={shown.rows} total={summary.lines} days={shown.days} onMore={() => setCount((current) => current + PAGE_SIZE)} />
+            ) : (
+                <Table rows={shown.rows} total={summary.lines} page={page} onPageChange={setPage} />
+            )}
         </div>
     );
 }
