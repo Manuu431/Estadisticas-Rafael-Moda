@@ -11,11 +11,9 @@ function CompareBreakdown({ rows, group, names, isMobile }) {
     const totalPages = Math.ceil(rows.length / BREAKDOWN_PAGE_SIZE);
     const visible = rows.slice((page - 1) * BREAKDOWN_PAGE_SIZE, page * BREAKDOWN_PAGE_SIZE);
     const nameOf = (row) => getValueLabel(group, row.name);
-
-    if (rows.length === 0) return <p className="panel-note m-0">No hay ventas en estos periodos.</p>;
-
+    if (rows.length === 0) return <p className="m-0 panel-note">No hay ventas en estos periodos.</p>;
     const list = isMobile ? (
-        <ul className="compare-list list-unstyled m-0">
+        <ul className="list-unstyled m-0 compare-list">
             {visible.map((row) => (
                 <li className="compare-item" key={row.name}>
                     <span className="compare-item-main">
@@ -47,7 +45,6 @@ function CompareBreakdown({ rows, group, names, isMobile }) {
             ))}
         </div>
     );
-
     return (
         <>
             <div className="compare-body">{list}</div>

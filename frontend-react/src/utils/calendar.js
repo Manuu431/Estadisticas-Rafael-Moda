@@ -15,15 +15,14 @@ export function monthWeeks(month) {
     );
 }
 
-// Cada evento de la semana lleva su carril (la línea en la que se pinta). Se reparten primero las campañas,
-// de la más larga a la más corta, y después los cambios de temporada, así una campaña no cambia de carril
-// a mitad de semana y los cambios de temporada rellenan los huecos.
+
+
+
 export function weekLayout(week, campaigns, seasons) {
     const weekStart = startOfDay(week[0]);
     const weekEnd = startOfDay(week[6]);
     const col = (date) => differenceInCalendarDays(date, weekStart);
     const events = [];
-
     campaigns.forEach((campaign) => {
         const start = day(campaign.start_date);
         const end = day(campaign.end_date);
@@ -39,7 +38,6 @@ export function weekLayout(week, campaigns, seasons) {
         });
     });
     events.sort((a, b) => a.startCol - b.startCol || b.endCol - a.endCol);
-
     const points = [];
     seasons.forEach((season) => {
         [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
@@ -56,7 +54,6 @@ export function weekLayout(week, campaigns, seasons) {
         });
     });
     points.sort((a, b) => a.startCol - b.startCol);
-
     const lanes = [];
     [...events, ...points].forEach((event) => {
         let lane = lanes.findIndex((busy) => busy.every((c) => c < event.startCol || c > event.endCol));
@@ -67,15 +64,13 @@ export function weekLayout(week, campaigns, seasons) {
         for (let c = event.startCol; c <= event.endCol; c += 1) lanes[lane].push(c);
         event.lane = lane;
     });
-
     return { events: [...events, ...points], laneCount: lanes.length };
 }
 
-// Si la semana tiene más carriles de los que caben, el último carril visible se reserva para «+N más»
-// y cada día cuenta cuántos eventos se le han quedado ocultos.
+
+
 export function limitLanes(layout, maxLanes) {
     if (layout.laneCount <= maxLanes) return { events: layout.events, more: [] };
-
     const visible = maxLanes - 1;
     const hidden = layout.events.filter((event) => event.lane >= visible);
     const more = [];
@@ -86,7 +81,7 @@ export function limitLanes(layout, maxLanes) {
     return { events: layout.events.filter((event) => event.lane < visible), more };
 }
 
-// Los eventos de un día concreto, para la lista que despliega «+N más».
+
 export function dayEvents(date, campaigns, seasons) {
     const target = startOfDay(date);
     const week = Array.from({ length: 7 }, (_, col) => addDays(startOfWeek(target, WEEK), col));
@@ -100,7 +95,6 @@ export function monthEvents(campaigns, seasons, month) {
     const from = startOfMonth(month);
     const to = endOfMonth(month);
     const events = [];
-
     campaigns.forEach((campaign) => {
         const start = day(campaign.start_date);
         const end = day(campaign.end_date);
@@ -114,7 +108,6 @@ export function monthEvents(campaigns, seasons, month) {
             original: campaign,
         });
     });
-
     seasons.forEach((season) => {
         [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
             const date = day(value);
@@ -129,30 +122,26 @@ export function monthEvents(campaigns, seasons, month) {
             });
         });
     });
-
     return events.sort((a, b) => a.sort - b.sort);
 }
 
-// Regla del diseño: de cada campaña futura, su inicio; de la que está en curso, su final; de las
-// temporadas, el inicio y el final. Una campaña que termina hoy sigue «en curso».
+
+
 export function upcomingDates(campaigns, seasons, today, limit = 5) {
     const now = startOfDay(today);
     const dates = [];
-
     campaigns.forEach((campaign) => {
         const start = day(campaign.start_date);
         const end = day(campaign.end_date);
         if (start >= now) dates.push({ date: start, label: campaign.name, type: 'campaign', original: campaign });
         else if (end >= now) dates.push({ date: end, label: `Termina ${campaign.name}`, type: 'campaign', original: campaign });
     });
-
     seasons.forEach((season) => {
         [[season.start_date, true], [season.end_date, false]].forEach(([value, isStart]) => {
             const date = day(value);
             if (date >= now) dates.push({ date, label: seasonLabel(season.name, isStart), type: 'season', original: season });
         });
     });
-
     return dates.sort((a, b) => a.date - b.date).slice(0, limit);
 }
 
@@ -162,8 +151,8 @@ export function daysLabel(days) {
     return `en ${days} días`;
 }
 
-// Cuántos días del tramo [startCol, endCol] caen fuera del mes, al principio y al final, para pintar esa
-// parte de la barra más clara. Un tramo entero fuera del mes se cuenta como «antes».
+
+
 export function outsideRange(week, month, startCol, endCol) {
     const outside = (col) => !isSameMonth(week[col], month);
     let before = 0;

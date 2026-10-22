@@ -23,11 +23,9 @@ function Expenses({ title }) {
     const [dates, setDates] = useState(() => ({ key: 'custom', from: `${today.getFullYear()}-01-01`, to: format(today, 'yyyy-MM-dd'), bad: [] }));
     const [grain, setGrain] = useState('month');
     const [shown, setShown] = useState(null);
-
     const list = useFetch(LISTS[kind] ? DATABASE_TABLES[LISTS[kind]].endpoint : null, DATES_ONLY);
     const started = useMemo(() => startedPeriods(list.data, today), [list.data, today]);
     const item = LISTS[kind] ? chosenPeriod(started, picks[kind], today) : null;
-
     const candidate = useMemo(() => {
         const range = expensesRange(kind, { item, dates }, today);
         return range ? { ...range, text: periodText(kind, range, item?.name) } : null;
@@ -35,7 +33,6 @@ function Expenses({ title }) {
     const candidateKey = candidate ? `${candidate.from}|${candidate.to}|${candidate.text}` : null;
     if (candidateKey && shown?.key !== candidateKey) setShown({ key: candidateKey, period: candidate, kind });
     const period = candidate ?? shown?.period ?? null;
-
     const params = expensesParams(grain, period);
     const request = useFetch(params ? DATABASE_TABLES.statistics.expenses : null, params ?? undefined);
     const data = request.settled && !request.loading ? request.data : null;
@@ -43,12 +40,10 @@ function Expenses({ title }) {
     const totals = data?.totals ?? NO_TOTALS;
     const view = data?.range && kind === 'all' ? { ...data, range: wholeRange(data.range, grain) } : data;
     const buckets = expensesBuckets(grain, view);
-
     const yearText = periodText('year', expensesRange('year', {}, today));
     const menuText = candidate?.text ?? (shown?.kind === kind ? shown.period.text : null);
     const menu = periodMenu(kind, menuText, yearText);
     const current = GRAINS.find((option) => option.value === grain);
-
     const content = (() => {
         if (state.kind === 'error') {
             return (
@@ -76,13 +71,12 @@ function Expenses({ title }) {
             </>
         );
     })();
-
     return (
         <div className="expenses-page">
             <div className="expenses-head">
-                <header className="panel-heading d-flex flex-column">
+                <header className="d-flex flex-column panel-heading">
                     <span className="panel-period">Lo que cuesta la ropa que vendes, frente a lo que ingresas</span>
-                    <h1 className="panel-title m-0">{title}</h1>
+                    <h1 className="m-0 panel-title">{title}</h1>
                 </header>
                 <ExpensesPeriod
                     menu={menu}

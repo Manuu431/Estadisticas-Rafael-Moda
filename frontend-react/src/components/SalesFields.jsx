@@ -64,14 +64,13 @@ export function CustomDates({ period, onChange }) {
             />
         </label>
     );
-
     return (
         <div className="d-flex flex-column gap-2">
             <div className="d-flex flex-wrap gap-2">
                 {dateField('from', 'Desde')}
                 {dateField('to', 'Hasta')}
             </div>
-            {error && <p className="panel-note text-negative m-0" role="alert">{error}</p>}
+            {error && <p className="text-negative m-0 panel-note" role="alert">{error}</p>}
         </div>
     );
 }

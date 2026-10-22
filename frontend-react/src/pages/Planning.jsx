@@ -77,7 +77,6 @@ function Planning(props) {
     const navigate = useNavigate();
     const isMobile = useIsMobile();
     const tab = TABS.find((item) => item.slug === slug) ?? TABS[0];
-
     const sources = {
         campaignTypes: useFetch(DATABASE_TABLES.campaignTypes.endpoint),
         seasonTypes: useFetch(DATABASE_TABLES.seasonTypes.endpoint),
@@ -86,7 +85,6 @@ function Planning(props) {
     };
     const types = sources[tab.typeKey];
     const editions = sources[tab.kind];
-
     const [openId, setOpenId] = useState(null);
     const [page, setPage] = useState(1);
     const [modal, setModal] = useState(null);
@@ -96,7 +94,6 @@ function Planning(props) {
     const [highlightId, setHighlightId] = useState(null);
     const external = useRef(readTemporalItem());
     const todayTime = startOfDay(new Date()).getTime();
-
     const rows = useMemo(
         () => buildRows(types.data ?? [], editions.data ?? [], new Date(todayTime), tab.kind),
         [types.data, editions.data, tab.kind, todayTime]
@@ -122,26 +119,22 @@ function Planning(props) {
         campaigns: sources.campaignTypes.data?.length,
         seasons: sources.seasonTypes.data?.length
     };
-
     const refetchAll = () => Promise.all(Object.values(sources).map((source) => source.refetch()));
     const retry = () => {
         if (types.error) types.refetch();
         if (editions.error) editions.refetch();
     };
-
     useEffect(() => {
         setOpenId(null);
         setPage(1);
         setMessage('');
     }, [tab.slug]);
-
     useEffect(() => {
         if (!message) return undefined;
         const timer = setTimeout(() => setMessage(''), MESSAGE_MS);
         return () => clearTimeout(timer);
     }, [message]);
 
-    // Llegada desde el Calendario: abre el tipo de la edición, baja hasta ella y la marca un momento.
     useEffect(() => {
         const item = external.current;
         if (!item || state !== 'ready') return;
@@ -153,29 +146,24 @@ function Planning(props) {
         setOpenId(item.period_type_id);
         setHighlightId(item.id);
     }, [state, rows]);
-
     useEffect(() => {
         if (!highlightId) return undefined;
         const timer = setTimeout(() => setHighlightId(null), HIGHLIGHT_MS);
         return () => clearTimeout(timer);
     }, [highlightId]);
-
     useEffect(() => {
         if (!highlightId) return;
         document.getElementById(`edition-${highlightId}`)?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }, [highlightId, openId]);
-
     function changePage(next) {
         setPage(next);
         setOpenId(null);
     }
-
     const closeModal = async () => {
         const changed = modal?.mode !== 'view';
         setModal(null);
         if (changed) await refetchAll();
     };
-
     const sync = async () => {
         setSyncing(true);
         setMessage('');
@@ -190,7 +178,6 @@ function Planning(props) {
             setSyncing(false);
         }
     };
-
     const remove = async (row) => {
         try {
             await axios.delete(`${DATABASE_TABLES[tab.typeKey].endpoint}/${row.type.id}`);
@@ -205,7 +192,6 @@ function Planning(props) {
             setPendingDelete(null);
         }
     };
-
     const skip = async (edition) => {
         try {
             await axios.patch(`${DATABASE_TABLES[tab.kind].endpoint}/${edition.id}/skip`);
@@ -215,7 +201,6 @@ function Planning(props) {
             setMessage(writeError(error, 'No se ha podido cambiar esta edición.'));
         }
     };
-
     const handlers = {
         onSkip: skip,
         tab,
@@ -231,32 +216,30 @@ function Planning(props) {
     };
     const onNew = () => setModal({ type: tab.typeKey, mode: 'create', data: {} });
     const select = (next) => navigate(`/planificacion/${next}`);
-
     const heading = (
-        <div className="panel-heading d-flex flex-column">
+        <div className="d-flex flex-column panel-heading">
             <span className="panel-kicker">Planificación del año</span>
-            <h1 className="panel-title m-0">{props.title}</h1>
+            <h1 className="m-0 panel-title">{props.title}</h1>
         </div>
     );
-
     return (
         <div className={`planning-page${isMobile ? ' is-mobile' : ''}`}>
             {heading}
             <Tabs tab={tab} counts={counts} mobile={isMobile} onSelect={select} />
             {isMobile ? (
                 <div className="planning-m-panel" role="tabpanel" aria-labelledby={`tab-${tab.slug}`}>
-                    <p className="planning-intro m-0">{tab.intro}</p>
+                    <p className="m-0 planning-intro">{tab.intro}</p>
                     <button type="button" className="btn btn-brand w-100" onClick={onNew}>
-                        <i className="bi bi-plus-lg me-2" aria-hidden="true" />
+                        <i className="me-2 bi bi-plus-lg" aria-hidden="true" />
                         {tab.newLabel}
                     </button>
                     <PlanningCards {...handlers} />
                     {pagination ? <div className="planning-m-card">{pagination}</div> : null}
                     <button type="button" className="m-btn planning-m-sync" onClick={sync} disabled={syncing}>
-                        {syncing ? <span className="spinner-border spinner-border-sm planning-spinner me-2" aria-hidden="true" /> : <i className="bi bi-arrow-clockwise me-2" aria-hidden="true" />}
+                        {syncing ? <span className="me-2 spinner-border spinner-border-sm planning-spinner" aria-hidden="true" /> : <i className="me-2 bi bi-arrow-clockwise" aria-hidden="true" />}
                         Generar años pendientes
                     </button>
-                    {message ? <p className="panel-note planning-message m-0" role="status">{message}</p> : null}
+                    {message ? <p className="m-0 panel-note planning-message" role="status">{message}</p> : null}
                 </div>
             ) : (
                 <PlanningTable {...handlers} onNew={onNew} onSync={sync} syncing={syncing} message={message} foot={pagination} />

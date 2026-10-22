@@ -40,8 +40,8 @@ function UpcomingBody({ state, upcoming, today, onOpen, onRetry }) {
             </div>
         );
     }
-    if (upcoming.length === 0) return <p className="panel-muted m-0">No hay fechas próximas.</p>;
-    return <ul className="calendar-next-list list-unstyled m-0"><UpcomingRows upcoming={upcoming} today={today} onOpen={onOpen} /></ul>;
+    if (upcoming.length === 0) return <p className="m-0 panel-muted">No hay fechas próximas.</p>;
+    return <ul className="list-unstyled m-0 calendar-next-list"><UpcomingRows upcoming={upcoming} today={today} onOpen={onOpen} /></ul>;
 }
 
 function Legend({ withHint }) {
@@ -70,10 +70,10 @@ function MonthList({ state, events, month, onRetry }) {
                 <Skeleton className="calendar-skeleton-line" />
             </div>
         );
-    } else if (events.length === 0) body = <p className="panel-muted m-0">No hay campañas ni cambios de temporada este mes.</p>;
+    } else if (events.length === 0) body = <p className="m-0 panel-muted">No hay campañas ni cambios de temporada este mes.</p>;
     else {
         body = (
-            <ul className="calendar-month-list list-unstyled d-flex flex-column m-0">
+            <ul className="list-unstyled d-flex flex-column m-0 calendar-month-list">
                 {events.map((event) => (
                     <li className="calendar-month-item" key={`${event.type}-${event.name}`}>
                         <span className={event.type === 'campaign' ? 'calendar-month-bar' : 'calendar-month-dot'} aria-hidden="true" />
@@ -86,10 +86,9 @@ function MonthList({ state, events, month, onRetry }) {
             </ul>
         );
     }
-
     return (
-        <section className="panel-card calendar-month-card d-flex flex-column gap-3">
-            <h2 className="panel-card-title m-0">En {format(month, 'MMMM', { locale: es })}</h2>
+        <section className="d-flex flex-column gap-3 panel-card calendar-month-card">
+            <h2 className="m-0 panel-card-title">En {format(month, 'MMMM', { locale: es })}</h2>
             {body}
         </section>
     );
@@ -101,7 +100,6 @@ function Calendar(props) {
     const [month, setMonth] = useState(startOfMonth(new Date()));
     const navigate = useNavigate();
     const isMobile = useIsMobile();
-
     const campaigns = campaignsFetch.data ?? NO_DATA;
     const seasons = seasonsFetch.data ?? NO_DATA;
     const failed = Boolean(campaignsFetch.error || seasonsFetch.error);
@@ -111,28 +109,25 @@ function Calendar(props) {
         if (campaignsFetch.error) campaignsFetch.refetch();
         if (seasonsFetch.error) seasonsFetch.refetch();
     };
-
     const today = startOfDay(new Date());
     const upcoming = useMemo(() => upcomingDates(campaigns, seasons, today), [campaigns, seasons, today.getTime()]);
     const events = useMemo(() => monthEvents(campaigns, seasons, month), [campaigns, seasons, month]);
     const onOpen = (item) => openItem(navigate, item);
-
     const heading = (
-        <div className="panel-heading d-flex flex-column">
+        <div className="d-flex flex-column panel-heading">
             <span className="panel-kicker">Campañas y cambios de temporada</span>
-            <h1 className="panel-title m-0">{props.title}</h1>
+            <h1 className="m-0 panel-title">{props.title}</h1>
         </div>
     );
-
     if (isMobile) {
         return (
-            <div className="calendar-page is-mobile d-flex flex-column">
+            <div className="d-flex flex-column calendar-page is-mobile">
                 {heading}
                 <CalendarToolbar date={month} onNavigate={setMonth} mobile />
                 <CalendarCompact campaigns={campaigns} seasons={seasons} month={month} today={today} />
                 <MonthList state={state} events={events} month={month} onRetry={retry} />
                 <section className="d-flex flex-column calendar-next-block">
-                    <h2 className="calendar-next-title m-0">Próximas fechas</h2>
+                    <h2 className="m-0 calendar-next-title">Próximas fechas</h2>
                     <div className="m-list calendar-next-card">
                         <UpcomingBody state={state} upcoming={upcoming} today={today} onOpen={onOpen} onRetry={retry} />
                     </div>
@@ -141,17 +136,16 @@ function Calendar(props) {
             </div>
         );
     }
-
     return (
         <div className="calendar-page">
-            <header className="calendar-head-row d-flex align-items-end justify-content-between flex-wrap">
+            <header className="d-flex align-items-end justify-content-between flex-wrap calendar-head-row">
                 {heading}
                 <CalendarToolbar date={month} onNavigate={setMonth} />
             </header>
             <div className="calendar-layout">
                 <CalendarGrid campaigns={campaigns} seasons={seasons} month={month} today={today} onOpen={onOpen} />
                 <section className="panel-card calendar-side">
-                    <h2 className="panel-card-title m-0">Próximas fechas</h2>
+                    <h2 className="m-0 panel-card-title">Próximas fechas</h2>
                     <UpcomingBody state={state} upcoming={upcoming} today={today} onOpen={onOpen} onRetry={retry} />
                     <div className="calendar-side-legend">
                         <Legend withHint />

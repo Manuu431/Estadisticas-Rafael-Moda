@@ -8,7 +8,6 @@ export function SectionSegments({ inputId, label, options, selectedValues, handl
     const pick = (value) => handleSelectChange(inputId, value ? [{ value }] : []);
     const known = options.filter((option) => option.value);
     const segments = [{ value: '', label: 'Todo' }, ...(known.length > 0 ? known : SECTION_OPTIONS)];
-
     return (
         <div className={`panel-segs d-inline-flex ${className}`} role="group" aria-label={label}>
             {segments.map((segment) => (

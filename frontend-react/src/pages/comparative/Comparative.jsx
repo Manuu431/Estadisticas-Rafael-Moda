@@ -45,13 +45,11 @@ function Comparative({ title }) {
     const [dates, setDates] = useState(() => defaultDates(today));
     const [bucket, setBucket] = useState('week');
     const [group, setGroup] = useState('brand');
-
     const list = useFetch(mode === 'dates' ? null : DATABASE_TABLES[mode].endpoint, DATES_ONLY);
     const started = useMemo(
         () => (list.data ?? []).filter((item) => item.start_date <= apiDate(today)),
         [list.data, today]
     );
-
     const { a, b } = useMemo(() => {
         if (mode === 'dates') return { a: datesPeriod(dates.a, today), b: datesPeriod(dates.b, today) };
         const fallback = defaultPair(started, today);
@@ -60,7 +58,6 @@ function Comparative({ title }) {
         const second = started.find((item) => String(item.id) === picked.b) ?? (first ? previousEdition(started, first) : null);
         return { a: first ? asPeriod(first) : null, b: second ? asPeriod(second) : null };
     }, [mode, dates, picks, started, today]);
-
     const ready = Boolean(a && b);
     const request = useFetch(
         ready ? COMPARE_URL : null,
@@ -74,27 +71,22 @@ function Comparative({ title }) {
         listError: list.error
     });
     const names = ready ? comparePeriodNames(a, b) : null;
-
     const options = started.map((item) => ({
         value: String(item.id),
         label: item.name,
         range: formatBucketRange({ from: item.start_date, to: item.end_date })
     }));
-
     const choose = (side, value) => {
         setPicks((prev) => ({
             ...prev,
             [mode]: side === 'a' ? { a: value, b: '' } : { ...prev[mode], b: value }
         }));
     };
-
     const changeDates = (side, next) => setDates((prev) => ({ ...prev, [side]: next }));
-
     const bucketNoun = COMPARE_BUCKETS.find((item) => item.value === bucket).noun;
     const groupLabel = COMPARE_GROUPS.find((item) => item.value === group).label.toLowerCase();
-
     const content = (() => {
-        if (state.kind === 'pick') return <p className="compare-message panel-card m-0">{PICK_MESSAGE}</p>;
+        if (state.kind === 'pick') return <p className="m-0 compare-message panel-card">{PICK_MESSAGE}</p>;
         if (state.kind === 'error') {
             return (
                 <section className="panel-card">
@@ -103,7 +95,6 @@ function Comparative({ title }) {
             );
         }
         if (state.kind === 'loading') return <CompareSkeleton />;
-
         const { a: periodA, b: periodB, breakdown } = request.data;
         const pairs = pairBuckets({ ...a, days: periodA.days }, { ...b, days: periodB.days }, bucket);
         const spansYears = [a, b].some((period) => period.from.slice(0, 4) !== period.to.slice(0, 4));
@@ -115,14 +106,13 @@ function Comparative({ title }) {
             rangeA: formatBucketRange(rangesA[index]),
             rangeB: formatBucketRange(rangesB[index])
         }));
-
         return (
             <>
                 <CompareKpis kpis={compareKpis(periodA.summary, periodB.summary)} shortB={names.shortB} isMobile={isMobile} />
                 <div className="compare-main">
                     <section className="panel-card compare-card">
                         <div className="compare-card-head is-chart">
-                            <h2 className="panel-card-title m-0 compare-head-title">Ventas por {bucketNoun}</h2>
+                            <h2 className="m-0 panel-card-title compare-head-title">Ventas por {bucketNoun}</h2>
                             <span className="compare-legend">
                                 <span className="compare-legend-item">
                                     <span className="panel-dot is-a" aria-hidden="true" />
@@ -143,7 +133,7 @@ function Comparative({ title }) {
                     </section>
                     <section className="panel-card compare-card">
                         <div className="compare-card-head is-breakdown">
-                            <h2 className="panel-card-title m-0 compare-head-title">Desglose</h2>
+                            <h2 className="m-0 panel-card-title compare-head-title">Desglose</h2>
                             <span className="panel-muted compare-head-note">
                                 {isMobile ? `Por ${groupLabel} · ${names.shortA} frente a ${names.shortB}` : `Por ${groupLabel}`}
                             </span>
@@ -155,12 +145,11 @@ function Comparative({ title }) {
             </>
         );
     })();
-
     return (
         <div className="compare-page">
-            <header className="panel-heading d-flex flex-column">
+            <header className="d-flex flex-column panel-heading">
                 <span className="panel-period">Dos periodos, uno al lado del otro</span>
-                <h1 className="panel-title m-0">{title}</h1>
+                <h1 className="m-0 panel-title">{title}</h1>
             </header>
             <ComparePeriods
                 mode={mode}
@@ -179,7 +168,7 @@ function Comparative({ title }) {
 
 function Segs({ label, options, value, onChange }) {
     return (
-        <div className="panel-segs d-flex compare-segs" role="group" aria-label={label}>
+        <div className="d-flex panel-segs compare-segs" role="group" aria-label={label}>
             {options.map((option) => (
                 <button
                     key={option.value}

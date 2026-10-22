@@ -18,15 +18,12 @@ const buildConditions = (resource, filters) => {
   const columns = allowedColumns[resource] || [];
   const conditions = [];
   const values = [];
-
   for (const key in filters) {
     const value = filters[key];
     if (value === undefined || value === null || value === '') continue;
     if (!(Array.isArray(value) ? value.every(isText) : isText(value))) continue;
-
     const column = key.replace(/_(min|max)$/, '');
     if (!columns.includes(column)) continue;
-
     if (resource === 'sales' && column === 'sale_date' && /_(min|max)$/.test(key)) {
       if (!isRealDate(value)) continue;
       conditions.push(key.endsWith('_min') ? '`sold_at` >= ?' : '`sold_at` < DATE_ADD(?, INTERVAL 1 DAY)');
@@ -52,13 +49,11 @@ const buildConditions = (resource, filters) => {
       values.push(`%${value}%`);
     }
   }
-
   const search = likeSearch(filters.search, searchColumns[resource] || []);
   if (search) {
     conditions.push(search.sql);
     values.push(...search.values);
   }
-
   return { conditions, values };
 };
 

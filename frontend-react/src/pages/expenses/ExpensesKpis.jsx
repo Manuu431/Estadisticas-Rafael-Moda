@@ -23,7 +23,6 @@ function ExpensesKpis({ totals, compact }) {
             <span className="expenses-kpi-note">{block.note}</span>
         </>
     );
-
     if (compact) {
         return (
             <section className="panel-card expenses-kpis-card" aria-label="Resumen">
@@ -33,7 +32,6 @@ function ExpensesKpis({ totals, compact }) {
             </section>
         );
     }
-
     return (
         <div className="expenses-kpis">
             {blocks.map((block) => (

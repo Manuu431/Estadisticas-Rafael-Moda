@@ -35,7 +35,6 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
         sizes: options?.sizes ?? NO_OPTIONS,
         colors: options?.colors ?? NO_OPTIONS
     }), [options]);
-
     useEffect(() => {
         onFilterChange({
             ...appliedPanel,
@@ -44,25 +43,20 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
             ...(section ? { section } : {})
         });
     }, [appliedPanel, debouncedSearch, brand, section, onFilterChange]);
-
     const changePeriod = (next) => {
         setDraft(next);
         setSheetError('');
         if (!isMobile && isReady(next)) onPeriodChange(next);
     };
-
     const applyPanel = () => setAppliedPanel(panelParams(panel));
-
     const clearPanel = () => {
         setPanel(EMPTY_PANEL);
         setAppliedPanel({});
     };
-
     const openSheet = () => {
         setSheetBrand(brand);
         setSheetOpen(true);
     };
-
     const applySheet = () => {
         const problem = periodApplyError(draft);
         if (problem) {
@@ -74,7 +68,6 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
         onPeriodChange(draft);
         setSheetOpen(false);
     };
-
     const clearSheet = () => {
         clearPanel();
         setBrand('');
@@ -84,9 +77,7 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
         onPeriodChange(DEFAULT_SALES_PERIOD);
         setSheetOpen(false);
     };
-
     const brandSelect = <BrandSelect brands={options?.brands ?? NO_OPTIONS} value={brand} onChange={setBrand} />;
-
     const segmentControl = (
         <SectionSegments
             inputId="section"
@@ -97,12 +88,11 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
             className={isMobile ? '' : 'is-plus'}
         />
     );
-
     if (isMobile) {
         return (
-            <div className="sales-mobile d-flex flex-column">
+            <div className="d-flex flex-column sales-mobile">
                 <SearchField large value={search} onChange={setSearch} />
-                <div className="filters-mobile d-flex align-items-stretch">
+                <div className="d-flex align-items-stretch filters-mobile">
                     {segmentControl}
                     <button
                         type="button"
@@ -141,10 +131,9 @@ function SalesFilters({ period, onPeriodChange, onFilterChange }) {
             </div>
         );
     }
-
     return (
-        <div className="sales-filters d-flex flex-column">
-            <div className="filters-bar d-flex flex-wrap align-items-center">
+        <div className="d-flex flex-column sales-filters">
+            <div className="d-flex flex-wrap align-items-center filters-bar">
                 <SearchField value={search} onChange={setSearch} />
                 <PeriodSelect period={draft} onChange={changePeriod} />
                 {brandSelect}

@@ -45,7 +45,6 @@ const buildDailySales = ({ date, catalog, now = new Date() }) => {
   const [year, month, day] = date.split('-').map(Number);
   const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
   if (weekday === 0) return { tickets: [], lines: [] };
-
   const random = seededRandom(date);
   const between = (min, max) => min + random() * (max - min);
   const intBetween = (min, max) => Math.floor(between(min, max + 1));
@@ -55,7 +54,6 @@ const buildDailySales = ({ date, catalog, now = new Date() }) => {
   const ticketCount = Math.max(1, Math.round(target / 150));
   const tickets = [];
   const lines = [];
-
   for (let ticketIndex = 0; ticketIndex < ticketCount; ticketIndex++) {
     const slot = weighted(HOUR_SLOTS.map((entry) => [entry, entry[2]]), random);
     const minute = intBetween(0, slot[1] - 1);
@@ -69,7 +67,6 @@ const buildDailySales = ({ date, catalog, now = new Date() }) => {
       lines.push({ ticketIndex: saleTicketIndex, productId: template.product_id, size: template.size, units, unitPrice: Number(template.unit_price), unitCost: Number(template.unit_cost) });
     }
   }
-
   return { tickets, lines };
 };
 

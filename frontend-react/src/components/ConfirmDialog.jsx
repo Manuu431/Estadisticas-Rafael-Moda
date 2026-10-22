@@ -11,7 +11,6 @@ function ConfirmDialog({ title, message, confirmLabel = 'Eliminar', onConfirm, o
     const cancelRef = useRef(null);
     const focusCancel = () => cancelRef.current?.focus();
     useRestoreFocus();
-
     const confirm = async () => {
         setBusy(true);
         try {
@@ -20,7 +19,6 @@ function ConfirmDialog({ title, message, confirmLabel = 'Eliminar', onConfirm, o
             setBusy(false);
         }
     };
-
     const actions = (
         <>
             <button type="button" ref={cancelRef} className={isMobile ? 'm-ghost' : 'panel-ghost'} onClick={onHide} disabled={busy}>Cancelar</button>
@@ -29,22 +27,20 @@ function ConfirmDialog({ title, message, confirmLabel = 'Eliminar', onConfirm, o
             </button>
         </>
     );
-
     if (isMobile) {
         return (
             <BottomSheet show onHide={onHide} onEntered={focusCancel} title={title} footer={actions}>
-                <p className="dialog-message m-0">{message}</p>
+                <p className="m-0 dialog-message">{message}</p>
             </BottomSheet>
         );
     }
-
     return (
         <Modal show onHide={onHide} onEntered={focusCancel} aria-labelledby={titleId} centered backdrop="static" dialogClassName="rm-dialog is-confirm" backdropClassName="rm-dialog-backdrop">
             <Modal.Header className="dialog-head">
                 <Modal.Title id={titleId} className="dialog-title">{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="dialog-body">
-                <p className="dialog-message m-0">{message}</p>
+                <p className="m-0 dialog-message">{message}</p>
             </Modal.Body>
             <Modal.Footer className="dialog-foot">{actions}</Modal.Footer>
         </Modal>

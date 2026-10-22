@@ -18,9 +18,8 @@ function Sidebar() {
         clearSession();
         navigate('/login');
     };
-
     return (
-        <aside className="app-sidebar d-flex flex-column gap-4">
+        <aside className="d-flex flex-column gap-4 app-sidebar">
             <NavLink to="/" end className="app-brand">
                 <Logo />
             </NavLink>
@@ -44,15 +43,15 @@ function Sidebar() {
                     </div>
                 ))}
             </nav>
-            <div className="app-session d-flex align-items-center gap-2 mt-auto">
-                <span className="app-avatar d-flex align-items-center justify-content-center" aria-hidden="true">RM</span>
+            <div className="d-flex align-items-center gap-2 mt-auto app-session">
+                <span className="d-flex align-items-center justify-content-center app-avatar" aria-hidden="true">RM</span>
                 <span className="d-flex flex-column flex-grow-1 overflow-hidden">
                     <span className="fw-semibold text-truncate">{isDemo ? 'Modo demo' : user?.username ?? 'Mi cuenta'}</span>
-                    <span className="app-session-note text-truncate">{isDemo ? 'Datos de ejemplo' : 'Sesión iniciada'}</span>
+                    <span className="text-truncate app-session-note">{isDemo ? 'Datos de ejemplo' : 'Sesión iniciada'}</span>
                 </span>
                 <button
                     type="button"
-                    className="app-icon-btn d-flex align-items-center justify-content-center flex-shrink-0"
+                    className="d-flex align-items-center justify-content-center flex-shrink-0 app-icon-btn"
                     onClick={handleLogout}
                     aria-label="Cerrar sesión"
                     title="Cerrar sesión"

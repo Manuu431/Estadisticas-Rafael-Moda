@@ -21,9 +21,8 @@ import { CardError, Skeleton } from './CardState.jsx';
 function YearTooltip({ active, payload, years }) {
     if (!active || !payload?.length) return null;
     const point = payload[0].payload;
-
     return (
-        <div className="panel-tooltip d-flex flex-column gap-2">
+        <div className="d-flex flex-column gap-2 panel-tooltip">
             <span className="fw-semibold">{formatShortDay(point.date)}</span>
             <div className="d-flex flex-column gap-1">
                 <span className="d-flex align-items-center gap-2">
@@ -83,14 +82,11 @@ export default function MonthSummary({ summary, daily, month, chart, error, onRe
             ...monthComparison(summary.summary.total, summary.compared.total)
         };
     }, [summary, daily, month, chart]);
-
     if (error) return <CardError onRetry={onRetry} />;
     if (!data) return <MonthSkeleton />;
-
     const { previousMonth, points, beaten } = data;
     const current = summary.summary;
     const last = points[points.length - 1];
-
     return (
         <div className="d-flex flex-column gap-4 flex-grow-1">
             <div className="d-flex align-items-end justify-content-between gap-4 flex-wrap">
@@ -101,7 +97,7 @@ export default function MonthSummary({ summary, daily, month, chart, error, onRe
                         <span>vs. {formatMonthYear(previousMonth)} · {formatEuros(summary.compared.total)}</span>
                     </div>
                 </div>
-                <div className="panel-profit d-flex flex-column gap-1">
+                <div className="d-flex flex-column gap-1 panel-profit">
                     <span className="panel-muted">Beneficio</span>
                     <span className="panel-stat">{formatEuros(current.profit)}</span>
                     <span className="panel-muted">Margen {formatShare(current.profit, current.total)}</span>

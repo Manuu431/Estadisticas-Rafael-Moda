@@ -16,7 +16,6 @@ function ClientsFilters({ options, onFilterChange }) {
     const typed = search.trim();
     const debouncedSearch = useDebouncedValue(typed, SEARCH_DELAY);
     const appliedSearch = typed ? debouncedSearch : '';
-
     useEffect(() => {
         onFilterChange({
             ...(appliedSearch ? { search: appliedSearch } : {}),
@@ -24,20 +23,16 @@ function ClientsFilters({ options, onFilterChange }) {
             ...(city ? { city } : {})
         });
     }, [appliedSearch, province, city, onFilterChange]);
-
     const hasFilters = Boolean(typed || province || city);
-
     const changeProvince = (next) => {
         setProvince(next);
         if (next) setCity('');
     };
-
     const clearFilters = () => {
         setSearch('');
         setProvince('');
         setCity('');
     };
-
     const provinceSelect = (
         <FieldDropdown
             label="Provincia"
@@ -48,7 +43,6 @@ function ClientsFilters({ options, onFilterChange }) {
             large={isMobile}
         />
     );
-
     const citySelect = (
         <FieldDropdown
             label="Ciudad"
@@ -60,10 +54,9 @@ function ClientsFilters({ options, onFilterChange }) {
             alignEnd
         />
     );
-
     if (isMobile) {
         return (
-            <div className="clients-mobile d-flex flex-column">
+            <div className="d-flex flex-column clients-mobile">
                 <SearchField
                     large
                     value={search}
@@ -82,9 +75,8 @@ function ClientsFilters({ options, onFilterChange }) {
             </div>
         );
     }
-
     return (
-        <div className="clients-filters filters-bar d-flex flex-wrap align-items-center">
+        <div className="d-flex flex-wrap align-items-center clients-filters filters-bar">
             <SearchField
                 value={search}
                 onChange={setSearch}

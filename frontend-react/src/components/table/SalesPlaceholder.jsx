@@ -4,7 +4,6 @@ import SalesTable from './SalesTable.jsx';
 
 function SalesPlaceholder({ state, onRetry }) {
     const isMobile = useIsMobile();
-
     return (
         <div className="data-card">
             {isMobile ? null : <SalesTable data={[]} />}

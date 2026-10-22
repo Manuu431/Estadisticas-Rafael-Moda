@@ -49,7 +49,6 @@ function PanelRange({ id, label, from, to, onFromChange, onToChange }) {
 
 function SalesPanelFields({ panel, options, onChange }) {
     const set = (field) => (value) => onChange({ ...panel, [field]: value });
-
     return (
         <>
             <PanelSelect id="panel-family" label="Familia" allLabel="Todas" value={panel.family} options={options.families} onChange={set('family')} />

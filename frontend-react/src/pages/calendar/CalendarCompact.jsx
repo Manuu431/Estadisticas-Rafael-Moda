@@ -4,11 +4,10 @@ import { monthWeeks, outsideRange, weekLayout } from '../../utils/calendar.js';
 
 const INITIALS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
-// Versión del móvil: sin texto de eventos. La campaña es una barra fina bajo el número y el cambio de
-// temporada, un punto. Pulsar un día no hace nada (no hay acción en el diseño).
+
+
 export function CalendarCompact({ campaigns, seasons, month, today }) {
     const weeks = useMemo(() => monthWeeks(month), [month]);
-
     return (
         <div className="calendar-compact">
             <div className="calendar-compact-head" aria-hidden="true">

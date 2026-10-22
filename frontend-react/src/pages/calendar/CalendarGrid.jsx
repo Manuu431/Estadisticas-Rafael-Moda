@@ -3,7 +3,7 @@ import { format, isSameDay, isSameMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { dayEvents, limitLanes, monthWeeks, outsideRange, weekLayout } from '../../utils/calendar.js';
 
-// Una semana mide 140 px: 41 de cabecera con el número del día y 4 carriles de 24 px.
+
 const MAX_LANES = 4;
 
 const capitalize = (value) => value.charAt(0).toUpperCase() + value.slice(1);
@@ -20,7 +20,6 @@ function EventButton({ event, week, month, onOpen }) {
             </button>
         );
     }
-
     const { before, after } = outsideRange(week, month, event.startCol, event.endCol);
     const classes = ['calendar-bar'];
     if (event.startsHere) classes.push('starts');
@@ -42,7 +41,6 @@ function DayPopover({ popover, campaigns, seasons, onOpen, onClose }) {
     const ref = useRef(null);
     const { date, col, weekIndex } = popover;
     const events = useMemo(() => dayEvents(date, campaigns, seasons), [date, campaigns, seasons]);
-
     useEffect(() => {
         ref.current?.focus();
         const onKey = (event) => event.key === 'Escape' && onClose(true);
@@ -54,7 +52,6 @@ function DayPopover({ popover, campaigns, seasons, onOpen, onClose }) {
             document.removeEventListener('mousedown', onPointer);
         };
     }, [onClose]);
-
     const side = col >= 4 ? { right: `calc(${6 - col} * 100% / 7)` } : { left: `calc(${col} * 100% / 7)` };
     return (
         <div
@@ -85,14 +82,11 @@ export function CalendarGrid({ campaigns, seasons, month, today, onOpen }) {
     const layouts = useMemo(() => weeks.map((week) => limitLanes(weekLayout(week, campaigns, seasons), MAX_LANES)), [weeks, campaigns, seasons]);
     const [popover, setPopover] = useState(null);
     const trigger = useRef(null);
-
     useEffect(() => setPopover(null), [month]);
-
     const close = (restoreFocus) => {
         setPopover(null);
         if (restoreFocus) trigger.current?.focus();
     };
-
     return (
         <div className="calendar-wrap">
             <div className="data-card calendar-card">

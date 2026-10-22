@@ -22,13 +22,11 @@ function Login() {
     const from = useLocation().state?.from ?? '/';
     const { endpoint, endpointDemo } = DATABASE_TABLES['users'];
     const [showPassword, setShowPassword] = useState(false);
-
     const startSession = ({ token, user }) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         navigate(from, { replace: true });
     };
-
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -53,7 +51,6 @@ function Login() {
             setSubmitting(false);
         },
     });
-
     const enterDemo = async () => {
         formik.setStatus('');
         try {
@@ -63,29 +60,28 @@ function Login() {
             formik.setStatus('El modo demo no está disponible.');
         }
     };
-
     return (
-        <div className="login-page d-flex min-vh-100">
-            <aside className="login-brand bg-primary d-none d-lg-flex flex-column justify-content-between position-relative overflow-hidden p-5">
+        <div className="d-flex login-page min-vh-100">
+            <aside className="bg-primary d-none d-lg-flex flex-column justify-content-between position-relative overflow-hidden p-5 login-brand">
                 <div className="login-logo" role="img" aria-label="Rafael Moda">
                     {logoLayers.map(({ src, className }) => (
                         <img key={className} className={`login-logo-layer ${className}`} src={src} alt="" />
                     ))}
                 </div>
-                <span className="login-kicker position-relative">Desde hace más de 50 años</span>
+                <span className="position-relative login-kicker">Desde hace más de 50 años</span>
                 <div className="position-relative d-flex flex-column gap-1">
-                    <span className="fs-4 fw-bold">Estadísticas de la tienda</span>
+                    <span className="fw-bold fs-4">Estadísticas de la tienda</span>
                     <span className="fw-medium">Ventas, campañas y temporadas en un solo sitio.</span>
                 </div>
             </aside>
             <main className="flex-grow-1 d-flex align-items-center justify-content-center p-4">
-                <div className="login-panel w-100 d-flex flex-column gap-4">
+                <div className="w-100 d-flex flex-column gap-4 login-panel">
                     <div className="d-flex flex-column gap-2">
-                        <h1 className="login-title m-0">Iniciar sesión</h1>
+                        <h1 className="m-0 login-title">Iniciar sesión</h1>
                         <p className="text-body-secondary m-0">Accede al panel de la tienda.</p>
                     </div>
                     <form onSubmit={formik.handleSubmit} noValidate className="d-flex flex-column gap-3">
-                        {formik.status && <div className="alert alert-danger m-0" role="alert">{formik.status}</div>}
+                        {formik.status && <div className="m-0 alert alert-danger" role="alert">{formik.status}</div>}
                         {inputField(formik, 'email', 'Correo electrónico', 'nombre@correo.com', 'email', 'email')}
                         {inputField(formik, 'password', 'Contraseña', 'Tu contraseña', 'current-password', showPassword ? 'text' : 'password', () => setShowPassword(!showPassword))}
                         <button type="submit" className="btn btn-brand w-100" disabled={formik.isSubmitting}>Entrar</button>
@@ -107,7 +103,6 @@ function Login() {
 
 const inputField = (formik, name, label, placeholder, autoComplete, type, toggleVisibility) => {
     const invalid = formik.touched[name] && formik.errors[name];
-
     return (
         <div className="d-flex flex-column gap-2">
             <label htmlFor={name} className="fw-semibold small">{label}</label>
@@ -127,7 +122,7 @@ const inputField = (formik, name, label, placeholder, autoComplete, type, toggle
                 {toggleVisibility && (
                     <button
                         type="button"
-                        className="btn btn-link login-toggle position-absolute top-50 end-0 translate-middle-y me-3 p-0"
+                        className="btn btn-link position-absolute top-50 end-0 me-3 p-0 translate-middle-y login-toggle"
                         onClick={toggleVisibility}
                         aria-label={type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña'}
                     >

@@ -5,7 +5,6 @@ import { ActionButton, Balance, Profit, StatusPill } from './PlanningParts.jsx';
 
 function Card({ row, open, onToggle, onEdit, onDelete, onEditEdition, onSkip, highlightId }) {
     const panelId = `editions-${row.type.id}`;
-
     return (
         <article className={`planning-m-card${open ? ' is-open' : ''}`}>
             <button type="button" className="planning-m-head" aria-expanded={open} aria-controls={panelId} onClick={onToggle}>
@@ -82,7 +81,6 @@ export function PlanningCards({ tab, rows, state, openId, onToggle, onEdit, onDe
     }
     if (state === 'error') return <div className="planning-m-card planning-m-state"><CardError onRetry={onRetry} /></div>;
     if (state === 'empty') return <div className="planning-m-card planning-m-state"><p className="sales-state-text">{tab.empty}</p></div>;
-
     return (
         <div className="planning-m-list">
             {rows.map((row) => (

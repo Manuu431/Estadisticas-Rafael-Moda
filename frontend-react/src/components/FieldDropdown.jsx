@@ -2,7 +2,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 function FieldDropdown({ label, value, options, onChange, className = '', large = false, alignEnd = false, showLabel = true, disabled = false }) {
     const selected = options.find((option) => option.value === value) ?? options[0];
-
     return (
         <Dropdown className={`panel-select ${className}`} onSelect={(position) => onChange(options[Number(position)].value)}>
             <Dropdown.Toggle

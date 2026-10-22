@@ -8,7 +8,6 @@ function SalesMobileList({ rows, total, days, onMore }) {
     const groups = groupByDay(sorted, sorted.length, days);
     const remaining = remainingCount(total, sorted.length);
     const today = new Date();
-
     return (
         <div className="sales-days">
             {groups.map((group) => (

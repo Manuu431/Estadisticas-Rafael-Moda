@@ -7,7 +7,6 @@ const NO_CHOICE = { value: '', label: 'Elige un periodo' };
 function PeriodChoice({ label, tone, value, options, onChange, alignEnd }) {
     const choices = options.some((option) => option.value === value) ? options : [NO_CHOICE, ...options];
     const items = choices.map((option) => ({ ...option, detail: option.range }));
-
     return (
         <div className="compare-slot">
             <span className="compare-slot-label">
@@ -44,7 +43,7 @@ function ComparePeriods({ mode, onModeChange, options, a, b, onChoose, dates, on
         <section className={`panel-card compare-controls${mode === 'dates' ? ' is-dates' : ''}`} aria-label="Periodos a comparar">
             <div className="compare-mode">
                 <span className="compare-slot-label">Comparar</span>
-                <div className="panel-segs d-flex" role="group" aria-label="Comparar por">
+                <div className="d-flex panel-segs" role="group" aria-label="Comparar por">
                     {COMPARE_MODES.map((item) => (
                         <button
                             key={item.value}

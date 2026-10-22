@@ -31,14 +31,12 @@ function ControlPanel(props) {
     const month = useMemo(() => lastFinishedMonth(today), [today]);
     const chart = useMemo(() => yearChartRange(month, today), [month, today]);
     const brandRange = useMemo(() => periodRange(period, today), [period, today]);
-
     const setFilter = (key, value) => {
         const next = new URLSearchParams(params);
         if (value) next.set(key, value);
         else next.delete(key);
         setParams(next, { replace: true });
     };
-
     const query = (from, to, comparedFrom, comparedTo) => ({
         from: apiDate(from),
         to: apiDate(to),
@@ -46,7 +44,6 @@ function ControlPanel(props) {
         comparedTo: apiDate(comparedTo),
         ...(section ? { section } : {})
     });
-
     const weekQuery = query(week.from, week.to, shiftYear(week.from), shiftYear(week.to));
     const weekSummary = useFetch(STATISTICS.summary, weekQuery);
     const weekDaily = useFetch(STATISTICS.daily, weekQuery);
@@ -54,10 +51,8 @@ function ControlPanel(props) {
     const monthDaily = useFetch(STATISTICS.daily, query(chart.from, chart.to, subYears(chart.from, 1), subYears(chart.to, 1)));
     const brands = useFetch(STATISTICS.brands, { from: apiDate(brandRange.from), to: apiDate(brandRange.to), ...(section ? { section } : {}) });
     const campaigns = useFetch(DATABASE_TABLES.campaigns.endpoint, section ? { section } : undefined);
-
     const requests = [weekSummary, weekDaily, monthSummary, monthDaily, brands, campaigns];
     const refresh = (...sources) => () => sources.forEach((source) => source.refetch());
-
     return (
         <>
             <header className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-4">
@@ -65,9 +60,9 @@ function ControlPanel(props) {
                     <span className="panel-kicker">
                         {capitalize(format(today, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es }))}{weekSummary.data && ` · ${lastSaleLabel(weekSummary.data.summary.lastSale)}`}
                     </span>
-                    <h1 className="panel-title m-0">{props.title}</h1>
+                    <h1 className="m-0 panel-title">{props.title}</h1>
                 </div>
-                <div className="panel-head-tools d-flex align-items-center gap-2">
+                <div className="d-flex align-items-center gap-2 panel-head-tools">
                     <button
                         type="button"
                         className="panel-icon-btn"
@@ -118,7 +113,7 @@ function ControlPanel(props) {
                 <div className="col-12 col-xl-5">
                     <PanelCard
                         title="Campañas"
-                        action={<Link className="panel-link d-inline-flex align-items-center gap-1" to="/planificacion">Ver todas<i className="bi bi-chevron-right" aria-hidden="true" /></Link>}
+                        action={<Link className="d-inline-flex align-items-center gap-1 panel-link" to="/planificacion">Ver todas<i className="bi bi-chevron-right" aria-hidden="true" /></Link>}
                     >
                         <Campaigns campaigns={campaigns.data} today={today} section={section} error={campaigns.error} onRetry={refresh(campaigns)} />
                     </PanelCard>

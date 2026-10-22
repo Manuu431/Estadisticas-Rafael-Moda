@@ -14,7 +14,7 @@ export function Balance({ value }) {
     return <span className={`planning-balance ${value < 0 ? 'text-negative' : 'text-positive'}`}>{formatEurosSigned(value)}</span>;
 }
 
-// «+6.215 €» en verde y en 600; con pérdidas, «−6.215 €» en rojo.
+
 export function Profit({ value }) {
     return <span className={`planning-profit ${value < 0 ? 'text-negative' : 'text-positive'}`}>{formatEurosSigned(value, { round: true })}</span>;
 }

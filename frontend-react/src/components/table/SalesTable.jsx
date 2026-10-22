@@ -7,7 +7,6 @@ const NUMERIC = ['Uds.', 'Importe', 'Beneficio'];
 
 function SalesTable({ data }) {
     const today = new Date();
-
     return (
         <div role="table" aria-label="Ventas" className="sales-scroll">
             <div role="row" className="sales-row is-head">

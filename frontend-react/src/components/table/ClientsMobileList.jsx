@@ -9,7 +9,6 @@ function ClientsMobileList({ rows }) {
     const [shown, setShown] = useState({ rows, count: PAGE });
     const count = shown.rows === rows ? shown.count : PAGE;
     const remaining = remainingCount(rows.length, count);
-
     return (
         <div className="clients-list">
             <ul className="m-list list-unstyled m-0">

@@ -7,7 +7,6 @@ function Editions({ row, id, highlightId, onEditEdition, onSkip }) {
     if (row.editions.length === 0) {
         return <p className="panel-muted planning-empty-editions" id={id}>Sin ediciones. Pulsa «Generar años pendientes» para crearlas.</p>;
     }
-
     return (
         <div className="planning-editions" id={id} role="table" aria-label={`Ediciones de ${row.type.name}`}>
             <div className="planning-editions-head" role="row">
@@ -48,7 +47,6 @@ function Editions({ row, id, highlightId, onEditEdition, onSkip }) {
 
 function Row({ row, open, onToggle, onEdit, onDelete, onEditEdition, onSkip, highlightId }) {
     const panelId = `editions-${row.type.id}`;
-
     return (
         <div className={`planning-type${open ? ' is-open' : ''}`}>
             <div className="planning-row planning-grid" onClick={onToggle}>
@@ -116,7 +114,7 @@ export function PlanningTable({ tab, rows, state, openId, onToggle, onEdit, onDe
             <div className="planning-bar">
                 <div className="planning-bar-text">
                     <p className="planning-intro">{tab.intro}</p>
-                    {message ? <p className="panel-note planning-message m-0" role="status">{message}</p> : null}
+                    {message ? <p className="m-0 panel-note planning-message" role="status">{message}</p> : null}
                 </div>
                 <div className="planning-bar-actions">
                     <button type="button" className="panel-btn planning-btn" onClick={onSync} disabled={syncing}>

@@ -59,7 +59,7 @@ function DialogField({ name, label, wide, large, children }) {
     <div className={`dialog-field${wide ? ' is-wide' : ''}`}>
       <label className="sales-panel-label" htmlFor={`dialog-${name}`}>{label}</label>
       <span className={`panel-field is-plain${large ? ' is-large' : ''}`}>{children}</span>
-      <ErrorMessage name={name} component="div" className="panel-note text-negative" />
+      <ErrorMessage name={name} component="div" className="text-negative panel-note" />
     </div>
   );
 }
@@ -73,15 +73,11 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const titleId = useId();
   useRestoreFocus();
   const [error, setError] = useState('');
-
   const getDays = (month) => (month === '' ? [] : Array.from({ length: new Date(2000, month, 0).getDate() }, (_, i) => i + 1));
-
   const types = { campaigns: "campaña", seasons: "temporada", seasonTypes: "tipo de temporada", campaignTypes: "tipo de campaña" };
   const heading = `${isView ? 'Visualizar' : isEdit ? 'Editar' : 'Crear'} ${types[type]}`;
-
   const isCreateType = type === 'seasonTypes' || type === 'campaignTypes';
   const validationSchema = isCreateType ? validationSchemas.types : validationSchemas.default;
-
   const initialValues = isCreate
     ? isCreateType
         ? { name: '', first_year: '', repeats: true, last_year: '', start_month: '', start_day: '', end_month: '', end_day: '' }
@@ -89,11 +85,9 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
     : isCreateType
         ? { id: data.id, name: data.name, first_year: data.first_year ?? '', repeats: Boolean(data.repeats), last_year: data.last_year ?? '', start_month: data.start_month, start_day: data.start_day, end_month: data.end_month, end_day: data.end_day }
         : { ...data };
-
   const started = !isCreateType && isEdit && Boolean(data.start_date) && String(data.start_date).slice(0, 10) <= new Date().toLocaleDateString('sv-SE');
   const payload = (values) => (isCreateType ? { ...values, repeats: values.repeats ? 1 : 0, last_year: values.repeats && values.last_year !== '' ? values.last_year : null } : values);
   const save = (values) => (isCreate ? axios.post(endPoint, payload(values)) : axios.put(`${endPoint}/${values.id}`, payload(values)));
-
   const renderFields = (values, setFieldValue) => (
     <div className="dialog-grid">
         {Object.keys(values).map(key => {
@@ -101,7 +95,6 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
             if (!label) return null;
             const id = `dialog-${key}`;
             const wide = wideKeys.includes(key);
-
             if (['start_day', 'end_day'].includes(key)) {
                 const isStart = key === 'start_day';
                 const month = isStart ? values.start_month : values.end_month;
@@ -117,7 +110,6 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                     </DialogField>
                 );
             }
-
             if (['start_month', 'end_month'].includes(key)) {
                 return (
                     <DialogField key={key} name={key} label={label} large={isMobile}>
@@ -141,26 +133,22 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                     </DialogField>
                 );
             }
-
             if (key === 'repeats') {
                 return (
                     <div className="dialog-field is-wide" key={key}>
                         <label className="d-flex align-items-center gap-2">
-                            <Field type="checkbox" name="repeats" id={id} disabled={isView} className="form-check-input m-0" />
-                            <span className="sales-panel-label m-0">{label}</span>
+                            <Field type="checkbox" name="repeats" id={id} disabled={isView} className="m-0 form-check-input" />
+                            <span className="m-0 sales-panel-label">{label}</span>
                         </label>
-                        {values.repeats ? null : <p className="panel-note m-0">Solo se crea la edición del año de inicio (por ejemplo, un aniversario).</p>}
+                        {values.repeats ? null : <p className="m-0 panel-note">Solo se crea la edición del año de inicio (por ejemplo, un aniversario).</p>}
                     </div>
                 );
             }
-
             if (key === 'last_year' && !values.repeats) return null;
-
             const computed = !isCreateType && (key === 'name' || key === 'profits');
             const isDate = ['start_date', 'end_date'].includes(key);
             const isNumber = ['expenses', 'profits'].includes(key);
             const readOnly = isView || computed || (started && isDate);
-
             return (
                 <DialogField key={key} name={key} label={label} wide={key === 'name' || wide} large={isMobile}>
                     <Field
@@ -173,10 +161,9 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                 </DialogField>
             );
         })}
-        {started ? <p className="panel-note m-0 dialog-field is-wide">Esta edición ya empezó: sus fechas no se tocan para que las comparativas sigan siendo justas. Solo puedes corregir los gastos.</p> : null}
+        {started ? <p className="m-0 panel-note dialog-field is-wide">Esta edición ya empezó: sus fechas no se tocan para que las comparativas sigan siendo justas. Solo puedes corregir los gastos.</p> : null}
     </div>
   );
-
   const actions = (isSubmitting) => (
     <>
       {isMobile ? null : <button type="button" className="panel-ghost" onClick={onHide}>{isView ? 'Cerrar' : 'Cancelar'}</button>}
@@ -187,7 +174,6 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
       )}
     </>
   );
-
   const form = (
     <Formik
       initialValues={initialValues}
@@ -210,14 +196,14 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
           {isMobile ? (
             <div className="d-flex flex-column gap-3">
               {renderFields(values, setFieldValue)}
-              {error ? <p className="panel-note text-negative m-0" role="alert">{error}</p> : null}
+              {error ? <p className="text-negative m-0 panel-note" role="alert">{error}</p> : null}
               {isView ? null : <div className="m-sheet-foot d-flex gap-2">{actions(isSubmitting)}</div>}
             </div>
           ) : (
             <>
               <Modal.Body className="dialog-body">
                 {renderFields(values, setFieldValue)}
-                {error ? <p className="panel-note text-negative mt-3 mb-0" role="alert">{error}</p> : null}
+                {error ? <p className="text-negative mt-3 mb-0 panel-note" role="alert">{error}</p> : null}
               </Modal.Body>
               <Modal.Footer className="dialog-foot">{actions(isSubmitting)}</Modal.Footer>
             </>
@@ -226,7 +212,6 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
       )}
     </Formik>
   );
-
   if (isMobile) {
     return (
       <BottomSheet show={show} onHide={onHide} title={heading}>
@@ -234,7 +219,6 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
       </BottomSheet>
     );
   }
-
   return (
     <Modal show={show} onHide={onHide} aria-labelledby={titleId} size="lg" centered backdrop="static" dialogClassName="rm-dialog" backdropClassName="rm-dialog-backdrop">
       <Modal.Header className="dialog-head">

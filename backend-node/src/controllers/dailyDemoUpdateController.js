@@ -22,7 +22,6 @@ const runDailyDemoUpdate = async ({ db = require('../config/db'), now = new Date
       }
       throw err;
     }
-
     const [catalog] = await connection.query(
       `SELECT sl.product_id, sl.size, sl.unit_price, sl.unit_cost
        FROM sale_lines sl
@@ -38,7 +37,6 @@ const runDailyDemoUpdate = async ({ db = require('../config/db'), now = new Date
       const rows = sales.lines.map((line) => [sales.tickets[line.ticketIndex].id, line.productId, line.size, line.units, line.unitPrice, line.unitCost]);
       await connection.query('INSERT INTO sale_lines (ticket_id, product_id, size, units, unit_price, unit_cost) VALUES ?', [rows]);
     }
-
     const [types] = await connection.query('SELECT * FROM period_types');
     const [periods] = await connection.query('SELECT period_type_id, start_date, end_date FROM periods');
     const editions = buildCurrentYearEditions({ types, existingPeriods: periods, date });

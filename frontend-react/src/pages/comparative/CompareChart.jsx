@@ -3,9 +3,8 @@ import { formatEuros, formatNumber } from '../../utils/format.js';
 
 function ChartTooltip({ active, payload, label }) {
     if (!active || !payload?.length) return null;
-
     return (
-        <div className="chart-tooltip d-flex flex-column gap-1">
+        <div className="d-flex flex-column gap-1 chart-tooltip">
             <span className="fw-semibold">{label}</span>
             {payload.map((item) => (
                 <span className="d-flex align-items-center gap-2" key={item.dataKey}>
@@ -24,7 +23,6 @@ const TICK_PADDING = 12;
 function CompareChart({ rows, height, label }) {
     const peak = Math.max(0, ...rows.flatMap((row) => [row.a, row.b]));
     const axisWidth = formatNumber(Math.ceil(peak * 2)).length * TICK_CHAR_WIDTH + TICK_PADDING;
-
     return (
         <div className="compare-chart" role="img" aria-label={label}>
             <ResponsiveContainer width="100%" height={height}>

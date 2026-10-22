@@ -17,9 +17,8 @@ function Pagination({ currentPage, totalPages, onPageChange, totalItems = 0, pag
     const last = Math.min(currentPage * pageSize, totalItems);
     const atStart = currentPage <= 1;
     const atEnd = currentPage >= pages;
-
     return (
-        <div className="data-foot d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 data-foot">
             <span>Mostrando {formatNumber(first)}–{formatNumber(last)} de {formatNumber(totalItems)} {itemLabel}</span>
             <div className="d-flex align-items-center gap-2">
                 {edges && <PageButton label="Primera página" icon="bi-chevron-double-left" disabled={atStart} onClick={() => goTo(1)} />}

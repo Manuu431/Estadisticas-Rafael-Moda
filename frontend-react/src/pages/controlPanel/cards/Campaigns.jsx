@@ -29,12 +29,11 @@ function CampaignsSkeleton() {
 
 function CurrentCampaign({ campaign, today, section }) {
     const progress = campaignProgress(campaign, today);
-
     return (
-        <div className="campaign-current d-flex flex-column gap-3">
+        <div className="d-flex flex-column gap-3 campaign-current">
             <div className="d-flex align-items-start justify-content-between gap-3">
                 <div className="d-flex flex-column gap-2">
-                    <span className="campaign-pill d-inline-flex align-items-center gap-2 align-self-start">
+                    <span className="d-inline-flex align-items-center gap-2 align-self-start campaign-pill">
                         <span className="campaign-dot" />En curso
                     </span>
                     <span className="campaign-name">{campaign.type_name}</span>
@@ -42,7 +41,7 @@ function CurrentCampaign({ campaign, today, section }) {
                         {formatCompactRange(parseISO(campaign.start_date), parseISO(campaign.end_date))} · día {progress.day} de {progress.total}
                     </span>
                 </div>
-                <span className="panel-note fw-semibold text-nowrap">{remainingLabel(progress.remaining)}</span>
+                <span className="fw-semibold text-nowrap panel-note">{remainingLabel(progress.remaining)}</span>
             </div>
             <span className="panel-track is-thin d-block">
                 <span className="panel-fill d-block" style={{ '--w': `${progress.percent}%` }} />
@@ -80,33 +79,31 @@ export default function Campaigns({ campaigns, today, section, error, onRetry })
             }))
         };
     }, [campaigns, today]);
-
     if (error) return <CardError onRetry={onRetry} />;
     if (!data) return <CampaignsSkeleton />;
-
     return (
         <div className="d-flex flex-column gap-3 flex-grow-1">
             {data.current
                 ? <CurrentCampaign campaign={data.current} today={today} section={section} />
-                : <p className="panel-muted m-0">Ninguna campaña en curso ahora mismo.</p>}
+                : <p className="m-0 panel-muted">Ninguna campaña en curso ahora mismo.</p>}
             {data.next.length > 0 ? (
                 <div className="d-flex flex-column mt-auto">
-                    <span className="panel-label pb-1">Próximas</span>
+                    <span className="pb-1 panel-label">Próximas</span>
                     {data.next.map(({ campaign, previous, days }, index) => (
                         <div className={`d-flex align-items-center gap-3 py-3${index < data.next.length - 1 ? ' panel-divider-bottom' : ' pb-0'}`} key={campaign.id}>
-                            <span className="panel-date-chip d-flex flex-column align-items-center justify-content-center">
+                            <span className="d-flex flex-column align-items-center justify-content-center panel-date-chip">
                                 <span className="fw-semibold lh-1">{format(parseISO(campaign.start_date), 'd')}</span>
-                                <span className="panel-label mt-1">{format(parseISO(campaign.start_date), 'MMM', { locale: es })}</span>
+                                <span className="mt-1 panel-label">{format(parseISO(campaign.start_date), 'MMM', { locale: es })}</span>
                             </span>
                             <span className="d-flex flex-column gap-1 flex-grow-1 overflow-hidden">
                                 <span className="fw-semibold text-truncate">{campaign.type_name}</span>
-                                <span className="panel-muted text-truncate">
+                                <span className="text-truncate panel-muted">
                                     {previous ? (
                                         <>La última vez: {formatEurosSigned(previous.profits, { round: true })}<span className="d-none d-lg-inline"> de beneficio</span></>
                                     ) : 'Primera edición'}
                                 </span>
                             </span>
-                            <span className="panel-muted text-nowrap">{daysAway(days)}</span>
+                            <span className="text-nowrap panel-muted">{daysAway(days)}</span>
                         </div>
                     ))}
                 </div>

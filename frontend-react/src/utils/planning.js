@@ -23,14 +23,14 @@ export function typeRange(type) {
     return `${shortDate(start)} → ${shortDate(end)}`;
 }
 
-// «2026», o «2025-26» si la edición cruza de año.
+
 export function yearLabel(startDate, endDate) {
     const startYear = Number(startDate.slice(0, 4));
     const endYear = Number(endDate.slice(0, 4));
     return endYear > startYear ? `${startYear}-${String(endYear % 100).padStart(2, '0')}` : String(startYear);
 }
 
-// «7 ene – 28 feb 2026»; si cruza de año, el año va en los dos extremos.
+
 export function editionDates(startDate, endDate) {
     const start = day(startDate);
     const end = day(endDate);
@@ -43,9 +43,9 @@ export function sortEditions(editions) {
     return [...editions].sort((a, b) => b.start_date.localeCompare(a.start_date));
 }
 
-// Las ediciones guardadas del tipo más las que saldrían de sus fechas (como hace el backend al generar años)
-// para los años que aún no existen. Así el estado no depende de que ya se hayan generado, y si alguien ha
-// cambiado las fechas de una edición guardada, manda la guardada.
+
+
+
 function occurrences(type, editions, today) {
     const savedYears = new Set(editions.map((edition) => day(edition.start_date).getFullYear()));
     const saved = editions.filter((edition) => !edition.skipped).map((edition) => ({ start: day(edition.start_date), end: day(edition.end_date) }));
@@ -54,7 +54,6 @@ function occurrences(type, editions, today) {
     const limit = type.last_year ? Math.min(type.last_year, year + 1) : year + 1;
     const last = type.repeats ? Math.max(first, limit) : type.first_year;
     const crosses = crossesYear(type);
-
     const computed = [];
     for (let y = first; y <= last; y += 1) {
         if (savedYears.has(y) || (type.last_year && y > type.last_year)) continue;
@@ -71,25 +70,22 @@ const plural = (count, one, many) => (count === 1 ? one : many);
 export function typeStatus(type, editions, today) {
     const now = startOfDay(today);
     const all = occurrences(type, editions, now);
-
     const current = all.filter((item) => item.start < now && item.end >= now).sort((a, b) => a.start - b.start)[0];
     if (current) {
         const days = differenceInCalendarDays(current.end, now);
         const left = days === 0 ? 'termina hoy' : `${plural(days, 'queda', 'quedan')} ${days} ${plural(days, 'día', 'días')}`;
         return { kind: 'current', days, label: `En curso · ${left}` };
     }
-
     const next = all.filter((item) => item.start >= now).sort((a, b) => a.start - b.start)[0];
     if (next) {
         const days = differenceInCalendarDays(next.start, now);
         const label = days === 0 ? 'Empieza hoy' : days === 1 ? 'Empieza mañana' : `Empieza en ${days} días`;
         return { kind: 'upcoming', days, label };
     }
-
     return { kind: 'finished', label: 'Terminada' };
 }
 
-// El beneficio (no el balance) de la última edición ya terminada. La que termina hoy sigue en curso.
+
 export function lastResult(editions, today) {
     const now = startOfDay(today);
     const finished = editions.filter((edition) => !edition.skipped && day(edition.end_date) < now).sort((a, b) => b.end_date.localeCompare(a.end_date));
@@ -98,7 +94,7 @@ export function lastResult(editions, today) {
     return { profit: Number(last.profits), year: yearLabel(last.start_date, last.end_date) };
 }
 
-// Una edición que ya empezó (o terminó) no se puede mover; solo se corrigen sus gastos.
+
 export function isStarted(edition, today) {
     return day(edition.start_date) <= startOfDay(today);
 }

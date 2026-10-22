@@ -9,15 +9,15 @@ function WeekSkeleton() {
     return (
         <div className="d-flex flex-column gap-4 flex-grow-1">
             <div className="d-flex flex-column gap-2">
-                <Skeleton className="is-hero w-75" />
+                <Skeleton className="w-75 is-hero" />
                 <Skeleton className="w-50" />
             </div>
             <Skeleton className="is-bars" />
-            <div className="row g-3 panel-divider pt-3 mt-auto">
+            <div className="row pt-3 mt-auto g-3 panel-divider">
                 {[0, 1, 2].map((slot) => (
                     <div className="col-4 d-flex flex-column gap-2" key={slot}>
                         <Skeleton className="w-50" />
-                        <Skeleton className="is-stat w-75" />
+                        <Skeleton className="w-75 is-stat" />
                     </div>
                 ))}
             </div>
@@ -40,12 +40,9 @@ export default function WeekSales({ summary, daily, from, to, showSplit, error, 
             delta: monthComparison(summary.summary.total, summary.compared.total).delta
         };
     }, [summary, daily, from, to]);
-
     if (error) return <CardError onRetry={onRetry} />;
     if (!week) return <WeekSkeleton />;
-
     const current = summary.summary;
-
     return (
         <div className="d-flex flex-column gap-4 flex-grow-1">
             <div className="d-flex flex-column gap-2">
@@ -59,26 +56,26 @@ export default function WeekSales({ summary, daily, from, to, showSplit, error, 
                 {week.bars.map((day) => (
                     <button
                         type="button"
-                        className="panel-bar-col d-flex flex-column gap-2 flex-grow-1"
+                        className="d-flex flex-column gap-2 flex-grow-1 panel-bar-col"
                         key={day.date.getTime()}
                         aria-label={`${formatDayTick(day.date)}: ${formatEuros(day.total)}. En ${week.comparedYear}, ${formatEuros(day.compared)}`}
                     >
-                        <span className="panel-bar-slot d-flex align-items-end gap-1">
+                        <span className="d-flex align-items-end gap-1 panel-bar-slot">
                             <span className={`panel-bar${day.total > 0 ? '' : ' is-empty'}`} style={barHeight(day.total, week.peak)}>
-                                <span className="panel-tooltip panel-bar-tip d-flex flex-column gap-1" aria-hidden="true">
+                                <span className="d-flex flex-column gap-1 panel-tooltip panel-bar-tip" aria-hidden="true">
                                     <span className="fw-semibold">{formatEuros(day.total)}</span>
                                     <span className="panel-muted">{week.comparedYear}: {formatEuros(day.compared)}</span>
                                 </span>
                             </span>
                             <span className="panel-bar is-compare" style={barHeight(day.compared, week.peak)} />
                         </span>
-                        <span className="panel-bar-label text-center">{formatDayTick(day.date)}</span>
+                        <span className="text-center panel-bar-label">{formatDayTick(day.date)}</span>
                     </button>
                 ))}
             </div>
             {showSplit && current.total > 0 ? (
                 <div className="d-flex flex-column gap-2">
-                    <span className="panel-split d-flex">
+                    <span className="d-flex panel-split">
                         <span className="panel-split-fill" style={barWidth(current.mujer, current.total)} />
                     </span>
                     <div className="d-flex justify-content-between gap-3 flex-wrap panel-note">
@@ -93,7 +90,7 @@ export default function WeekSales({ summary, daily, from, to, showSplit, error, 
                     </div>
                 </div>
             ) : null}
-            <div className="row g-3 panel-divider pt-3 mt-auto">
+            <div className="row pt-3 mt-auto g-3 panel-divider">
                 <div className="col-4 d-flex flex-column gap-1">
                     <span className="panel-muted">Prendas</span>
                     <span className="panel-stat">{formatNumber(current.units)}</span>

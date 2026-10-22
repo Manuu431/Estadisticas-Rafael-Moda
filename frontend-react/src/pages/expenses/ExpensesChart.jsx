@@ -10,9 +10,8 @@ const SIZES = {
 
 function ChartTooltip({ active, payload }) {
     if (!active || !payload?.length) return null;
-
     return (
-        <div className="chart-tooltip d-flex flex-column gap-1">
+        <div className="d-flex flex-column gap-1 chart-tooltip">
             <span className="fw-semibold">{payload[0].payload.name}</span>
             {payload.map((item) => (
                 <span className="d-flex align-items-center gap-2" key={item.dataKey}>
@@ -30,11 +29,10 @@ function ExpensesChart({ buckets, grain, noun, compact }) {
     const title = `Ingresos y gastos por ${noun}`;
     const size = compact ? SIZES.mobile : SIZES.desktop;
     const radius = [size.radius, size.radius, 2, 2];
-
     return (
         <section className="panel-card expenses-card" aria-label={title}>
             <div className="expenses-card-head">
-                <h2 className="panel-card-title m-0">{title}</h2>
+                <h2 className="m-0 panel-card-title">{title}</h2>
                 <div className="expenses-legend">
                     <span><span className="panel-dot is-income" aria-hidden="true" />Ingresos</span>
                     <span><span className="panel-dot is-cost" aria-hidden="true" />Gastos</span>

@@ -54,7 +54,6 @@ function SalesSheet({ period, onPeriodChange, applyError, brands, brand, onBrand
         />
     );
     const all = (allLabel, values) => [{ value: '', label: allLabel }, ...toOptions(values)];
-
     return (
         <div className="sales-sheet">
             <SheetSelect
@@ -67,20 +66,20 @@ function SalesSheet({ period, onPeriodChange, applyError, brands, brand, onBrand
             {period.key === 'custom' && (
                 <div className="sheet-field">
                     <div className="sheet-pair">
-                        <div className="sheet-field flex-grow-1">
+                        <div className="flex-grow-1 sheet-field">
                             <label className="sheet-label" htmlFor="sheet-from">Desde</label>
                             <span className="panel-field is-large is-plain">
                                 {dateInput('from', 'sheet-from')}
                             </span>
                         </div>
-                        <div className="sheet-field flex-grow-1">
+                        <div className="flex-grow-1 sheet-field">
                             <label className="sheet-label" htmlFor="sheet-to">Hasta</label>
                             <span className="panel-field is-large is-plain">
                                 {dateInput('to', 'sheet-to')}
                             </span>
                         </div>
                     </div>
-                    {error && <p className="panel-note text-negative m-0" role="alert">{error}</p>}
+                    {error && <p className="text-negative m-0 panel-note" role="alert">{error}</p>}
                 </div>
             )}
             <div className="sheet-grid">

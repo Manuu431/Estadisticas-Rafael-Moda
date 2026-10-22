@@ -23,34 +23,29 @@ function Sales(props) {
     const dates = { sale_date_min: apiDate(range.from), sale_date_max: apiDate(range.to) };
     const filterKey = JSON.stringify({ ...filters, ...dates });
     const { data, settled, error, refetch } = useFetch(DATABASE_TABLES["sales"].endpoint, salesRequest({ ...filters, ...dates }, { isMobile, page, count }));
-
     useEffect(() => {
         if (settled && data) setReady({ key: filterKey, data });
     }, [settled, data, filterKey]);
-
     const previous = !settled && ready.key === filterKey ? ready.data : null;
     const shown = settled ? data : previous;
     const state = salesState({ data: shown?.rows ?? null, settled: settled || previous !== null, error, period, filters });
     const summary = salesSummary(shown?.summary);
-
     const changeFilters = useCallback((next) => {
         setFilters(next);
         setPage(1);
         setCount(PAGE_SIZE);
     }, []);
-
     const changePeriod = (next) => {
         setPeriod(next);
         setPage(1);
         setCount(PAGE_SIZE);
     };
-
     return (
         <div className="sales-page">
             <header className="d-flex align-items-end justify-content-between gap-3 flex-wrap">
-                <div className="panel-heading d-flex flex-column">
+                <div className="d-flex flex-column panel-heading">
                     <span className="panel-period">{salesPeriodLabel(period.key, range)}</span>
-                    <h1 className="panel-title m-0">{props.title}</h1>
+                    <h1 className="m-0 panel-title">{props.title}</h1>
                 </div>
                 {isMobile ? null : <SalesSummary kind={state.kind} summary={summary} />}
             </header>

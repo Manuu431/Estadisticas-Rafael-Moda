@@ -4,7 +4,6 @@ import ClientsTable from './ClientsTable.jsx';
 
 function ClientsPlaceholder({ state, onRetry }) {
     const isMobile = useIsMobile();
-
     return (
         <>
             {isMobile ? null : <ClientsTable data={[]} />}

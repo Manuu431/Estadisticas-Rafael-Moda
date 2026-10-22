@@ -8,10 +8,9 @@ function ExpensesTable({ title, itemLabel, table }) {
     const [requested, setRequested] = useState(1);
     const { rows, pages, page } = tablePage(table.rows, requested);
     const paged = pages > 1;
-
     return (
         <section className="panel-card expenses-card is-table" aria-label={title}>
-            <h2 className="panel-card-title m-0">{title}</h2>
+            <h2 className="m-0 panel-card-title">{title}</h2>
             <div className={`expenses-table${paged ? ' is-paged' : ''}`} role="table" aria-label="Ingresos, gastos y beneficio">
                 <div role="row" className="expenses-row is-head">
                     <span role="columnheader"><span className="visually-hidden">Periodo</span></span>

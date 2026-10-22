@@ -22,14 +22,11 @@ function Clients(props) {
     const { data: clients, settled, error, refetch } = useFetch(DATABASE_TABLES.clients.endpoint, filters);
     const state = clientsState({ data: clients, settled, error });
     const totalPages = Math.ceil((clients?.length ?? 0) / PAGE_SIZE);
-
     const changeFilters = useCallback((next) => {
         setFilters(next);
         setPage(1);
     }, []);
-
     const filtersBar = <ClientsFilters options={options} onFilterChange={changeFilters} />;
-
     const desktopList = state.kind === 'ready' ? (
         <>
             <ClientsTable data={clients.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)} />
@@ -46,7 +43,6 @@ function Clients(props) {
     ) : (
         <ClientsPlaceholder state={state} onRetry={refetch} />
     );
-
     const mobileList = state.kind === 'ready' ? (
         <ClientsMobileList rows={clients} />
     ) : (
@@ -54,12 +50,11 @@ function Clients(props) {
             <ClientsPlaceholder state={state} onRetry={refetch} />
         </div>
     );
-
     return (
         <div className="clients-page">
-            <header className="panel-heading d-flex flex-column">
+            <header className="d-flex flex-column panel-heading">
                 {options ? <span className="panel-period">{formatClientsRegistered(options.total)}</span> : optionsError ? null : <Skeleton className="clients-count-skeleton" />}
-                <h1 className="panel-title m-0">{props.title}</h1>
+                <h1 className="m-0 panel-title">{props.title}</h1>
             </header>
             <section className={isMobile ? 'clients-shell' : 'data-card'} aria-label="Listado de clientes">
                 {filtersBar}
