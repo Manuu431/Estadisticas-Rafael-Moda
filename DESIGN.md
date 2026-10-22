@@ -42,12 +42,12 @@ Densidad media: es una herramienta de trabajo, pero con aire. Nada de colores sa
 | Bordes | `--rm-line` · `-strong` · `-soft` · `-dashed` | |
 | Fondo del control segmentado | `--rm-segs-bg` | #E4D9CA |
 | Calendario: campaña, texto / hover | `--rm-event` · `--rm-event-ink` / `-hover` | #FBE3CF · #7A3A06 / #F8D2B1 |
-| Calendario: campaña fuera del mes, barra / texto | `--rm-cal-event-out` / `--rm-cal-event-ink-out` | #FDF0E5 / #B69376 |
+| Calendario: campaña fuera del mes, barra / texto | `--rm-cal-event-out` / `--rm-cal-event-ink-out` | #FDF0E5 / #8F6338 |
 | Calendario móvil: barra / barra fuera del mes | `--rm-cal-bar` / `--rm-cal-bar-out` | #F2B786 / #F8DBC2 |
 | Campañas y temporadas: línea bajo las pestañas | `--rm-tabs-line` | #E0D5C7 |
 | Campañas y temporadas: fila abierta / borde de la caja de ediciones | `--rm-row-open` / `--rm-line-box` | #FFFDFA / #F0E8DE |
 | Campañas y temporadas, móvil: borde de la tarjeta abierta | `--rm-orange-line-soft` | #F1D9C4 |
-| Calendario: línea, fin de semana, día de fuera | `--rm-cal-line` · `--rm-cal-weekend` · `--rm-cal-out` | #F0E8DE · #FDFBF8 · #A89C90 |
+| Calendario: línea, fin de semana, día de fuera | `--rm-cal-line` · `--rm-cal-weekend` · `--rm-cal-out` | #F0E8DE · #FDFBF8 · #7A6F65 |
 | Barra de pestañas móvil | `--rm-tabbar-bg` | rgba(255, 255, 255, .94) |
 
 - El naranja es el **único** acento: acción principal, elemento activo, foco. No usarlo para decorar.
@@ -178,7 +178,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   (el beneficio, en `--rm-positive`); debajo, en toda la fila, «N líneas de venta · N prendas» en `text-xs-plus` `ink-2`.
   Los bloques van a 14 px y el contenido con padding 10 × 16 × 24 px: Ventas compensa con margen negativo el padding general de
   `.app-main` (24 × 16 × 32 px) en vez de cambiarlo para todas las pantallas. Buscador a ancho completo (`.panel-field.is-large`:
-  48 px, radio 14, `text-lg`, lupa de `icon-plus`), después Todo / Mujer / Hombre (botones de 40 px y `text-md`) y «Filtros»
+  48 px, radio 14, `text-lg`, lupa de `icon-plus`), después Todo / Mujer / Hombre (botones de 44 px y `text-md`) y «Filtros»
   (`.m-btn`, 48 px) a 10 px. El buscador se aplica a los 300 ms (como en escritorio, para no lanzar una petición por tecla) y la sección al momento; la hoja, al pulsar «Ver resultados».
 - **Hoja «Filtros» de Ventas** (`.m-sheet.is-sales`, `SalesSheet`): título en `display-xs` y «Cerrar» sin relleno. Periodo a ancho
   completo (con «Desde» y «Hasta» si es «Personalizado…»), rejilla de 2 columnas a 10 px con Marca, Familia, Talla y Color, y Precio
@@ -250,7 +250,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Barra de periodos (`.compare-controls`, tarjeta con la rejilla `auto · 1fr · vs. · 1fr`, 20 px): «Comparar» con Fechas / Campañas /
   Temporadas (`.panel-segs`) y dos campos con punto naranja (A) o `--rm-compare` (B) y su etiqueta encima. En Campañas y Temporadas el
   campo (`.compare-select`, 44 px) es un `FieldDropdown` sin palabra interior (`showLabel={false}`): enseña el nombre en 600 y, a la derecha,
-  el rango («1 jul – 31 ago», también en móvil), y la lista es la de Clientes con el rango en `.panel-select-detail` (`text-sm`, `ink-2`) a la
+  el rango con el año («15 sep – 12 oct 2026», también en móvil; así se distinguen A y B aunque el nombre se corte), y la lista es la de Clientes con el rango en `.panel-select-detail` (`text-sm`, `ink-2`) a la
   derecha de cada opción; la de B se abre hacia la izquierda (`alignEnd`). Solo salen las que ya han empezado. Por defecto A es la última que ya
   terminó (o la que está en curso) y B su edición anterior; al elegir otra A, B vuelve a su edición anterior. En Fechas, los campos
   Desde / Hasta de Ventas (`CustomDates`) con sus avisos; empieza en el último mes cerrado frente al mismo mes del año anterior.
@@ -324,7 +324,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 - **Gastos en móvil** (<992 px, `.expenses-page`): 14 px entre bloques y el mismo margen negativo que Clientes (contenido en 6 × 16 × 24 px). Cabecera con las reglas móviles de
   `.panel-heading` (subtítulo de `text-sm`, «Gastos» en `display-sm`, a 4 px). Sin enlace «‹ Más». Periodo es un `FieldDropdown large` (48 px, radio 14, padding 0 14 px, etiqueta de `text-sm`, valor de
   `text-lg` en 600, flecha oculta); con campaña, temporada o fechas, la fila de debajo con el mismo campo y `CustomDates` en columna (campos de 48 px). El control segmentado ocupa todo el ancho, con las cuatro
-  opciones (Días / Semanas / Meses / Años) a partes iguales (botones de 40 px y `text-md`, contenedor de 4 px y radio 12). Las cifras van en **una sola tarjeta** (`.expenses-kpis-card`, padding 0 16 px) con tres bloques
+  opciones (Días / Semanas / Meses / Años) a partes iguales (botones de 44 px y `text-md`, contenedor de 4 px y radio 12). Las cifras van en **una sola tarjeta** (`.expenses-kpis-card`, padding 0 16 px) con tres bloques
   (`.expenses-kpi-block`, padding 16 × 0, 4 px entre líneas, borde superior `--rm-line-soft` salvo el primero): etiqueta, cifra en serif de **34 px** (`--rm-display-xs-plus`, token nuevo, `line-height` 1) y
   nota; la del segundo bloque es más corta: «Lo que costó la ropa vendida · 51,6 %». La silueta de carga usa la misma tarjeta, con la cifra a 34 px.
 - **Gastos en móvil, gráfica y tabla** (<992 px, `ExpensesChart compact`, `ExpensesTable compact`): tarjetas con padding 16 px; la de la gráfica a 14 px entre bloques y la de la tabla a 10. Gráfica: el título (15 px, 600) y,
@@ -434,7 +434,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 - **Diálogo de crear / editar** (`ModalComponent`, `.rm-dialog`; tipos y ediciones de Campañas y temporadas): tarjeta en `--rm-cream` (como el fondo de la app; los campos quedan blancos) de radio
   `--rm-radius-dialog` (20 px, token nuevo), borde `--rm-line`, `--rm-shadow-raised` y fondo `--rm-backdrop` (token nuevo, marrón, no negro).
   Cabecera con el título en serif `display-xs` y un `.panel-icon-btn` «Cerrar» (`bi-x-lg`); sin barra de color. Cuerpo con padding 16 × 28 px
-  y rejilla de 2 columnas a 14 px (`.dialog-grid`): Nombre y Año de inicio a ancho completo, el resto a media columna. Cada campo
+  y rejilla de 2 columnas a 14 px (`.dialog-grid`): Nombre, Año de inicio, «Se repite cada año» y «Último año» a ancho completo, el resto (mes y día de inicio y de fin) a media columna, en parejas. Cada campo
   (`.dialog-field`) es la etiqueta `.sales-panel-label` y un `.panel-field.is-plain` (los desplegables con `bi-chevron-down`); los de solo
   lectura (nombre y beneficio de una edición, y todo en «Visualizar») van en `--rm-surface-soft` y `ink-2`. Errores de validación en
   `.panel-note.text-negative` bajo el campo. Pie sin borde con «Cancelar» (`.panel-ghost`) y «Crear» / «Guardar» (`.panel-primary`, desactivado
@@ -452,7 +452,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
-  Los botones (`.data-page`) son de 36 × 36 px, radio `sm`, borde `--rm-line-strong`, con `bi-chevron-double-left/right` en los
+  Los botones (`.data-page`) son de 36 × 36 px (44 × 44 en móvil), radio `sm`, borde `--rm-line-strong`, con `bi-chevron-double-left/right` en los
   extremos; desactivados, el icono pasa a `--rm-icon-disabled`. En la primera página, primera y anterior están desactivadas; en la
   última, siguiente y última. Los extremos solo salen en escritorio (`edges`). Ventas y Clientes paginan de 12 en 12; el resto, de 10 en 10.
 - **Enlace de tarjeta** (`.panel-link`): «Ver todas» y similares, `text-sm` 600 en `--rm-orange-strong`, con
@@ -476,7 +476,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
 ## Responsive
 
 Puntos de corte de Bootstrap: 576 · 768 · 992 · 1200 px. Diseñar primero para escritorio (uso en tienda/oficina)
-y comprobar siempre en móvil (375 px): sin scroll horizontal, objetivos táctiles ≥ 44 px.
+y comprobar siempre en móvil (375 px): sin scroll horizontal, objetivos táctiles ≥ 44 px (botones, enlaces, controles segmentados, avatar, paginación). Única excepción: las siete barras de «Ventas de esta semana» de Inicio, de 32–42 px de ancho porque no caben siete de 44 px en la tarjeta; miden 102 px de alto y tienen etiqueta y tooltip. Sin diseño de tablet: la regla va por debajo de 992 px (`@media` al final de `App.css`).
 
 **El corte entre los dos diseños del prototipo es 992 px**, y es el único: por debajo manda el diseño de móvil
 (390 px del prototipo), de ahí para arriba el de escritorio (1440 px). No hay diseño de tablet, así que entre

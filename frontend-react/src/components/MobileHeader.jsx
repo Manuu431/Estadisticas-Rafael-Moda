@@ -7,7 +7,7 @@ function MobileHeader() {
             <NavLink to="/" end className="app-brand" aria-label="Rafael Moda, inicio">
                 <Logo />
             </NavLink>
-            <NavLink to="/mas" className="m-avatar d-flex align-items-center justify-content-center" aria-label="Tu cuenta y más opciones">
+            <NavLink to="/mas" className="m-avatar d-flex align-items-center justify-content-center" aria-label="RM, tu cuenta y más opciones">
                 RM
             </NavLink>
         </header>

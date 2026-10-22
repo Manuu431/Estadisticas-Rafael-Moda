@@ -52,7 +52,7 @@ const labels = {
     last_year: "Último año (opcional)"
 };
 
-const wideKeys = ['name', 'first_year'];
+const wideKeys = ['name', 'first_year', 'last_year'];
 
 function DialogField({ name, label, wide, large, children }) {
   return (

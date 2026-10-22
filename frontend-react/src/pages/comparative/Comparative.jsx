@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { parseISO, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import ComparePeriods from './ComparePeriods.jsx';
 import CompareKpis from './CompareKpis.jsx';
 import CompareChart from './CompareChart.jsx';
@@ -21,7 +21,7 @@ import {
     defaultPair,
     pairBuckets
 } from '../../utils/compare.js';
-import { apiDate, formatCompactRange, formatShortRange } from '../../utils/dates.js';
+import { apiDate, formatShortRange } from '../../utils/dates.js';
 import { salesPeriodRange } from '../../utils/salesPeriod.js';
 import { useIsMobile } from '../../utils/useIsMobile.js';
 
@@ -78,7 +78,7 @@ function Comparative({ title }) {
     const options = started.map((item) => ({
         value: String(item.id),
         label: item.name,
-        range: formatCompactRange(parseISO(item.start_date), parseISO(item.end_date))
+        range: formatBucketRange({ from: item.start_date, to: item.end_date })
     }));
 
     const choose = (side, value) => {

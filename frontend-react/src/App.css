@@ -42,9 +42,9 @@
     --rm-row-open: #FFFDFA;
     --rm-orange-line-soft: #F1D9C4;
     --rm-cal-weekend: #FDFBF8;
-    --rm-cal-out: #A89C90;
+    --rm-cal-out: #7A6F65;
     --rm-cal-event-out: #FDF0E5;
-    --rm-cal-event-ink-out: #B69376;
+    --rm-cal-event-ink-out: #8F6338;
     --rm-cal-bar: #F2B786;
     --rm-cal-bar-out: #F8DBC2;
     --rm-orange-focus: rgba(221, 108, 16, .15);
@@ -4635,4 +4635,40 @@
 .year-chart .recharts-cartesian-axis-tick-value {
     fill: var(--rm-ink-3);
     font-size: var(--rm-text-2xs);
+}
+
+@media (max-width: 991.98px) {
+    .app-brand {
+        display: flex;
+        align-items: center;
+        min-height: 2.75rem;
+    }
+
+    .m-avatar {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .panel-icon-btn {
+        flex-shrink: 0;
+        min-width: 2.75rem;
+    }
+
+    .panel-seg,
+    .panel-segs .panel-seg,
+    .panel-segs.is-plus .panel-seg,
+    .filters-mobile .panel-seg,
+    .expenses-tools .panel-segs.is-plus .panel-seg {
+        height: 2.75rem;
+    }
+
+    .data-page {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .panel-link {
+        align-items: center;
+        min-height: 2.75rem;
+    }
 }
