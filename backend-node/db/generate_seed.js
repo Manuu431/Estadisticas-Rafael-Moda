@@ -3,7 +3,8 @@ const path = require('path');
 
 const OUT = path.join(__dirname, 'seed.sql');
 const START = new Date(2020, 0, 1);
-const END = new Date();
+const NOW = new Date();
+const END = new Date(NOW);
 END.setHours(0, 0, 0, 0);
 const ADMIN_EMAIL = 'admin@gmail.com';
 const ADMIN_HASH = '$2b$10$3EK44uMLrzTOerbezmUfB.dTF5jnwXLck5fAi7od4KjiRr6jSUa16';
@@ -189,6 +190,7 @@ while (cursor <= END) {
     const slot = weighted(HOUR_SLOTS.map((entry) => [entry, entry[3]]));
     const stamp = new Date(cursor);
     stamp.setHours(slot[0], slot[1] + intBetween(0, slot[2] - 1), intBetween(0, 59), 0);
+    if (stamp > NOW) continue;
     const ticketId = tickets.length + 1;
     tickets.push({ id: ticketId, soldAt: stamp });
     const lineCount = weighted([[1, 60], [2, 28], [3, 9], [4, 3]]);
