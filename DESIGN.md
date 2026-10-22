@@ -193,7 +193,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   importe en `md-plus` 600 y el beneficio con signo en `text-xs`, 600, `--rm-positive` (una pérdida, «−» y `--rm-negative`). Sin paginación de flechas: 12 ventas y debajo un
   `.m-btn` a ancho completo «Ver más ventas (N)» con las que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
   filtro vuelve a las 12 primeras.
-- **Estados de Ventas** (`SalesPlaceholder`, `.sales-state`): la cabecera de la tabla se queda y el cuerpo, de unas tres filas de alto
+- **Estados de Ventas** (`TablePlaceholder`, `.sales-state`; lo usan también Clientes, Gastos y Campañas y temporadas, con `TableState`): la cabecera de la tabla se queda y el cuerpo, de unas tres filas de alto
   (10,875 rem), centra el mensaje en `text-md` y `ink-2`. Cargando: `.spinner-border-sm` en `--rm-orange` (sin giro con
   `prefers-reduced-motion`) y «Cargando ventas…», y el resumen de la cabecera se sustituye por dos siluetas `.panel-skeleton`:
   un cero es un dato, así que no se enseña mientras carga. Sin resultados: «No hay ventas con estos filtros.» (o «Todavía no hay
@@ -214,7 +214,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   botones de orden (el orden alfabético lo da el SQL); filas de 52 px con borde superior `--rm-line-soft` y `text-md`. Nombre en 500, Ciudad
   normal, Provincia en `ink-2` y CP a la derecha en `ink-2` con cifras tabulares; el texto largo se corta con «…». Al pasar el cursor,
   `--rm-row-hover`. Cabe sin desplazamiento hasta 992 px, así que no lleva `.sales-scroll`.
-  Estados (`ClientsPlaceholder`, `clientsState`; reutilizan `.sales-state*` de Ventas): la barra y la cabecera de la tabla se quedan y el
+  Estados (`TablePlaceholder`, `clientsState`; reutilizan `.sales-state*` de Ventas): la barra y la cabecera de la tabla se quedan y el
   cuerpo (10,875 rem) centra el mensaje. Cargando: spinner naranja y «Cargando clientes…», y el recuento de la cabecera de página es una
   silueta `.clients-count-skeleton`. Sin resultados: «No hay clientes con estos filtros.», sin pie, y la cabecera sigue con el total real.
   Error: el `CardError` de siempre («No se han podido cargar estos datos.» y «Reintentar»); un error gana a los datos antiguos. Si falla

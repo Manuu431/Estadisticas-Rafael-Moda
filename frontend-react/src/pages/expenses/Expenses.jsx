@@ -7,6 +7,7 @@ import ExpensesChart from './ExpensesChart.jsx';
 import ExpensesTable from './ExpensesTable.jsx';
 import ExpensesSkeleton from './ExpensesSkeleton.jsx';
 import { CardError } from '../controlPanel/cards/CardState.jsx';
+import { TableState } from '../../components/table/TablePlaceholder.jsx';
 import { DATABASE_TABLES, DATES_ONLY } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
 import { useIsMobile } from '../../utils/useIsMobile.js';
@@ -58,9 +59,7 @@ function Expenses({ title }) {
                 <ExpensesKpis totals={totals} compact={isMobile} />
                 {state.kind === 'empty' ? (
                     <section className="panel-card">
-                        <div className="sales-state">
-                            <p className="sales-state-text">{state.message}</p>
-                        </div>
+                        <TableState state={state} />
                     </section>
                 ) : (
                     <div className="expenses-main">

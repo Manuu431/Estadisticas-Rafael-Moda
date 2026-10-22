@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import SalesFilters from "../components/SalesFilters.jsx";
 import Table from "../components/table/Table.jsx";
-import SalesPlaceholder from "../components/table/SalesPlaceholder.jsx";
+import SalesTable from "../components/table/SalesTable.jsx";
+import TablePlaceholder from "../components/table/TablePlaceholder.jsx";
 import SalesMobileList from "../components/table/SalesMobileList.jsx";
 import SalesSummary, { SalesSummaryCard } from "../components/SalesSummary.jsx";
 import { DATABASE_TABLES } from "../config/database.js";
@@ -51,7 +52,7 @@ function Sales(props) {
             </header>
             {isMobile ? <SalesSummaryCard kind={state.kind} summary={summary} /> : null}
             <SalesFilters period={period} onPeriodChange={changePeriod} onFilterChange={changeFilters} />
-            {state.kind !== 'ready' ? <SalesPlaceholder state={state} onRetry={refetch} /> : isMobile ? (
+            {state.kind !== 'ready' ? <div className="data-card"><TablePlaceholder header={<SalesTable data={[]} />} loadingText="Cargando ventas…" state={state} onRetry={refetch} /></div> : isMobile ? (
                 <SalesMobileList rows={shown.rows} total={summary.lines} days={shown.days} onMore={() => setCount((current) => current + PAGE_SIZE)} />
             ) : (
                 <Table rows={shown.rows} total={summary.lines} page={page} onPageChange={setPage} />

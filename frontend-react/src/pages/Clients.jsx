@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import ClientsFilters from "../components/ClientsFilters.jsx";
 import ClientsTable from "../components/table/ClientsTable.jsx";
 import ClientsMobileList from "../components/table/ClientsMobileList.jsx";
-import ClientsPlaceholder from "../components/table/ClientsPlaceholder.jsx";
+import TablePlaceholder from "../components/table/TablePlaceholder.jsx";
 import Pagination from "../components/Pagination.jsx";
 import { Skeleton } from "./controlPanel/cards/CardState.jsx";
 import { DATABASE_TABLES } from "../config/database.js";
@@ -41,13 +41,13 @@ function Clients(props) {
             />
         </>
     ) : (
-        <ClientsPlaceholder state={state} onRetry={refetch} />
+        <TablePlaceholder header={<ClientsTable data={[]} />} loadingText="Cargando clientes…" state={state} onRetry={refetch} />
     );
     const mobileList = state.kind === 'ready' ? (
         <ClientsMobileList rows={clients} />
     ) : (
         <div className="data-card">
-            <ClientsPlaceholder state={state} onRetry={refetch} />
+            <TablePlaceholder loadingText="Cargando clientes…" state={state} onRetry={refetch} />
         </div>
     );
     return (

@@ -1,4 +1,5 @@
-import { CardError, Skeleton } from '../controlPanel/cards/CardState.jsx';
+import { Skeleton } from '../controlPanel/cards/CardState.jsx';
+import { TableState } from '../../components/table/TablePlaceholder.jsx';
 import { formatEuros } from '../../utils/format.js';
 import { editionDates, isStarted } from '../../utils/planning.js';
 import { ActionButton, Balance, Profit, StatusPill } from './PlanningParts.jsx';
@@ -138,8 +139,8 @@ export function PlanningTable({ tab, rows, state, openId, onToggle, onEdit, onDe
                         <span className="planning-head-actions">Acciones</span>
                     </div>
                     {state === 'loading' ? <SkeletonRows /> : null}
-                    {state === 'error' ? <div className="sales-state"><CardError onRetry={onRetry} /></div> : null}
-                    {state === 'empty' ? <div className="sales-state"><p className="sales-state-text">{tab.empty}</p></div> : null}
+                    {state === 'error' ? <TableState state={{ kind: 'error' }} onRetry={onRetry} /> : null}
+                    {state === 'empty' ? <TableState state={{ kind: 'empty', message: tab.empty }} /> : null}
                     {state === 'ready'
                         ? rows.map((row) => (
                               <Row
