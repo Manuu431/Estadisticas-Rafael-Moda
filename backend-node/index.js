@@ -19,6 +19,7 @@ const campaignsRouter = require('./src/routes/campaigns');
 const seasonsRouter = require('./src/routes/seasons');
 const seasonTypesRouter = require('./src/routes/seasonTypes');
 const campaignTypesRouter = require('./src/routes/campaignTypes');
+const { dailyDemoUpdate } = require('./src/controllers/dailyDemoUpdateController');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -26,6 +27,8 @@ const PORT = process.env.PORT || 8000;
 app.disable('x-powered-by');
 app.use(cors({ origin: parseOrigins(process.env.CORS_ORIGIN) }));
 app.use(express.json());
+
+app.get('/api/internal/daily-demo-update', dailyDemoUpdate);
 
 app.use('/api/users', usersRouter);
 app.use(authMiddleware);

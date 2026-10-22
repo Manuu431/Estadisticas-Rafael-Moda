@@ -2,6 +2,7 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP VIEW IF EXISTS `v_sales`;
+DROP TABLE IF EXISTS `demo_update_days`;
 DROP TABLE IF EXISTS `sale_lines`;
 DROP TABLE IF EXISTS `tickets`;
 DROP TABLE IF EXISTS `products`;
@@ -68,6 +69,12 @@ CREATE TABLE `products` (
   KEY `idx_products_color` (`color`),
   CONSTRAINT `fk_products_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`),
   CONSTRAINT `fk_products_family` FOREIGN KEY (`family_id`) REFERENCES `families` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `demo_update_days` (
+  `process_date` date NOT NULL,
+  `processed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`process_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `tickets` (
