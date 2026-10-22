@@ -241,7 +241,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   de la tarjeta), con 13 rem de alto como máximo y barra de desplazamiento fina: cabe en la tarjeta incluso en el estado «sin resultados».
   Opciones de `text-md` con radio `--rm-radius-sm`; al pasar el cursor, `--rm-tint`; la elegida, `--rm-orange-tint`, `--rm-orange-ink` y
   600. Con `large` (móvil) las opciones miden 44 px y usan `text-lg`. Teclado: Enter o ↓ abren, flechas mueven, Enter elige, Escape cierra y
-  el foco vuelve al campo. Nombre accesible «Provincia: Todas».
+  el foco vuelve al campo. Nombre accesible «Provincia: Todas»; el botón lleva `aria-haspopup="listbox"`, la lista `role="listbox"` y cada opción `role="option"` con `aria-selected`.
 - **Comparativa** (`.compare-page`, 24 px entre bloques en escritorio, 14 px en móvil con el mismo margen negativo que Clientes). Encabezado
   `.panel-heading` con «Dos periodos, uno al lado del otro» en `.panel-period`. No lleva el enlace «‹ Más» del artboard móvil, igual que
   Clientes. Los datos salen de `/api/statistics/compare` (A y B: resumen, ventas por día; y el desglose por marca, familia, sección,
@@ -438,7 +438,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   (`.dialog-field`) es la etiqueta `.sales-panel-label` y un `.panel-field.is-plain` (los desplegables con `bi-chevron-down`); los de solo
   lectura (nombre y beneficio de una edición, y todo en «Visualizar») van en `--rm-surface-soft` y `ink-2`. Errores de validación en
   `.panel-note.text-negative` bajo el campo. Pie sin borde con «Cancelar» (`.panel-ghost`) y «Crear» / «Guardar» (`.panel-primary`, desactivado
-  mientras guarda). Si falla el guardado el diálogo se queda abierto con el aviso en `role="alert"`; ya no hay `alert()`. En móvil es la misma
+  mientras guarda). Si falla el guardado el diálogo se queda abierto con el aviso en `role="alert"`; ya no hay `alert()`. Todos los diálogos (crear / editar y confirmar) y la hoja móvil se nombran con su título (`aria-labelledby`), devuelven el foco al botón que los abrió al cerrarse (`useRestoreFocus`) y, en el de confirmar, el foco inicial está en «Cancelar». En móvil es la misma
   `BottomSheet` con campos `.is-large`.
 - **Campañas y temporadas, paginación**: la lista enseña 10 tipos por página (`PAGE_SIZE` en `Planning.jsx`) con el `Pagination` de siempre
   («Mostrando 1–10 de 23 campañas»), dentro de la tarjeta en escritorio (con extremos) y en una `.planning-m-card` bajo las tarjetas en

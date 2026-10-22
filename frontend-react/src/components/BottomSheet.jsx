@@ -1,11 +1,13 @@
+import { useId } from 'react';
 import { Offcanvas } from 'react-bootstrap';
 
-function BottomSheet({ show, onHide, title, children, footer, className = '' }) {
+function BottomSheet({ show, onHide, onEntered, title, children, footer, className = '' }) {
+    const titleId = useId();
     return (
-        <Offcanvas show={show} onHide={onHide} placement="bottom" className={`m-sheet ${className}`}>
+        <Offcanvas show={show} onHide={onHide} onEntered={onEntered} placement="bottom" className={`m-sheet ${className}`} aria-labelledby={titleId}>
             <span className="m-sheet-grip" aria-hidden="true" />
             <Offcanvas.Header className="m-sheet-head">
-                <Offcanvas.Title className="m-sheet-title">{title}</Offcanvas.Title>
+                <Offcanvas.Title id={titleId} className="m-sheet-title">{title}</Offcanvas.Title>
                 <button type="button" className="m-ghost" onClick={onHide}>Cerrar</button>
             </Offcanvas.Header>
             <Offcanvas.Body className="m-sheet-body">

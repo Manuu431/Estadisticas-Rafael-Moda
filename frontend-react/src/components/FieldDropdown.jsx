@@ -10,6 +10,7 @@ function FieldDropdown({ label, value, options, onChange, className = '', large 
                 type="button"
                 disabled={disabled}
                 className={`panel-field ${showLabel ? 'is-labelled' : 'is-plain'} panel-select-toggle${large ? ' is-large' : ''}`}
+                aria-haspopup="listbox"
                 aria-label={`${label}: ${selected.label}`}
             >
                 {showLabel && <span className="panel-field-label">{label}</span>}
@@ -17,9 +18,9 @@ function FieldDropdown({ label, value, options, onChange, className = '', large 
                 {selected.detail && <span className="panel-select-detail">{selected.detail}</span>}
                 <i className="bi bi-chevron-down" aria-hidden="true" />
             </Dropdown.Toggle>
-            <Dropdown.Menu className="panel-select-menu" align={alignEnd ? 'end' : 'start'}>
+            <Dropdown.Menu className="panel-select-menu" role="listbox" align={alignEnd ? 'end' : 'start'}>
                 {options.map((option, position) => (
-                    <Dropdown.Item as="button" type="button" key={option.value} eventKey={String(position)} active={option === selected}>
+                    <Dropdown.Item as="button" type="button" role="option" aria-selected={option === selected} key={option.value} eventKey={String(position)} active={option === selected}>
                         <span className="panel-select-option">{option.label}</span>
                         {option.detail && <span className="panel-select-detail">{option.detail}</span>}
                     </Dropdown.Item>

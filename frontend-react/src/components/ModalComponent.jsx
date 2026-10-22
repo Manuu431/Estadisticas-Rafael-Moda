@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import { DATABASE_TABLES } from "../config/database.js";
 import { useIsMobile } from "../utils/useIsMobile.js";
 import BottomSheet from "./BottomSheet.jsx";
 import { writeError } from '../utils/errors.js';
+import { useRestoreFocus } from '../hooks/useRestoreFocus.js';
 
 const monthNames = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -69,6 +70,8 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const isEdit = mode === 'edit';
   const isCreate = mode === 'create';
   const isMobile = useIsMobile();
+  const titleId = useId();
+  useRestoreFocus();
   const [error, setError] = useState('');
 
   const getDays = (month) => (month === '' ? [] : Array.from({ length: new Date(2000, month, 0).getDate() }, (_, i) => i + 1));
@@ -233,9 +236,9 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   }
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered backdrop="static" dialogClassName="rm-dialog" backdropClassName="rm-dialog-backdrop">
+    <Modal show={show} onHide={onHide} aria-labelledby={titleId} size="lg" centered backdrop="static" dialogClassName="rm-dialog" backdropClassName="rm-dialog-backdrop">
       <Modal.Header className="dialog-head">
-        <Modal.Title className="dialog-title">{heading}</Modal.Title>
+        <Modal.Title id={titleId} className="dialog-title">{heading}</Modal.Title>
         <button type="button" className="panel-icon-btn" onClick={onHide} aria-label="Cerrar">
           <i className="bi bi-x-lg" aria-hidden="true" />
         </button>

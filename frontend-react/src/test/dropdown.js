@@ -7,5 +7,5 @@ export const chosen = (label) => dropdown(label).getAttribute('aria-label').repl
 export const pickOption = (label, option) => {
     const toggle = dropdown(label);
     fireEvent.click(toggle);
-    fireEvent.click(within(toggle.parentElement).getByRole('button', { name: option }));
+    fireEvent.click(within(toggle.parentElement).getByRole('option', { name: option }));
 };

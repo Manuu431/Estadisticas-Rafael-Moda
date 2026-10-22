@@ -36,22 +36,22 @@ describe('FieldDropdown', () => {
         expect(toggle).toHaveAttribute('aria-expanded', 'false');
         fireEvent.click(within(toggle).getByText('Provincia'));
         expect(toggle).toHaveAttribute('aria-expanded', 'true');
-        expect(screen.getByRole('button', { name: 'Alicante' })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: 'Alicante' })).toBeInTheDocument();
     });
 
     it('lista todas las opciones y marca la elegida', () => {
         const { toggle } = setup({ value: 'Alicante' });
         fireEvent.click(toggle);
         const menu = toggle.parentElement;
-        expect(within(menu).getAllByRole('button').slice(1).map((item) => item.textContent)).toEqual(['Todas', 'Alicante', 'Valencia']);
-        expect(within(menu).getByRole('button', { name: 'Alicante' })).toHaveClass('active');
-        expect(within(menu).getByRole('button', { name: 'Valencia' })).not.toHaveClass('active');
+        expect(within(menu).getAllByRole('option').map((item) => item.textContent)).toEqual(['Todas', 'Alicante', 'Valencia']);
+        expect(within(menu).getByRole('option', { name: 'Alicante' })).toHaveClass('active');
+        expect(within(menu).getByRole('option', { name: 'Valencia' })).not.toHaveClass('active');
     });
 
     it('al elegir una opción avisa con su valor y se cierra', () => {
         const { toggle, onChange } = setup();
         fireEvent.click(toggle);
-        fireEvent.click(screen.getByRole('button', { name: 'Valencia' }));
+        fireEvent.click(screen.getByRole('option', { name: 'Valencia' }));
         expect(onChange).toHaveBeenCalledWith('Valencia');
         expect(toggle).toHaveAttribute('aria-expanded', 'false');
     });
@@ -59,7 +59,7 @@ describe('FieldDropdown', () => {
     it('«Todas» avisa con el valor vacío', () => {
         const { toggle, onChange } = setup({ value: 'Alicante' });
         fireEvent.click(toggle);
-        fireEvent.click(screen.getByRole('button', { name: 'Todas' }));
+        fireEvent.click(screen.getByRole('option', { name: 'Todas' }));
         expect(onChange).toHaveBeenCalledWith('');
     });
 
@@ -67,7 +67,7 @@ describe('FieldDropdown', () => {
         const onChange = vi.fn();
         render(<FieldDropdown label="Año" value="" options={[{ value: '', label: 'Todos' }, { value: '2', label: 'Dos' }, { value: '1', label: 'Uno' }]} onChange={onChange} />);
         fireEvent.click(screen.getByRole('button', { name: /^Año/ }));
-        fireEvent.click(screen.getByRole('button', { name: 'Uno' }));
+        fireEvent.click(screen.getByRole('option', { name: 'Uno' }));
         expect(onChange).toHaveBeenCalledWith('1');
     });
 
