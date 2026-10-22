@@ -280,9 +280,9 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `/api/statistics/expenses` (ingresos = `amount`, gastos = `cost`, beneficio = `profit` de `v_sales`, agrupados por mes o por año en el SQL).
   Cabecera `.expenses-head` (`align-items: flex-end`, `space-between`, 24 px, se parte en dos líneas): a la izquierda `.panel-heading` con
   «Lo que cuesta la ropa que vendes, frente a lo que ingresas» en `.panel-period`; a la derecha, a 12 px, el campo Periodo y el control
-  segmentado (`.panel-segs.is-plus`). Periodo es un `FieldDropdown` (`.expenses-period`, 300 px) con el valor en 600; con «Años» el campo se
-  bloquea (`disabled`) en «Todos los años · 2020 – 2026». Opciones: «Este año · 1 ene – 4 oct 2026», «Una campaña…», «Una temporada…»,
-  «Fechas concretas…»; al elegir una de las tres últimas sale una fila propia bajo la cabecera (`.expenses-extra`): un `FieldDropdown`
+  segmentado (`.panel-segs.is-plus`) **Días / Semanas / Meses / Años** (`GRAINS`, el texto es siempre «Meses», sin el año). Periodo es un `FieldDropdown` (`.expenses-period`, 300 px) con el valor en 600; el campo **no se bloquea nunca**: Días, Semanas, Meses y Años trocean el periodo elegido (con «Años», solo los años que toca; «Este año» es una barra).
+  Opciones: «Este año · 1 ene – 4 oct 2026», «Una campaña…», «Una temporada…», «Fechas concretas…» y, al final, «Todo, desde que hay datos»
+  (sin fechas: el servidor devuelve todo el historial y no sale fila extra); al elegir una de las tres del medio sale una fila propia bajo la cabecera (`.expenses-extra`): un `FieldDropdown`
   (`.expenses-pick`, 384 px, con el rango a la derecha de cada opción) con las campañas o temporadas que ya han empezado, o los campos
   Desde / Hasta de Ventas (`CustomDates`). Por defecto, la última que ya terminó. Todo se aplica al momento; si las fechas no valen no se
   pide nada y se sigue enseñando el último periodo válido con su texto. El rango se recorta a hoy (una campaña en curso no pinta meses futuros).
@@ -294,35 +294,35 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   y nota `.expenses-kpi-note` (`text-xs-plus`, `ink-3`). Etiqueta y nota llevan `line-height: normal`, como el artboard (con el 1,5 de Bootstrap la tarjeta crecía 10 px).
   Los totales vienen del servidor (no se suman las filas redondeadas) y los porcentajes son gastos / ingresos y beneficio / ingresos con un decimal («0,0 %» sin ingresos).
 - **Gastos, gráfica «Ingresos y gastos por mes»** (`ExpensesChart`, `.expenses-card`): tarjeta con padding 24 × 26 px y 22 px entre bloques. Gráfica y tabla comparten
-  fila (`.expenses-main`): en 7/12 y 5/12 desde 1440 px y apiladas por debajo (con menos, la tabla no cabe en 402 px); las dos miden lo mismo. Cabecera con el título («por año» con
-  Años) y la leyenda a la derecha (16 px, `text-xs-plus`, `ink-2`, cuadraditos `.panel-dot`). La gráfica (`.expenses-chart`) va pegada abajo (`mt-auto`): 300 px de dibujo,
-  Ingresos (`--rm-orange`) y Gastos (`--rm-cost`) agrupados con 4 px entre las dos, esquinas 5/5/2/2, máximo 30 px, `barCategoryGap="10%"` (en Recharts el porcentaje
+  fila (`.expenses-main`): en 7/12 y 5/12 desde 1440 px y apiladas por debajo (con menos, la tabla no cabe en 402 px); las dos miden lo mismo. Cabecera con el título («por día», «por semana», «por mes» o «por año», según el control) y la leyenda a la derecha (16 px, `text-xs-plus`, `ink-2`, cuadraditos `.panel-dot`). La gráfica (`.expenses-chart`) va pegada abajo y **se estira** (`flex: 1 1 20,875 rem`, mínimo 20,875 rem, 15,625 en móvil; `ResponsiveContainer` al 100 %): las dos tarjetas miden lo mismo y la gráfica ocupa lo que la tabla deje, así que no queda hueco blanco. Ingresos (`--rm-orange`) y Gastos (`--rm-cost`) agrupados con 4 px entre las dos, esquinas 5/5/2/2, máximo 30 px, `barCategoryGap="10%"` (en Recharts el porcentaje
   cuenta por cada lado, así que 10 % deja las barras en el 80 % del hueco del mes), rejilla horizontal `--rm-line-soft`. Eje Y de 52 px + 12 de separación
   (`tickSize={0}`: Recharts suma 6 px de marca aunque no se dibuje), letras `text-2xs` en `ink-3`; eje X con una etiqueta por barra en `text-2xs-plus` (siempre `interval="preserveStartEnd"` con `minTickGap` 4: salen todas si caben y, si no, solo las que no se pisan;
   así también con etiquetas «Ene 25» o con 70 meses). Los textos de los ejes, por CSS. Escala del eje Y (`yAxisScale`): el paso es el primero de 5.000, 10.000, 20.000, 25.000, 50.000,
-  100.000, 200.000, 250.000, 500.000… (1, 2, 2,5 y 5 por una potencia de diez, mínimo 5.000) para el que mayor ÷ paso ≤ 4, y el tope el múltiplo del paso por encima del mayor.
-  «Mayor» es el mayor entre ingresos y gastos: nada impide un coste superior al precio. Etiquetas «0», «10 mil», «1.500 mil». Los meses sin ventas del periodo salen con las barras
-  a 0 (y los años, hasta el año en curso). Tooltip de Recharts con el nombre completo («Septiembre», con el año si el periodo cruza años) y los dos importes con dos decimales.
+  100.000, 200.000, 250.000, 500.000… (1, 2, 2,5 y 5 por una potencia de diez, mínimo 100: con días y semanas los importes son pequeños y un mínimo alto dejaba las barras diminutas; con todo a cero, 0 y 5.000) para el que mayor ÷ paso ≤ 4 (≤ 6 en días: con 2.300 de pico, el eje llega a 2,5 mil y no a 3 mil), y el tope el múltiplo del paso por encima del mayor.
+  «Mayor» es el mayor entre ingresos y gastos: nada impide un coste superior al precio. Etiquetas «0», «500», «1,5 mil», «10 mil», «1.500 mil». Los días, semanas, meses y años sin ventas del periodo salen con las barras
+  a 0. Semanas: la primera desde el primer día del periodo y las demás desde el lunes (el SQL manda los días y `utils/expenses.js` los suma, como en Comparativa); etiqueta «28 sep»,
+  nombre del tooltip «28 sep – 4 oct 2026». Tooltip de Recharts con el nombre completo («Septiembre», con el año si el periodo cruza años) y los dos importes con dos decimales.
 - **Gastos, tabla «Mes a mes»** (`ExpensesTable`, `.expenses-card.is-table`): tarjeta de 24 × 26 px con 14 px entre bloques, en 5/12 desde 1440 px y del mismo alto que la gráfica. Título
-  «Mes a mes» («Año a año» con Años). Es una tabla con roles (`role="table"` / `row` / `columnheader` / `cell`) y `aria-label`; la primera cabecera lleva «Periodo» solo para lectores
-  (`visually-hidden`). Rejilla `.expenses-row`: `minmax(5.5rem,1.2fr) 4.5rem 4.25rem 4.5rem 3.75rem` a 10 px (no la del artboard, que dejaba 34 px al nombre y pisaba «Septiembre*»;
-  con esta cabe justa en los 402 px de la tarjeta a 1440 px), `white-space: nowrap`. Cabecera de 32 px sin borde (`text-xs`, 600, `ink-2`); filas de 42 px (`text-sm-plus`) con
-  borde superior `--rm-line-soft`, también la primera. Orden del mes más reciente al más antiguo. Nombre en 500 con la inicial en mayúscula (si el periodo cruza de año, la forma corta
+  «Día a día», «Semana a semana», «Mes a mes» o «Año a año». Es una tabla con roles (`role="table"` / `row` / `columnheader` / `cell`) y `aria-label`; la primera cabecera lleva «Periodo» solo para lectores
+  (`visually-hidden`). Rejilla `.expenses-row`: `minmax(6rem,1.2fr) 4.25rem 4rem 4.25rem 3.5rem` a 10 px (no la del artboard, que dejaba 34 px al nombre y pisaba «Septiembre*»;
+  con esta cabe justa en los 402 px de la tarjeta a 1440 px, también con la barra de scroll y «28 sep – 1 oct»), `white-space: nowrap`. Cabecera de 32 px sin borde (`text-xs`, 600, `ink-2`); filas de 42 px (`text-sm-plus`) con
+  borde superior `--rm-line-soft`, también la primera. Orden del más reciente al más antiguo. **La tabla enseña siete filas a la vez** (`TABLE_ROWS`) y pagina con el `Pagination` de Comparativa, sin extremos (`.expenses-tail`: la nota del asterisco y, debajo, «Mostrando 1–7 de 295 días» y «Página 1 de 43»; `padding: 0.875rem 0 0`). Con más de siete filas `.expenses-table.is-paged` reserva el alto de cabecera + 7 filas, para que la última página no cambie el alto de las tarjetas; con siete o menos no hay pie de paginación. Cambiar de control o de periodo vuelve a la página 1 (`key` en el componente). No hay scroll interno. En días, el nombre lleva el día de la semana, «Domingo 19 jul» (cabe en la columna incluso con «Miércoles 30 sep»); en semanas, «21 – 27 sep» o «28 sep – 1 oct» (sin año ni asterisco). Nombre en 500 con la inicial en mayúscula (si el periodo cruza de año, la forma corta
   con año, «Sep 25», porque «Septiembre 2025*» no cabe); Ingresos normal; Gastos en `ink-2`; Beneficio en 600 y `--rm-positive` (`--rm-negative` con pérdidas, con el signo menos y la pastilla del % bajo); los tres con `formatEurosRound`. El % es beneficio / ingresos
   con un decimal en 600 y `--rm-nav`; por debajo de `LOW_MARGIN` (42 %) va en pastilla (2 × 8 px, radio 99, `--rm-orange-tint`, `--rm-pill-mujer-ink`). La pastilla se decide con el mismo
   número que se lee (41,96 % se ve «42,0 %» y no la lleva). Un mes sin ventas enseña «0 €» y «—», sin pastilla. El asterisco marca el último mes si el periodo acaba antes de que acabe
   el mes y el primero si empieza a mitad; el pie (`.expenses-foot`, `mt-auto`, `text-xs-plus`, 1,5, `ink-3`) lo explica: «* Septiembre, hasta el día 28.», «* Marzo, desde el día 15.»,
-  «* Septiembre, del día 5 al 20.»; en años, solo el año en curso y hasta hoy: «* 2026, hasta el 28 de septiembre.». Detrás va siempre la frase de las rebajas.
+  «* Septiembre, del día 5 al 20.»; en años, el primero y el último si el periodo no los cubre enteros: «* 2026, hasta el 28 de septiembre.», «* 2024, desde el 3 de febrero.»,
+  «* 2026, del 5 de marzo al 20 de mayo.». Con «Todo, desde que hay datos», el primer mes y el primer año se toman enteros (sin nota de inicio). Detrás va siempre la frase de las rebajas, también en móvil.
 - **Gastos, estados** (`expensesState`, `ExpensesSkeleton`): la cabecera, el campo Periodo, el control y la fila de campaña o fechas se quedan siempre. **Cargando** (también mientras llega la lista de
   campañas o temporadas): las tres tarjetas, la gráfica y la tabla pasan a siluetas `.panel-skeleton` con la forma de cada una y **el mismo alto que las reales** (tarjetas de cifras de 139 px; la
-  tabla dibuja una fila por mes del periodo, con tope de 12, y siete en años; el título mide 18 px). Nunca ceros ni datos del periodo anterior. **Error** (de los datos o de la lista de campañas o
+  tabla dibuja una fila por mes del periodo, con tope de 7 (una por año o por semana en esos controles, siete en días), más una silueta de pie de paginación si habrá más de siete (`periodCount`); el título mide 18 px). Nunca ceros ni datos del periodo anterior. **Error** (de los datos o de la lista de campañas o
   temporadas): el `CardError` de siempre en una sola tarjeta que sustituye a las tres secciones; un error gana a los datos antiguos. **Sin ventas en el periodo**: las tres tarjetas con «0,00 €» y
   «0,0 %» y, en lugar de la gráfica y la tabla, una tarjeta con «No hay ventas en este periodo.» (`.sales-state`), también en «Años». **Periodo sin elegir o no válido**: no se pide nada, se sigue
   enseñando el último periodo válido con su texto y bajo los campos sale el aviso (el de los campos de fecha, o «Elige las dos fechas del periodo.» en `.panel-note`).
 - **Gastos en móvil** (<992 px, `.expenses-page`): 14 px entre bloques y el mismo margen negativo que Clientes (contenido en 6 × 16 × 24 px). Cabecera con las reglas móviles de
   `.panel-heading` (subtítulo de `text-sm`, «Gastos» en `display-sm`, a 4 px). Sin enlace «‹ Más». Periodo es un `FieldDropdown large` (48 px, radio 14, padding 0 14 px, etiqueta de `text-sm`, valor de
-  `text-lg` en 600, flecha oculta); con campaña, temporada o fechas, la fila de debajo con el mismo campo y `CustomDates` en columna (campos de 48 px). El control segmentado ocupa todo el ancho, con las dos
-  opciones a partes iguales (botones de 40 px y `text-md`, contenedor de 4 px y radio 12). Las cifras van en **una sola tarjeta** (`.expenses-kpis-card`, padding 0 16 px) con tres bloques
+  `text-lg` en 600, flecha oculta); con campaña, temporada o fechas, la fila de debajo con el mismo campo y `CustomDates` en columna (campos de 48 px). El control segmentado ocupa todo el ancho, con las cuatro
+  opciones (Días / Semanas / Meses / Años) a partes iguales (botones de 40 px y `text-md`, contenedor de 4 px y radio 12). Las cifras van en **una sola tarjeta** (`.expenses-kpis-card`, padding 0 16 px) con tres bloques
   (`.expenses-kpi-block`, padding 16 × 0, 4 px entre líneas, borde superior `--rm-line-soft` salvo el primero): etiqueta, cifra en serif de **34 px** (`--rm-display-xs-plus`, token nuevo, `line-height` 1) y
   nota; la del segundo bloque es más corta: «Lo que costó la ropa vendida · 51,6 %». La silueta de carga usa la misma tarjeta, con la cifra a 34 px.
 - **Gastos en móvil, gráfica y tabla** (<992 px, `ExpensesChart compact`, `ExpensesTable compact`): tarjetas con padding 16 px; la de la gráfica a 14 px entre bloques y la de la tabla a 10. Gráfica: el título (15 px, 600) y,
@@ -426,8 +426,27 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   Desplegada: cada edición en un bloque con línea `--rm-line-box` (nombre en `text-md` 600 con el lápiz de 44 px a la derecha, fechas en `text-sm` `ink-2` y tres columnas
   Gastos · Beneficio · Balance con la etiqueta en `text-xs` y el valor en `text-sm`) y, al final, «Editar» y «Eliminar» (`.planning-m-action`, 44 px, con borde) que actúan
   sobre el **tipo**. Como en el diseño, «Generar años pendientes» no sale arriba; por decisión añadida, va al final de la lista como `.m-btn` a ancho completo.
+  **Repetición, saltos y edición** (el histórico no se reescribe): el diálogo del tipo lleva la casilla «Se repite cada año» (`repeats`; sin marcar solo existe la edición del año de inicio, p. ej. «50 aniversario») y, si se repite, «Último año (opcional)» (`last_year`; el sync no crea años posteriores). Una edición se puede **saltar** (`skipped`, botón `bi-slash-circle`; «Recuperar» con `bi-arrow-counterclockwise`): sale en la lista de ediciones en `--rm-ink-3` con «· saltada», no cuenta en el recuento ni en «Última vez», el sync no la recrea y el resto de pantallas no la reciben (el servidor la oculta salvo con `include_skipped=1`, que solo pide Planificación). Editar un tipo reescribe únicamente las ediciones que aún no han empezado; una edición que ya empezó tiene las fechas de solo lectura (con la nota que lo explica) y solo admite corregir los gastos, y el botón de saltar no sale. Un tipo con ediciones empezadas no se puede eliminar (409): se le pone un «último año». Los días que no existen (29 feb, 31 abr) se recortan al último día del mes.
   **Estados**: cargando, la cabecera de la tabla se queda y el cuerpo dibuja filas de `.panel-skeleton` (en móvil, tarjetas); las pastillas del recuento no
   salen hasta tener el dato. Error: `CardError` («Reintentar» repite la petición que falló). Vacío: «Todavía no hay campañas.» / «Todavía no hay temporadas.» centrado en `.sales-state`.
+- **Diálogo de crear / editar** (`ModalComponent`, `.rm-dialog`; tipos y ediciones de Campañas y temporadas): tarjeta en `--rm-cream` (como el fondo de la app; los campos quedan blancos) de radio
+  `--rm-radius-dialog` (20 px, token nuevo), borde `--rm-line`, `--rm-shadow-raised` y fondo `--rm-backdrop` (token nuevo, marrón, no negro).
+  Cabecera con el título en serif `display-xs` y un `.panel-icon-btn` «Cerrar» (`bi-x-lg`); sin barra de color. Cuerpo con padding 16 × 28 px
+  y rejilla de 2 columnas a 14 px (`.dialog-grid`): Nombre y Año de inicio a ancho completo, el resto a media columna. Cada campo
+  (`.dialog-field`) es la etiqueta `.sales-panel-label` y un `.panel-field.is-plain` (los desplegables con `bi-chevron-down`); los de solo
+  lectura (nombre y beneficio de una edición, y todo en «Visualizar») van en `--rm-surface-soft` y `ink-2`. Errores de validación en
+  `.panel-note.text-negative` bajo el campo. Pie sin borde con «Cancelar» (`.panel-ghost`) y «Crear» / «Guardar» (`.panel-primary`, desactivado
+  mientras guarda). Si falla el guardado el diálogo se queda abierto con el aviso en `role="alert"`; ya no hay `alert()`. En móvil es la misma
+  `BottomSheet` con campos `.is-large`.
+- **Campañas y temporadas, paginación**: la lista enseña 10 tipos por página (`PAGE_SIZE` en `Planning.jsx`) con el `Pagination` de siempre
+  («Mostrando 1–10 de 23 campañas»), dentro de la tarjeta en escritorio (con extremos) y en una `.planning-m-card` bajo las tarjetas en
+  móvil (sin extremos). Con 10 o menos no sale. Cambiar de página pliega la fila abierta, cambiar de pestaña vuelve a la 1 y llegar desde el
+  Calendario salta a la página del tipo. No es un tope: puede haber más de 10, solo se reparten.
+- **Confirmar eliminación** (`ConfirmDialog`, `.rm-dialog.is-confirm`): sustituye a `window.confirm` al eliminar un tipo de campaña o temporada.
+  Mismo diálogo que el de crear / editar (crema, radio 20 px, título en serif «Eliminar campaña» / «Eliminar temporada») pero de 28 rem, sin
+  botón de cierre y con el texto de `deleteMessage` (que avisa de las ediciones que se borran con él) en `text-base`, `ink-2`. Pie con «Cancelar»
+  y «Eliminar» (`.is-danger`: `--rm-negative`, el único botón relleno que no es naranja, porque la acción no se puede deshacer); se
+  desactivan mientras borra. En móvil, la misma `BottomSheet` con los botones en el pie. Si falla, el aviso sale en la página como antes.
 - **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
@@ -476,8 +495,4 @@ apiladas a ancho completo. El corte vive en cinco sitios y se mueven juntos: `us
 
 ## Deuda conocida (migrar al sistema)
 
-- `components/ModalComponent.jsx`: el diálogo de escritorio sigue con la cabecera `bg-primary`, el pie
-  `bg-secondary-subtle` y los campos cuadrados de Bootstrap → migrar al diálogo del prototipo
-  (`Campanas.dc.html`: radio 20px, título en serif, campos `rm-input`). Los `alert()` y `confirm()` del
-  navegador caen con ello.
 - Los mensajes de validación de Yup salen en inglés («name must be at most 30 characters»).

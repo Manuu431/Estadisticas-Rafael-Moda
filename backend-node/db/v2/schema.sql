@@ -103,8 +103,10 @@ CREATE TABLE `period_types` (
   `end_month` tinyint unsigned NOT NULL,
   `first_year` smallint unsigned NOT NULL,
   `repeats` tinyint(1) NOT NULL DEFAULT 1,
+  `last_year` smallint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_period_types_kind_name` (`kind`,`name`),
+  CONSTRAINT `chk_period_types_last_year` CHECK (`last_year` IS NULL OR `last_year` >= `first_year`),
   CONSTRAINT `chk_period_types_days` CHECK (`start_day` BETWEEN 1 AND 31 AND `end_day` BETWEEN 1 AND 31),
   CONSTRAINT `chk_period_types_months` CHECK (`start_month` BETWEEN 1 AND 12 AND `end_month` BETWEEN 1 AND 12)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -115,6 +117,7 @@ CREATE TABLE `periods` (
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
   `expenses` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `skipped` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_periods_type_start` (`period_type_id`,`start_date`),
   KEY `idx_periods_start_date` (`start_date`),

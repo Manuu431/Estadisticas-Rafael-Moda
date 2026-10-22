@@ -1,9 +1,9 @@
 import { CardError, Skeleton } from '../controlPanel/cards/CardState.jsx';
 import { formatEuros } from '../../utils/format.js';
-import { editionDates } from '../../utils/planning.js';
+import { editionDates, isStarted } from '../../utils/planning.js';
 import { ActionButton, Balance, Profit, StatusPill } from './PlanningParts.jsx';
 
-function Card({ row, open, onToggle, onEdit, onDelete, onEditEdition, highlightId }) {
+function Card({ row, open, onToggle, onEdit, onDelete, onEditEdition, onSkip, highlightId }) {
     const panelId = `editions-${row.type.id}`;
 
     return (
@@ -32,13 +32,20 @@ function Card({ row, open, onToggle, onEdit, onDelete, onEditEdition, highlightI
                     ) : (
                         row.editions.map((edition) => (
                             <div
-                                className={`planning-m-edition${highlightId === edition.id ? ' is-highlighted' : ''}`}
+                                className={`planning-m-edition${highlightId === edition.id ? ' is-highlighted' : ''}${edition.skipped ? ' is-skipped' : ''}`}
                                 id={`edition-${edition.id}`}
                                 key={edition.id}
                             >
                                 <div className="planning-m-edition-head">
-                                    <span className="planning-m-edition-name">{edition.name}</span>
+                                    <span className="planning-m-edition-name">{edition.name}{edition.skipped ? ' · saltada' : ''}</span>
                                     <ActionButton icon="bi-pencil" label={`Editar ${edition.name}`} onClick={() => onEditEdition(edition)} />
+                                    {isStarted(edition, new Date()) ? null : (
+                                        <ActionButton
+                                            icon={edition.skipped ? 'bi-arrow-counterclockwise' : 'bi-slash-circle'}
+                                            label={`${edition.skipped ? 'Recuperar' : 'Saltar'} ${edition.name}`}
+                                            onClick={() => onSkip(edition)}
+                                        />
+                                    )}
                                 </div>
                                 <span className="planning-m-edition-dates">{editionDates(edition.start_date, edition.end_date)}</span>
                                 <dl className="planning-m-figures">
@@ -65,7 +72,7 @@ function Card({ row, open, onToggle, onEdit, onDelete, onEditEdition, highlightI
     );
 }
 
-export function PlanningCards({ tab, rows, state, openId, onToggle, onEdit, onDelete, onEditEdition, onRetry, highlightId }) {
+export function PlanningCards({ tab, rows, state, openId, onToggle, onEdit, onDelete, onEditEdition, onSkip, onRetry, highlightId }) {
     if (state === 'loading') {
         return (
             <div className="planning-m-list" aria-busy="true">
@@ -87,6 +94,7 @@ export function PlanningCards({ tab, rows, state, openId, onToggle, onEdit, onDe
                     onEdit={onEdit}
                     onDelete={onDelete}
                     onEditEdition={onEditEdition}
+                    onSkip={onSkip}
                     highlightId={highlightId}
                 />
             ))}

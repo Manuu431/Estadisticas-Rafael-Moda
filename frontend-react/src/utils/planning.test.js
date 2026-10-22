@@ -11,6 +11,7 @@ import {
     typeStatus,
     lastResult,
     yearLabel,
+    isStarted,
 } from './planning.js';
 
 const type = (id, name, start_day, start_month, end_day, end_month, first_year = 2020, repeats = 1) => ({
@@ -222,5 +223,40 @@ describe('buildRows', () => {
         expect(row.count).toBe('0 temporadas');
         expect(row.last).toBeNull();
         expect(row.editions).toEqual([]);
+    });
+});
+
+describe('ediciones saltadas y tipos con último año', () => {
+    it('una edición saltada no cuenta como en curso ni evita calcular nada más', () => {
+        const rebajas = type(5, 'Rebajas de verano', 1, 7, 31, 8, 2020);
+        const skipped = { ...edition(5, '2026-07-01', '2026-08-31'), skipped: true };
+        expect(typeStatus(rebajas, [skipped], new Date(2026, 6, 15)).kind).toBe('upcoming');
+    });
+
+    it('una saltada no vuelve a salir como futura calculada de ese año', () => {
+        const rebajas = type(5, 'Rebajas de verano', 1, 7, 31, 8, 2020);
+        const skipped = { ...edition(5, '2026-07-01', '2026-08-31'), skipped: true };
+        expect(typeStatus(rebajas, [skipped], new Date(2026, 8, 28)).label).toBe('Empieza en 276 días');
+    });
+
+    it('con last_year no se calculan ediciones posteriores y queda Terminada', () => {
+        const old = { ...type(5, 'Rebajas de verano', 1, 7, 31, 8, 2020), last_year: 2025 };
+        expect(typeStatus(old, [], today).kind).toBe('finished');
+    });
+
+    it('lastResult ignora las saltadas', () => {
+        const real = edition(5, '2025-07-01', '2025-08-31', 1000);
+        const skipped = { ...edition(5, '2026-07-01', '2026-08-31', 0), skipped: true };
+        expect(lastResult([real, skipped], today)).toEqual({ profit: 1000, year: '2025' });
+    });
+
+    it('el recuento de ediciones no incluye las saltadas', () => {
+        const rows = buildRows([summer], [edition(5, '2025-07-01', '2025-08-31'), { ...edition(5, '2026-07-01', '2026-08-31'), skipped: true }], today, 'campaigns');
+        expect(rows[0].count).toBe('1 campaña');
+    });
+
+    it('isStarted: el día que empieza ya está congelada', () => {
+        expect(isStarted(edition(5, '2026-09-28', '2026-10-30'), today)).toBe(true);
+        expect(isStarted(edition(5, '2026-09-29', '2026-10-30'), today)).toBe(false);
     });
 });

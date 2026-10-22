@@ -13,7 +13,7 @@ const allowedColumns = {
   families: ['id', 'name', 'category'],
   products: ['id', 'name', 'brand_id', 'family_id', 'section', 'color'],
   periods: ['id', 'period_type_id', 'start_date', 'end_date', 'expenses'],
-  period_types: ['id', 'kind', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats']
+  period_types: ['id', 'kind', 'name', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats', 'last_year']
 };
 
 const searchColumns = {
@@ -27,7 +27,7 @@ const orderBy = {
   clients: '`name`, `id`'
 };
 
-const numericColumns =['id', 'ticket_id', 'product_id', 'brand_id', 'family_id', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit', 'expenses', 'period_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats'];
+const numericColumns =['id', 'ticket_id', 'product_id', 'brand_id', 'family_id', 'units', 'unit_price', 'unit_cost', 'amount', 'cost', 'profit', 'expenses', 'period_type_id', 'start_day', 'start_month', 'end_day', 'end_month', 'first_year', 'repeats', 'last_year', 'skipped'];
 
 const filterColumns = (data, resource) => {
   const columns = allowedColumns[resource] || [];

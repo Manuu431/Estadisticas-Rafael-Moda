@@ -1,4 +1,5 @@
-import { Modal, Form, Row, Col } from 'react-bootstrap';
+import { useState } from 'react';
+import { Modal } from 'react-bootstrap';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -22,7 +23,13 @@ const validationSchemas = {
         .typeError('El año debe ser un número')
         .required('El año de inicio es obligatorio')
         .min(1975, 'Debe ser mayor a 1975')
+        .max(2100, 'Debe ser menor a 2100'),
+    last_year: Yup.number()
+        .transform((value, original) => (original === '' || original === null ? undefined : value))
+        .typeError('El año debe ser un número')
+        .min(Yup.ref('first_year'), 'No puede ser anterior al año de inicio')
         .max(2100, 'Debe ser menor a 2100')
+        .notRequired()
   }),
   default: Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio').min(3).max(50),
@@ -37,10 +44,23 @@ const validationSchemas = {
 };
 
 const labels = {
-    id: "ID", name: "Nombre", start_date: "Fecha de inicio", end_date: "Fecha de finalización",
+    repeats: "Se repite cada año", name: "Nombre", start_date: "Fecha de inicio", end_date: "Fecha de finalización",
     expenses: "Gastos", profits: "Beneficios", start_day: "Día de inicio", start_month: "Mes de inicio",
-    end_day: "Día de fin", end_month: "Mes de fin", first_year: "Año de inicio"
+    end_day: "Día de fin", end_month: "Mes de fin", first_year: "Año de inicio",
+    last_year: "Último año (opcional)"
 };
+
+const wideKeys = ['name', 'first_year', 'last_year'];
+
+function DialogField({ name, label, wide, large, children }) {
+  return (
+    <div className={`dialog-field${wide ? ' is-wide' : ''}`}>
+      <label className="sales-panel-label" htmlFor={`dialog-${name}`}>{label}</label>
+      <span className={`panel-field is-plain${large ? ' is-large' : ''}`}>{children}</span>
+      <ErrorMessage name={name} component="div" className="panel-note text-negative" />
+    </div>
+  );
+}
 
 function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const endPoint = DATABASE_TABLES[type].endpoint;
@@ -48,6 +68,7 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   const isEdit = mode === 'edit';
   const isCreate = mode === 'create';
   const isMobile = useIsMobile();
+  const [error, setError] = useState('');
 
   const getDays = (month, year) => (month === '' ? [] : Array.from({ length: new Date(Number(year) || 2001, month, 0).getDate() }, (_, i) => i + 1));
 
@@ -59,38 +80,23 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
 
   const initialValues = isCreate
     ? isCreateType
-        ? { name: '', first_year: '', start_month: '', start_day: '', end_month: '', end_day: '' }
+        ? { name: '', first_year: '', repeats: true, last_year: '', start_month: '', start_day: '', end_month: '', end_day: '' }
         : { name: '', start_date: '', end_date: '', expenses: '', profits: '' }
     : isCreateType
-        ? { id: data.id, name: data.name, first_year: data.first_year ?? '', start_month: data.start_month, start_day: data.start_day, end_month: data.end_month, end_day: data.end_day }
+        ? { id: data.id, name: data.name, first_year: data.first_year ?? '', repeats: Boolean(data.repeats), last_year: data.last_year ?? '', start_month: data.start_month, start_day: data.start_day, end_month: data.end_month, end_day: data.end_day }
         : { ...data };
 
-  const create = async (values) => {
-    try {
-      await axios.post(endPoint, values);
-      alert('Elemento creado correctamente.');
-    } catch (error) {
-      console.error('Error al crear:', error);
-      alert('No se pudo crear el elemento.');
-    }
-  };
-
-  const update = async (values) => {
-    try {
-      await axios.put(`${endPoint}/${values.id}`, values);
-      alert('Elemento actualizado correctamente.');
-    } catch (error) {
-      console.error('Error al actualizar:', error);
-      alert('No se pudo actualizar el elemento.');
-    }
-  };
+  const started = !isCreateType && isEdit && Boolean(data.start_date) && String(data.start_date).slice(0, 10) <= new Date().toLocaleDateString('sv-SE');
+  const payload = (values) => (isCreateType ? { ...values, repeats: values.repeats ? 1 : 0, last_year: values.repeats && values.last_year !== '' ? values.last_year : null } : values);
+  const save = (values) => (isCreate ? axios.post(endPoint, payload(values)) : axios.put(`${endPoint}/${values.id}`, payload(values)));
 
   const renderFields = (values, setFieldValue) => (
-    <Row className="g-3">
+    <div className="dialog-grid">
         {Object.keys(values).map(key => {
-            if (isCreate && key === 'id') return null;
             const label = labels[key];
             if (!label) return null;
+            const id = `dialog-${key}`;
+            const wide = wideKeys.includes(key);
 
             if (['start_day', 'end_day'].includes(key)) {
                 const isStart = key === 'start_day';
@@ -98,96 +104,82 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
                 const crossesYear = !isStart && values.start_month !== '' && values.end_month !== '' && values.end_month < values.start_month;
                 const year = values.first_year === '' ? '' : crossesYear ? Number(values.first_year) + 1 : values.first_year;
                 return (
-                    <Col xs={6} md={3} key={key}>
-                    <Form.Group>
-                        <Form.Label className="fw-semibold">{label}</Form.Label>
-                        <Field as="select" name={key} className="form-select">
+                    <DialogField key={key} name={key} label={label} large={isMobile}>
+                        <Field as="select" id={id} name={key} disabled={isView}>
                             <option value="">Día</option>
                             {getDays(month, year).map(day => (
                                 <option key={day} value={day}>{day}</option>
                             ))}
                         </Field>
-                        <ErrorMessage name={key} component="div" className="text-danger small mt-1" />
-                    </Form.Group>
-                    </Col>
+                        <i className="bi bi-chevron-down" aria-hidden="true" />
+                    </DialogField>
                 );
             }
 
             if (['start_month', 'end_month'].includes(key)) {
                 return (
-                    <Col xs={6} md={3} key={key}>
-                        <Form.Group>
-                            <Form.Label className="fw-semibold">{label}</Form.Label>
-                            <Field
-                                as="select"
-                                name={key}
-                                className="form-select"
-                                onChange={(e) => {
-                                    const val = e.target.value === '' ? '' : parseInt(e.target.value);
-                                    setFieldValue(key, val);
-                                    setFieldValue(key === 'start_month' ? 'start_day' : 'end_day', '');
-                                }}
-                            >
-                                <option value="">Mes</option>
-                                {monthNames.map((month, idx) => (
-                                    <option key={idx} value={idx + 1}>{month}</option>
-                                ))}
-                            </Field>
-                            <ErrorMessage name={key} component="div" className="text-danger small mt-1" />
-                        </Form.Group>
-                    </Col>
+                    <DialogField key={key} name={key} label={label} large={isMobile}>
+                        <Field
+                            as="select"
+                            id={id}
+                            name={key}
+                            disabled={isView}
+                            onChange={(e) => {
+                                const val = e.target.value === '' ? '' : parseInt(e.target.value);
+                                setFieldValue(key, val);
+                                setFieldValue(key === 'start_month' ? 'start_day' : 'end_day', '');
+                            }}
+                        >
+                            <option value="">Mes</option>
+                            {monthNames.map((month, idx) => (
+                                <option key={idx} value={idx + 1}>{month}</option>
+                            ))}
+                        </Field>
+                        <i className="bi bi-chevron-down" aria-hidden="true" />
+                    </DialogField>
                 );
             }
+
+            if (key === 'repeats') {
+                return (
+                    <div className="dialog-field is-wide" key={key}>
+                        <label className="d-flex align-items-center gap-2">
+                            <Field type="checkbox" name="repeats" id={id} disabled={isView} className="form-check-input m-0" />
+                            <span className="sales-panel-label m-0">{label}</span>
+                        </label>
+                        {values.repeats ? null : <p className="panel-note m-0">Solo se crea la edición del año de inicio (por ejemplo, un aniversario).</p>}
+                    </div>
+                );
+            }
+
+            if (key === 'last_year' && !values.repeats) return null;
 
             const computed = !isCreateType && (key === 'name' || key === 'profits');
-            if (key === 'name') {
-                const colSize = isCreate ? 12 : 6;
-                return (
-                    <Col md={colSize} key={key}>
-                    <Form.Group>
-                        <Form.Label className="fw-semibold">{label}</Form.Label>
-                        <Field
-                            as={Form.Control}
-                            type="text"
-                            name={key}
-                            readOnly={isView || computed}
-                            plaintext={isView}
-                            className={`form-control ${isView ? 'bg-white border-0 ps-0' : ''}`}
-                        />
-                        <ErrorMessage name={key} component="div" className="text-danger small mt-1" />
-                    </Form.Group>
-                    </Col>
-                );
-            }
-
             const isDate = ['start_date', 'end_date'].includes(key);
             const isNumber = ['expenses', 'profits'].includes(key);
+            const readOnly = isView || computed || (started && isDate);
 
             return (
-                <Col md={6} key={key}>
-                    <Form.Group>
-                        <Form.Label className="fw-semibold">{label}</Form.Label>
-                        <Field
-                            as={Form.Control}
-                            type={isDate ? 'date' : isNumber ? 'number' : 'text'}
-                            name={key}
-                            readOnly={isView || computed || key === 'id'}
-                            plaintext={isView}
-                            className={`form-control ${isView ? 'bg-white border-0 ps-0' : ''}`}
-                        />
-                        <ErrorMessage name={key} component="div" className="text-danger small mt-1" />
-                    </Form.Group>
-                </Col>
+                <DialogField key={key} name={key} label={label} wide={key === 'name' || wide} large={isMobile}>
+                    <Field
+                        id={id}
+                        type={isDate ? 'date' : isNumber ? 'number' : 'text'}
+                        name={key}
+                        readOnly={readOnly}
+                        className={readOnly ? 'is-readonly' : ''}
+                    />
+                </DialogField>
             );
         })}
-    </Row>
+        {started ? <p className="panel-note m-0 dialog-field is-wide">Esta edición ya empezó: sus fechas no se tocan para que las comparativas sigan siendo justas. Solo puedes corregir los gastos.</p> : null}
+    </div>
   );
 
-  const actions = (
+  const actions = (isSubmitting) => (
     <>
-      {isMobile ? null : <button type="button" className="panel-ghost" onClick={onHide}>Cerrar</button>}
+      {isMobile ? null : <button type="button" className="panel-ghost" onClick={onHide}>{isView ? 'Cerrar' : 'Cancelar'}</button>}
       {!isView && (
-        <button type="submit" className={isMobile ? 'm-primary' : 'panel-primary'}>
+        <button type="submit" className={isMobile ? 'm-primary' : 'panel-primary'} disabled={isSubmitting}>
           {isCreate ? 'Crear' : 'Guardar'}
         </button>
       )}
@@ -200,22 +192,32 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={async (values) => {
-        if (isCreate) await create(values);
-        else if (isEdit) await update(values);
+        setError('');
+        try {
+          await save(values);
+        } catch (err) {
+          console.error('Error al guardar:', err);
+          setError(isCreate ? 'No se ha podido crear.' : 'No se han podido guardar los cambios.');
+          return;
+        }
         onHide();
       }}
     >
-      {({ values, setFieldValue }) => (
-        <FormikForm>
+      {({ values, setFieldValue, isSubmitting }) => (
+        <FormikForm noValidate>
           {isMobile ? (
             <div className="d-flex flex-column gap-3">
               {renderFields(values, setFieldValue)}
-              {isView ? null : <div className="m-sheet-foot d-flex gap-2">{actions}</div>}
+              {error ? <p className="panel-note text-negative m-0" role="alert">{error}</p> : null}
+              {isView ? null : <div className="m-sheet-foot d-flex gap-2">{actions(isSubmitting)}</div>}
             </div>
           ) : (
             <>
-              <Modal.Body className="bg-light px-4 py-3">{renderFields(values, setFieldValue)}</Modal.Body>
-              <Modal.Footer className="bg-secondary-subtle px-4">{actions}</Modal.Footer>
+              <Modal.Body className="dialog-body">
+                {renderFields(values, setFieldValue)}
+                {error ? <p className="panel-note text-negative mt-3 mb-0" role="alert">{error}</p> : null}
+              </Modal.Body>
+              <Modal.Footer className="dialog-foot">{actions(isSubmitting)}</Modal.Footer>
             </>
           )}
         </FormikForm>
@@ -232,9 +234,12 @@ function ModalComponent({ show, onHide, data = {}, mode, type }) {
   }
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered backdrop="static">
-      <Modal.Header closeButton className="bg-primary text-white">
-        <Modal.Title className="fw-semibold fs-4">{heading}</Modal.Title>
+    <Modal show={show} onHide={onHide} size="lg" centered backdrop="static" dialogClassName="rm-dialog" backdropClassName="rm-dialog-backdrop">
+      <Modal.Header className="dialog-head">
+        <Modal.Title className="dialog-title">{heading}</Modal.Title>
+        <button type="button" className="panel-icon-btn" onClick={onHide} aria-label="Cerrar">
+          <i className="bi bi-x-lg" aria-hidden="true" />
+        </button>
       </Modal.Header>
       {form}
     </Modal>

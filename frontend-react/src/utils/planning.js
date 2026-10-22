@@ -11,6 +11,8 @@ const NOUNS = {
 
 const crossesYear = (type) => type.end_month < type.start_month || (type.end_month === type.start_month && type.end_day < type.start_day);
 
+const buildDate = (year, month, dayOfMonth) => new Date(year, month - 1, Math.min(dayOfMonth, new Date(year, month, 0).getDate()));
+
 export function sortTypes(types) {
     return [...types].sort((a, b) => a.start_month - b.start_month || a.start_day - b.start_day || a.name.localeCompare(b.name, 'es'));
 }
@@ -45,19 +47,20 @@ export function sortEditions(editions) {
 // para los años que aún no existen. Así el estado no depende de que ya se hayan generado, y si alguien ha
 // cambiado las fechas de una edición guardada, manda la guardada.
 function occurrences(type, editions, today) {
-    const saved = editions.map((edition) => ({ start: day(edition.start_date), end: day(edition.end_date) }));
-    const savedYears = new Set(saved.map((item) => item.start.getFullYear()));
+    const savedYears = new Set(editions.map((edition) => day(edition.start_date).getFullYear()));
+    const saved = editions.filter((edition) => !edition.skipped).map((edition) => ({ start: day(edition.start_date), end: day(edition.end_date) }));
     const year = today.getFullYear();
     const first = type.repeats ? Math.max(type.first_year, year - 1) : type.first_year;
-    const last = type.repeats ? Math.max(first, year + 1) : type.first_year;
+    const limit = type.last_year ? Math.min(type.last_year, year + 1) : year + 1;
+    const last = type.repeats ? Math.max(first, limit) : type.first_year;
     const crosses = crossesYear(type);
 
     const computed = [];
     for (let y = first; y <= last; y += 1) {
-        if (savedYears.has(y)) continue;
+        if (savedYears.has(y) || (type.last_year && y > type.last_year)) continue;
         computed.push({
-            start: new Date(y, type.start_month - 1, type.start_day),
-            end: new Date(crosses ? y + 1 : y, type.end_month - 1, type.end_day),
+            start: buildDate(y, type.start_month, type.start_day),
+            end: buildDate(crosses ? y + 1 : y, type.end_month, type.end_day),
         });
     }
     return [...saved, ...computed];
@@ -89,10 +92,15 @@ export function typeStatus(type, editions, today) {
 // El beneficio (no el balance) de la última edición ya terminada. La que termina hoy sigue en curso.
 export function lastResult(editions, today) {
     const now = startOfDay(today);
-    const finished = editions.filter((edition) => day(edition.end_date) < now).sort((a, b) => b.end_date.localeCompare(a.end_date));
+    const finished = editions.filter((edition) => !edition.skipped && day(edition.end_date) < now).sort((a, b) => b.end_date.localeCompare(a.end_date));
     if (finished.length === 0) return null;
     const [last] = finished;
     return { profit: Number(last.profits), year: yearLabel(last.start_date, last.end_date) };
+}
+
+// Una edición que ya empezó (o terminó) no se puede mover; solo se corrigen sus gastos.
+export function isStarted(edition, today) {
+    return day(edition.start_date) <= startOfDay(today);
 }
 
 export function countLabel(count, kind) {
@@ -119,7 +127,7 @@ export function buildRows(types, editions, today, kind) {
             range: typeRange(type),
             status: typeStatus(type, own, today),
             last: lastResult(own, today),
-            count: countLabel(own.length, kind),
+            count: countLabel(own.filter((edition) => !edition.skipped).length, kind),
             editions: sortEditions(own),
         };
     });

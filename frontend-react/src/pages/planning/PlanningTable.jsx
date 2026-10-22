@@ -1,9 +1,9 @@
 import { CardError, Skeleton } from '../controlPanel/cards/CardState.jsx';
 import { formatEuros } from '../../utils/format.js';
-import { editionDates } from '../../utils/planning.js';
+import { editionDates, isStarted } from '../../utils/planning.js';
 import { ActionButton, Balance, Profit, StatusPill } from './PlanningParts.jsx';
 
-function Editions({ row, id, highlightId, onEditEdition }) {
+function Editions({ row, id, highlightId, onEditEdition, onSkip }) {
     if (row.editions.length === 0) {
         return <p className="panel-muted planning-empty-editions" id={id}>Sin ediciones. Pulsa «Generar años pendientes» para crearlas.</p>;
     }
@@ -20,18 +20,25 @@ function Editions({ row, id, highlightId, onEditEdition }) {
             </div>
             {row.editions.map((edition) => (
                 <div
-                    className={`planning-edition${highlightId === edition.id ? ' is-highlighted' : ''}`}
+                    className={`planning-edition${highlightId === edition.id ? ' is-highlighted' : ''}${edition.skipped ? ' is-skipped' : ''}`}
                     id={`edition-${edition.id}`}
                     role="row"
                     key={edition.id}
                 >
-                    <span className="planning-edition-name" role="cell">{edition.name}</span>
+                    <span className="planning-edition-name" role="cell">{edition.name}{edition.skipped ? ' · saltada' : ''}</span>
                     <span className="planning-edition-dates" role="cell">{editionDates(edition.start_date, edition.end_date)}</span>
                     <span className="planning-num" role="cell">{formatEuros(edition.expenses)}</span>
                     <span className="planning-num" role="cell">{formatEuros(edition.profits)}</span>
                     <span className="planning-num" role="cell"><Balance value={edition.balance} /></span>
                     <span className="planning-edition-action" role="cell">
                         <ActionButton icon="bi-pencil" label={`Editar ${edition.name}`} onClick={() => onEditEdition(edition)} />
+                        {isStarted(edition, new Date()) ? null : (
+                            <ActionButton
+                                icon={edition.skipped ? 'bi-arrow-counterclockwise' : 'bi-slash-circle'}
+                                label={`${edition.skipped ? 'Recuperar' : 'Saltar'} ${edition.name}`}
+                                onClick={() => onSkip(edition)}
+                            />
+                        )}
                     </span>
                 </div>
             ))}
@@ -39,7 +46,7 @@ function Editions({ row, id, highlightId, onEditEdition }) {
     );
 }
 
-function Row({ row, open, onToggle, onEdit, onDelete, onEditEdition, highlightId }) {
+function Row({ row, open, onToggle, onEdit, onDelete, onEditEdition, onSkip, highlightId }) {
     const panelId = `editions-${row.type.id}`;
 
     return (
@@ -83,7 +90,7 @@ function Row({ row, open, onToggle, onEdit, onDelete, onEditEdition, highlightId
             </div>
             {open ? (
                 <div className="planning-open">
-                    <Editions row={row} id={panelId} highlightId={highlightId} onEditEdition={onEditEdition} />
+                    <Editions row={row} id={panelId} highlightId={highlightId} onEditEdition={onEditEdition} onSkip={onSkip} />
                 </div>
             ) : null}
         </div>
@@ -103,7 +110,7 @@ function SkeletonRows() {
     ));
 }
 
-export function PlanningTable({ tab, rows, state, openId, onToggle, onEdit, onDelete, onEditEdition, onNew, onSync, syncing, message, onRetry, highlightId }) {
+export function PlanningTable({ tab, rows, state, openId, onToggle, onEdit, onDelete, onEditEdition, onSkip, onNew, onSync, syncing, message, onRetry, highlightId, foot }) {
     return (
         <section className="data-card planning-card" role="tabpanel" aria-labelledby={`tab-${tab.slug}`}>
             <div className="planning-bar">
@@ -145,12 +152,14 @@ export function PlanningTable({ tab, rows, state, openId, onToggle, onEdit, onDe
                                   onEdit={onEdit}
                                   onDelete={onDelete}
                                   onEditEdition={onEditEdition}
+                                  onSkip={onSkip}
                                   highlightId={highlightId}
                               />
                           ))
                         : null}
                 </div>
             </div>
+            {foot}
         </section>
     );
 }

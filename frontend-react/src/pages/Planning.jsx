@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { startOfDay } from 'date-fns';
+import ConfirmDialog from '../components/ConfirmDialog.jsx';
 import ModalComponent from '../components/ModalComponent.jsx';
+import Pagination from '../components/Pagination.jsx';
 import { DATABASE_TABLES } from "../config/database.js";
 import { useFetch } from "../hooks/useFetch.js";
 import { buildRows, deleteMessage, syncMessage } from "../utils/planning.js";
@@ -16,7 +18,7 @@ const TABS = [
         kind: 'campaigns',
         typeKey: 'campaignTypes',
         label: 'Campañas',
-        intro: 'Cada campaña se repite todos los años. Despliega una para ver sus ediciones y apuntar lo que gastaste y lo que ganó.',
+        intro: 'Cada campaña se repite cada año, salvo las que marques como únicas. Despliega una para ver sus ediciones y apuntar lo que gastaste y lo que ganó.',
         newLabel: 'Nueva campaña',
         empty: 'Todavía no hay campañas.'
     },
@@ -25,12 +27,14 @@ const TABS = [
         kind: 'seasons',
         typeKey: 'seasonTypes',
         label: 'Temporadas',
-        intro: 'Cada temporada se repite todos los años. Despliega una para ver sus ediciones y apuntar lo que gastaste y lo que ganó.',
+        intro: 'Cada temporada se repite cada año, salvo las que marques como únicas. Despliega una para ver sus ediciones y apuntar lo que gastaste y lo que ganó.',
         newLabel: 'Nueva temporada',
         empty: 'Todavía no hay temporadas.'
     }
 ];
 
+const ALL_EDITIONS = { include_skipped: '1' };
+const PAGE_SIZE = 10;
 const HIGHLIGHT_MS = 2500;
 const MESSAGE_MS = 6000;
 
@@ -76,14 +80,16 @@ function Planning(props) {
     const sources = {
         campaignTypes: useFetch(DATABASE_TABLES.campaignTypes.endpoint),
         seasonTypes: useFetch(DATABASE_TABLES.seasonTypes.endpoint),
-        campaigns: useFetch(DATABASE_TABLES.campaigns.endpoint),
-        seasons: useFetch(DATABASE_TABLES.seasons.endpoint)
+        campaigns: useFetch(DATABASE_TABLES.campaigns.endpoint, ALL_EDITIONS),
+        seasons: useFetch(DATABASE_TABLES.seasons.endpoint, ALL_EDITIONS)
     };
     const types = sources[tab.typeKey];
     const editions = sources[tab.kind];
 
     const [openId, setOpenId] = useState(null);
+    const [page, setPage] = useState(1);
     const [modal, setModal] = useState(null);
+    const [pendingDelete, setPendingDelete] = useState(null);
     const [syncing, setSyncing] = useState(false);
     const [message, setMessage] = useState('');
     const [highlightId, setHighlightId] = useState(null);
@@ -97,6 +103,20 @@ function Planning(props) {
     const failed = Boolean(types.error || editions.error);
     const loading = !failed && (types.data === null || editions.data === null);
     const state = failed ? 'error' : loading ? 'loading' : rows.length === 0 ? 'empty' : 'ready';
+    const totalPages = Math.max(Math.ceil(rows.length / PAGE_SIZE), 1);
+    const currentPage = Math.min(page, totalPages);
+    const visibleRows = rows.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+    const pagination = state === 'ready' && rows.length > PAGE_SIZE ? (
+        <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={changePage}
+            totalItems={rows.length}
+            pageSize={PAGE_SIZE}
+            itemLabel={tab.kind === 'campaigns' ? 'campañas' : 'temporadas'}
+            edges={!isMobile}
+        />
+    ) : null;
     const counts = {
         campaigns: sources.campaignTypes.data?.length,
         seasons: sources.seasonTypes.data?.length
@@ -110,6 +130,7 @@ function Planning(props) {
 
     useEffect(() => {
         setOpenId(null);
+        setPage(1);
         setMessage('');
     }, [tab.slug]);
 
@@ -125,7 +146,9 @@ function Planning(props) {
         if (!item || state !== 'ready') return;
         external.current = null;
         localStorage.removeItem('temporalItem');
-        if (!item.period_type_id || !rows.some((row) => row.type.id === item.period_type_id)) return;
+        const index = rows.findIndex((row) => row.type.id === item.period_type_id);
+        if (!item.period_type_id || index === -1) return;
+        setPage(Math.floor(index / PAGE_SIZE) + 1);
         setOpenId(item.period_type_id);
         setHighlightId(item.id);
     }, [state, rows]);
@@ -140,6 +163,11 @@ function Planning(props) {
         if (!highlightId) return;
         document.getElementById(`edition-${highlightId}`)?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }, [highlightId, openId]);
+
+    function changePage(next) {
+        setPage(next);
+        setOpenId(null);
+    }
 
     const closeModal = async () => {
         const changed = modal?.mode !== 'view';
@@ -163,26 +191,39 @@ function Planning(props) {
     };
 
     const remove = async (row) => {
-        if (!window.confirm(deleteMessage(row.type.name, row.editions.length))) return;
+        setPendingDelete(null);
         try {
             await axios.delete(`${DATABASE_TABLES[tab.typeKey].endpoint}/${row.type.id}`);
             if (openId === row.type.id) setOpenId(null);
             await refetchAll();
         } catch (error) {
             console.error('Error deleting type:', error.response ? error.response.data : error);
-            setMessage(`No se ha podido eliminar «${row.type.name}».`);
+            setMessage(error.response?.status === 409
+                ? `«${row.type.name}» ya tiene ediciones empezadas y no se puede eliminar. Edítala y ponle un «último año» para que deje de repetirse.`
+                : `No se ha podido eliminar «${row.type.name}».`);
+        }
+    };
+
+    const skip = async (edition) => {
+        try {
+            await axios.patch(`${DATABASE_TABLES[tab.kind].endpoint}/${edition.id}/skip`);
+            await refetchAll();
+        } catch (error) {
+            console.error('Error skipping edition:', error.response ? error.response.data : error);
+            setMessage('No se ha podido cambiar esta edición.');
         }
     };
 
     const handlers = {
+        onSkip: skip,
         tab,
-        rows,
+        rows: visibleRows,
         state,
         openId,
         highlightId,
         onToggle: (id) => setOpenId((current) => (current === id ? null : id)),
         onEdit: (row) => setModal({ type: tab.typeKey, mode: 'edit', data: row.type }),
-        onDelete: remove,
+        onDelete: setPendingDelete,
         onEditEdition: (edition) => setModal({ type: tab.kind, mode: 'edit', data: edition }),
         onRetry: retry
     };
@@ -208,6 +249,7 @@ function Planning(props) {
                         {tab.newLabel}
                     </button>
                     <PlanningCards {...handlers} />
+                    {pagination ? <div className="planning-m-card">{pagination}</div> : null}
                     <button type="button" className="m-btn planning-m-sync" onClick={sync} disabled={syncing}>
                         {syncing ? <span className="spinner-border spinner-border-sm planning-spinner me-2" aria-hidden="true" /> : <i className="bi bi-arrow-clockwise me-2" aria-hidden="true" />}
                         Generar años pendientes
@@ -215,8 +257,16 @@ function Planning(props) {
                     {message ? <p className="panel-note planning-message m-0" role="status">{message}</p> : null}
                 </div>
             ) : (
-                <PlanningTable {...handlers} onNew={onNew} onSync={sync} syncing={syncing} message={message} />
+                <PlanningTable {...handlers} onNew={onNew} onSync={sync} syncing={syncing} message={message} foot={pagination} />
             )}
+            {pendingDelete ? (
+                <ConfirmDialog
+                    title={`Eliminar ${tab.kind === 'campaigns' ? 'campaña' : 'temporada'}`}
+                    message={deleteMessage(pendingDelete.type.name, pendingDelete.editions.length)}
+                    onConfirm={() => remove(pendingDelete)}
+                    onHide={() => setPendingDelete(null)}
+                />
+            ) : null}
             {modal ? <ModalComponent show data={modal.data} mode={modal.mode} type={modal.type} onHide={closeModal} /> : null}
         </div>
     );

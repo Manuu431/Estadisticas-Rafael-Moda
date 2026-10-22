@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 const { filterColumns, normalizeDecimalFields } = require('../utils/columns');
-const { periodLabel, buildPeriodInserts } = require('../utils/dates');
+const { periodLabel, editionDates, buildPeriodInserts, validateType, isFrozen } = require('../utils/dates');
 
 const SECTIONS = ['mujer', 'hombre'];
 const WINDOW = 'v.sold_at >= p.start_date AND v.sold_at < DATE_ADD(p.end_date, INTERVAL 1 DAY)';
@@ -41,8 +41,13 @@ const findType = async (id, kind) => {
 };
 
 const findPeriod = async (id, kind) => {
-  const [[period]] = await pool.query('SELECT p.id FROM periods p JOIN period_types t ON t.id = p.period_type_id WHERE p.id = ? AND t.kind = ?', [id, kind]);
+  const [[period]] = await pool.query('SELECT p.id, p.start_date, p.skipped FROM periods p JOIN period_types t ON t.id = p.period_type_id WHERE p.id = ? AND t.kind = ?', [id, kind]);
   return period;
+};
+
+const sendError = (err, res, next) => {
+  if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: 'That name or date already exists' });
+  next(err);
 };
 
 const generateEditions = async (type, existingKeys) => {
@@ -55,15 +60,16 @@ const generateEditions = async (type, existingKeys) => {
 
 const listPeriods = (kind) => async (req, res, next) => {
   const section = req.query.section ?? '';
+  const includeSkipped = req.query.include_skipped === '1';
   if (section !== '' && !SECTIONS.includes(section)) return res.status(400).json({ error: 'Unknown section' });
   try {
     const [rows] = await pool.query(
-      `SELECT p.id, p.period_type_id, p.start_date, p.end_date, p.expenses, t.name AS type_name,
+      `SELECT p.id, p.period_type_id, p.start_date, p.end_date, p.expenses, p.skipped, t.name AS type_name,
               ${section ? SECTION_PROFIT_SUM : PROFIT_SUM} AS profits,
               ${section ? SECTION_SHARE : 1} AS expense_share
        FROM periods p
        JOIN period_types t ON t.id = p.period_type_id
-       WHERE t.kind = ?
+       WHERE t.kind = ?${includeSkipped ? '' : ' AND p.skipped = 0'}
        ORDER BY p.start_date DESC`,
       section ? [section, section, kind] : [kind]
     );
@@ -77,6 +83,7 @@ const listPeriods = (kind) => async (req, res, next) => {
         type_name: row.type_name,
         start_date: row.start_date,
         end_date: row.end_date,
+        skipped: row.skipped === 1,
         expenses,
         profits,
         balance: round2(profits - expenses)
@@ -100,11 +107,31 @@ const createPeriod = (kind) => async (req, res, next) => {
 };
 
 const updatePeriod = (kind) => async (req, res, next) => {
-  const data = normalizeDecimalFields(filterColumns(req.body, 'periods'), ['expenses']);
+  const data = filterColumns(req.body, 'periods');
+  if ('expenses' in data) data.expenses = normalizeDecimalFields(data, ['expenses']).expenses;
   try {
-    if (!(await findPeriod(req.params.id, kind))) return res.status(404).json({ error: 'Period not found' });
+    const period = await findPeriod(req.params.id, kind);
+    if (!period) return res.status(404).json({ error: 'Period not found' });
+    if (isFrozen(period.start_date)) {
+      for (const key of ['period_type_id', 'start_date', 'end_date']) delete data[key];
+    } else if (data.period_type_id && !(await findType(data.period_type_id, kind))) {
+      return res.status(400).json({ error: 'Unknown period type' });
+    }
+    if (Object.keys(data).length === 0) return res.status(400).json({ error: 'Nothing to update' });
     const [result] = await pool.query('UPDATE periods SET ? WHERE id = ?', [data, req.params.id]);
     res.json(result);
+  } catch (err) {
+    sendError(err, res, next);
+  }
+};
+
+const skipPeriod = (kind) => async (req, res, next) => {
+  try {
+    const period = await findPeriod(req.params.id, kind);
+    if (!period) return res.status(404).json({ error: 'Period not found' });
+    if (isFrozen(period.start_date)) return res.status(409).json({ error: 'This edition has already started' });
+    await pool.query('UPDATE periods SET skipped = NOT skipped WHERE id = ?', [req.params.id]);
+    res.json({ skipped: !period.skipped });
   } catch (err) {
     next(err);
   }
@@ -139,13 +166,15 @@ const listTypes = (kind) => async (req, res, next) => {
 
 const createType = (kind) => async (req, res, next) => {
   const data = { ...filterColumns(req.body, 'period_types'), kind };
+  const problem = validateType(data);
+  if (problem) return res.status(400).json({ error: problem });
   try {
     const [result] = await pool.query('INSERT INTO period_types SET ?', data);
     const type = await findType(result.insertId, kind);
     const editions = await generateEditions(type);
     res.json({ id: result.insertId, editions });
   } catch (err) {
-    next(err);
+    sendError(err, res, next);
   }
 };
 
@@ -154,17 +183,28 @@ const updateType = (kind) => async (req, res, next) => {
   delete data.kind;
   if (Object.keys(data).length === 0) return res.status(400).json({ error: 'Nothing to update' });
   try {
-    if (!(await findType(req.params.id, kind))) return res.status(404).json({ error: 'Period type not found' });
+    const current = await findType(req.params.id, kind);
+    if (!current) return res.status(404).json({ error: 'Period type not found' });
+    const merged = { ...current, ...data };
+    const problem = validateType(merged);
+    if (problem) return res.status(400).json({ error: problem });
     const [result] = await pool.query('UPDATE period_types SET ? WHERE id = ?', [data, req.params.id]);
+    const [editions] = await pool.query('SELECT id, YEAR(start_date) AS year, start_date FROM periods WHERE period_type_id = ?', [req.params.id]);
+    for (const edition of editions.filter((row) => !isFrozen(row.start_date))) {
+      const [start, end] = editionDates(merged, edition.year);
+      await pool.query('UPDATE periods SET start_date = ?, end_date = ? WHERE id = ?', [start, end, edition.id]);
+    }
     res.json(result);
   } catch (err) {
-    next(err);
+    sendError(err, res, next);
   }
 };
 
 const removeType = (kind) => async (req, res, next) => {
   try {
     if (!(await findType(req.params.id, kind))) return res.status(404).json({ error: 'Period type not found' });
+    const [[{ started }]] = await pool.query('SELECT COUNT(*) AS started FROM periods WHERE period_type_id = ? AND start_date <= CURDATE()', [req.params.id]);
+    if (started > 0) return res.status(409).json({ error: 'This type has editions that already started; stop it repeating instead' });
     const [result] = await pool.query('DELETE FROM period_types WHERE id = ?', [req.params.id]);
     res.json(result);
   } catch (err) {
@@ -190,4 +230,4 @@ const syncTypes = (kind) => async (req, res, next) => {
   }
 };
 
-module.exports = { listPeriods, createPeriod, updatePeriod, removePeriod, listTypes, createType, updateType, removeType, syncTypes };
+module.exports = { listPeriods, createPeriod, updatePeriod, skipPeriod, removePeriod, listTypes, createType, updateType, removeType, syncTypes };
