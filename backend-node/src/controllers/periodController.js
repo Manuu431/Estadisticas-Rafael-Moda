@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 const { filterColumns, normalizeDecimalFields } = require('../utils/columns');
-const { periodLabel, editionDates, buildPeriodInserts, validateType, isFrozen } = require('../utils/dates');
+const { formatDateISO, periodLabel, buildPeriodInserts, validateType, isFrozen, parseType, planTypeUpdate } = require('../utils/dates');
 
 const SECTIONS = ['mujer', 'hombre'];
 const WINDOW = 'v.sold_at >= p.start_date AND v.sold_at < DATE_ADD(p.end_date, INTERVAL 1 DAY)';
@@ -165,7 +165,7 @@ const listTypes = (kind) => async (req, res, next) => {
 };
 
 const createType = (kind) => async (req, res, next) => {
-  const data = { ...filterColumns(req.body, 'period_types'), kind };
+  const data = { ...parseType(filterColumns(req.body, 'period_types')), kind };
   const problem = validateType(data);
   if (problem) return res.status(400).json({ error: problem });
   try {
@@ -179,31 +179,36 @@ const createType = (kind) => async (req, res, next) => {
 };
 
 const updateType = (kind) => async (req, res, next) => {
-  const data = filterColumns(req.body, 'period_types');
+  const data = parseType(filterColumns(req.body, 'period_types'));
   delete data.kind;
   if (Object.keys(data).length === 0) return res.status(400).json({ error: 'Nothing to update' });
+  let connection;
   try {
     const current = await findType(req.params.id, kind);
     if (!current) return res.status(404).json({ error: 'Period type not found' });
-    const merged = { ...current, ...data };
-    const problem = validateType(merged);
+    const problem = validateType({ ...current, ...data });
     if (problem) return res.status(400).json({ error: problem });
-    const [result] = await pool.query('UPDATE period_types SET ? WHERE id = ?', [data, req.params.id]);
-    const [editions] = await pool.query('SELECT id, YEAR(start_date) AS year, start_date FROM periods WHERE period_type_id = ?', [req.params.id]);
-    for (const edition of editions.filter((row) => !isFrozen(row.start_date))) {
-      const [start, end] = editionDates(merged, edition.year);
-      await pool.query('UPDATE periods SET start_date = ?, end_date = ? WHERE id = ?', [start, end, edition.id]);
-    }
+    const [editions] = await pool.query('SELECT id, YEAR(start_date) AS year, start_date, end_date FROM periods WHERE period_type_id = ?', [req.params.id]);
+    const plan = planTypeUpdate(current, data, editions);
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const [result] = await connection.query('UPDATE period_types SET ? WHERE id = ?', [data, req.params.id]);
+    for (const edition of plan.redate) await connection.query('UPDATE periods SET start_date = ?, end_date = ? WHERE id = ?', [edition.start, edition.end, edition.id]);
+    if (plan.remove.length) await connection.query('DELETE FROM periods WHERE id IN (?)', [plan.remove]);
+    await connection.commit();
     res.json(result);
   } catch (err) {
+    if (connection) await connection.rollback();
     sendError(err, res, next);
+  } finally {
+    if (connection) connection.release();
   }
 };
 
 const removeType = (kind) => async (req, res, next) => {
   try {
     if (!(await findType(req.params.id, kind))) return res.status(404).json({ error: 'Period type not found' });
-    const [[{ started }]] = await pool.query('SELECT COUNT(*) AS started FROM periods WHERE period_type_id = ? AND start_date <= CURDATE()', [req.params.id]);
+    const [[{ started }]] = await pool.query('SELECT COUNT(*) AS started FROM periods WHERE period_type_id = ? AND skipped = 0 AND start_date <= ?', [req.params.id, formatDateISO(new Date())]);
     if (started > 0) return res.status(409).json({ error: 'This type has editions that already started; stop it repeating instead' });
     const [result] = await pool.query('DELETE FROM period_types WHERE id = ?', [req.params.id]);
     res.json(result);
