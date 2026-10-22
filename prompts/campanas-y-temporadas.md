@@ -221,7 +221,7 @@ La cabecera móvil (logo y «RM») y la barra de pestañas de abajo ya existen. 
 - **Crear y editar** (tipo o edición): `ModalComponent` sigue con el estilo viejo de Bootstrap. Está como deuda
   en DESIGN.md (migrarlo al diálogo del prototipo: radio 20 px, título en serif, campos `rm-input`). **No lo
   migres en esta tarea**: pregúntame si lo hacemos ahora o en otra.
-- **Eliminar un tipo** borra también sus ediciones. Comprueba en `db/v2/schema.sql` si la clave foránea tiene
+- **Eliminar un tipo** borra también sus ediciones. Comprueba en `db/schema.sql` si la clave foránea tiene
   `ON DELETE CASCADE` y avísame si no. Hasta que migremos el diálogo, la confirmación puede seguir como está, pero
   el texto tiene que decir cuántas ediciones se borran.
 - **«Generar años pendientes»:** mientras trabaja, el botón queda desactivado con un spinner pequeño. Al terminar,
