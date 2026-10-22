@@ -63,7 +63,7 @@ function ControlPanel(props) {
             <header className="d-flex align-items-end justify-content-between gap-3 flex-wrap mb-4">
                 <div className="d-flex flex-column gap-1">
                     <span className="panel-kicker">
-                        {capitalize(format(today, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es }))} · {lastSaleLabel(weekSummary.data?.summary.lastSale)}
+                        {capitalize(format(today, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es }))}{weekSummary.data && ` · ${lastSaleLabel(weekSummary.data.summary.lastSale)}`}
                     </span>
                     <h1 className="panel-title m-0">{props.title}</h1>
                 </div>

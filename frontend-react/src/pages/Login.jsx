@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -19,13 +19,14 @@ const logoLayers = [
 
 function Login() {
     const navigate = useNavigate();
+    const from = useLocation().state?.from ?? '/';
     const { endpoint, endpointDemo } = DATABASE_TABLES['users'];
     const [showPassword, setShowPassword] = useState(false);
 
     const startSession = ({ token, user }) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        navigate('/');
+        navigate(from, { replace: true });
     };
 
     const formik = useFormik({
