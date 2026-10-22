@@ -1,7 +1,7 @@
 import { Skeleton } from '../controlPanel/cards/CardState.jsx';
 
 const KPIS = [0, 1, 2];
-function ExpensesSkeleton({ rows, compact }) {
+function ExpensesSkeleton({ rows, paged, compact }) {
     return (
         <>
             {compact ? (
@@ -46,6 +46,7 @@ function ExpensesSkeleton({ rows, compact }) {
                         ))}
                     </div>
                     <Skeleton className="expenses-skeleton-foot" />
+                    {paged && <Skeleton className="expenses-skeleton-pager" />}
                 </section>
             </div>
         </>

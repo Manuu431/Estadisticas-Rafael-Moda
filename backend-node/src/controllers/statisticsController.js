@@ -178,7 +178,7 @@ const getExpenses = async (req, res, next) => {
   const grouping = readBy(req.query.by);
   if (grouping.error) return res.status(400).json({ error: grouping.error });
   let dates = {};
-  if (grouping.by === 'month') {
+  if (req.query.from !== undefined || req.query.to !== undefined) {
     const parsed = readQuery(req.query, ['from', 'to']);
     if (parsed.error) return res.status(400).json({ error: parsed.error });
     dates = parsed.dates;

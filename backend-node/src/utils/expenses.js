@@ -1,11 +1,12 @@
 const GROUPS = {
+  day: "DATE_FORMAT(v.sold_at, '%Y-%m-%d')",
   month: "DATE_FORMAT(v.sold_at, '%Y-%m')",
   year: "DATE_FORMAT(v.sold_at, '%Y')"
 };
 
 const readBy = (value) => {
   if (value === undefined) return { by: 'month' };
-  if (typeof value !== 'string' || !Object.hasOwn(GROUPS, value)) return { error: 'Unknown grouping, expected month or year' };
+  if (typeof value !== 'string' || !Object.hasOwn(GROUPS, value)) return { error: 'Unknown grouping, expected day, month or year' };
   return { by: value };
 };
 

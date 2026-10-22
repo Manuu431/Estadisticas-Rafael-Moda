@@ -10,7 +10,7 @@ import { CardError } from '../controlPanel/cards/CardState.jsx';
 import { DATABASE_TABLES } from '../../config/database.js';
 import { useFetch } from '../../hooks/useFetch.js';
 import { useIsMobile } from '../../utils/useIsMobile.js';
-import { chosenPeriod, datesNotice, expensesBuckets, expensesParams, expensesRange, expensesState, expensesTable, monthsLabel, periodMenu, periodText, skeletonRows, startedPeriods, yearsText } from '../../utils/expenses.js';
+import { GRAINS, chosenPeriod, datesNotice, expensesBuckets, expensesParams, expensesRange, expensesState, expensesTable, periodCount, periodMenu, periodText, skeletonRows, TABLE_ROWS, startedPeriods, wholeRange } from '../../utils/expenses.js';
 
 const LISTS = { campaign: 'campaigns', season: 'seasons' };
 const NO_TOTALS = { amount: 0, cost: 0, profit: 0 };
@@ -41,13 +41,13 @@ function Expenses({ title }) {
     const data = request.settled && !request.loading ? request.data : null;
     const state = expensesState({ data, error: request.error, listLoading: Boolean(LISTS[kind]) && list.loading, listError: LISTS[kind] ? list.error : null });
     const totals = data?.totals ?? NO_TOTALS;
-    const buckets = expensesBuckets(grain, data, today);
+    const view = data?.range && kind === 'all' ? { ...data, range: wholeRange(data.range, grain) } : data;
+    const buckets = expensesBuckets(grain, view);
 
     const yearText = periodText('year', expensesRange('year', {}, today));
     const menuText = candidate?.text ?? (shown?.kind === kind ? shown.period.text : null);
     const menu = periodMenu(kind, menuText, yearText);
-    const grainOptions = [{ value: 'month', label: monthsLabel(period) }, { value: 'year', label: 'Años' }];
-    const noun = grain === 'year' ? 'año' : 'mes';
+    const current = GRAINS.find((option) => option.value === grain);
 
     const content = (() => {
         if (state.kind === 'error') {
@@ -57,7 +57,7 @@ function Expenses({ title }) {
                 </section>
             );
         }
-        if (state.kind === 'loading') return <ExpensesSkeleton rows={skeletonRows(grain, period)} compact={isMobile} />;
+        if (state.kind === 'loading') return <ExpensesSkeleton rows={skeletonRows(grain, period)} paged={periodCount(grain, period) > TABLE_ROWS} compact={isMobile} />;
         return (
             <>
                 <ExpensesKpis totals={totals} compact={isMobile} />
@@ -69,8 +69,8 @@ function Expenses({ title }) {
                     </section>
                 ) : (
                     <div className="expenses-main">
-                        <ExpensesChart buckets={buckets} noun={noun} compact={isMobile} />
-                        <ExpensesTable grain={grain} table={expensesTable(grain, buckets, data.range, today)} compact={isMobile} />
+                        <ExpensesChart buckets={buckets} grain={grain} noun={current.noun} compact={isMobile} />
+                        <ExpensesTable key={`${grain}|${candidateKey}`} title={current.table} itemLabel={current.label.toLowerCase()} table={expensesTable(grain, buckets, view.range)} />
                     </div>
                 )}
             </>
@@ -88,9 +88,7 @@ function Expenses({ title }) {
                     menu={menu}
                     kind={kind}
                     onKindChange={setKind}
-                    locked={grain === 'year'}
-                    lockedText={yearsText(data?.range ?? null, today)}
-                    grainOptions={grainOptions}
+                    grainOptions={GRAINS}
                     grain={grain}
                     onGrainChange={setGrain}
                     large={isMobile}

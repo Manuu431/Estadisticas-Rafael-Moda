@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_MESSAGE, LOW_MARGIN, axisLabel, chartPeak, chosenPeriod, datesNotice, expensesBuckets, expensesKpis, expensesState, expensesTable, expensesParams, expensesRange, monthsLabel, periodMenu, periodText, skeletonRows, startedPeriods, yAxisScale, yearsText } from './expenses.js';
+import { EMPTY_MESSAGE, GRAINS, LOW_MARGIN, TABLE_ROWS, axisLabel, chartPeak, chosenPeriod, datesNotice, expensesBuckets, expensesKpis, expensesState, expensesTable, expensesParams, expensesRange, periodCount, periodMenu, periodText, skeletonRows, startedPeriods, tablePage, wholeRange, yAxisScale } from './expenses.js';
 
 const today = new Date(2026, 8, 28, 12, 30);
 const custom = (from, to) => ({ key: 'custom', from, to, bad: [] });
@@ -45,6 +45,42 @@ describe('expensesRange', () => {
     it('unas fechas que empiezan en el futuro no tienen rango', () => {
         expect(expensesRange('dates', { dates: custom('2026-11-01', '2026-12-31') }, today)).toBeNull();
     });
+
+    it('Todo no tiene fechas: pide todo lo que haya', () => {
+        expect(expensesRange('all', {}, today)).toEqual({ all: true });
+    });
+});
+
+describe('wholeRange', () => {
+    const range = { from: '2020-03-14', to: '2026-09-28' };
+
+    it('en años empieza el 1 de enero del primer año', () => {
+        expect(wholeRange(range, 'year')).toEqual({ from: '2020-01-01', to: '2026-09-28' });
+    });
+
+    it('en meses empieza el día 1 del primer mes', () => {
+        expect(wholeRange(range, 'month')).toEqual({ from: '2020-03-01', to: '2026-09-28' });
+    });
+
+    it('en días y semanas se queda en la primera venta', () => {
+        expect(wholeRange(range, 'day')).toEqual(range);
+        expect(wholeRange(range, 'week')).toEqual(range);
+    });
+});
+
+describe('GRAINS', () => {
+    it('son días, semanas, meses y años, con su nombre en singular y el título de la tabla', () => {
+        expect(GRAINS.map((grain) => [grain.value, grain.label, grain.noun, grain.table])).toEqual([
+            ['day', 'Días', 'día', 'Día a día'],
+            ['week', 'Semanas', 'semana', 'Semana a semana'],
+            ['month', 'Meses', 'mes', 'Mes a mes'],
+            ['year', 'Años', 'año', 'Año a año']
+        ]);
+    });
+
+    it('la tabla enseña siete filas a la vez', () => {
+        expect(TABLE_ROWS).toBe(7);
+    });
 });
 
 describe('periodText', () => {
@@ -56,6 +92,10 @@ describe('periodText', () => {
         expect(periodText('campaign', { from: '2026-07-01', to: '2026-08-31' }, 'Rebajas de verano')).toBe('Rebajas de verano · 1 jul – 31 ago 2026');
     });
 
+    it('Todo no lleva fechas', () => {
+        expect(periodText('all', { all: true })).toBe('Todo, desde que hay datos');
+    });
+
     it('las fechas concretas llevan «Fechas» delante', () => {
         expect(periodText('dates', { from: '2026-03-15', to: '2026-05-10' })).toBe('Fechas · 15 mar – 10 may 2026');
     });
@@ -65,45 +105,27 @@ describe('periodText', () => {
     });
 });
 
-describe('yearsText', () => {
-    it('va del año de la primera venta al año en curso', () => {
-        expect(yearsText({ from: '2020-01-01', to: '2026-10-01' }, today)).toBe('Todos los años · 2020 – 2026');
-    });
-
-    it('con un solo año no repite', () => {
-        expect(yearsText({ from: '2026-02-03', to: '2026-09-01' }, today)).toBe('Todos los años · 2026');
-    });
-
-    it('sin datos todavía solo dice «Todos los años»', () => {
-        expect(yearsText(null, today)).toBe('Todos los años');
-    });
-});
-
-describe('monthsLabel', () => {
-    it('lleva el año cuando el periodo cae dentro de uno solo', () => {
-        expect(monthsLabel({ from: '2026-01-01', to: '2026-09-28' })).toBe('Meses de 2026');
-    });
-
-    it('se queda en «Meses» si cruza de año o aún no hay periodo', () => {
-        expect(monthsLabel({ from: '2025-11-01', to: '2026-02-10' })).toBe('Meses');
-        expect(monthsLabel(null)).toBe('Meses');
-    });
-});
-
 describe('expensesParams', () => {
     const range = { from: '2026-01-01', to: '2026-09-28' };
 
-    it('por meses manda el rango', () => {
+    it('por meses y por años manda el rango', () => {
         expect(expensesParams('month', range)).toEqual({ by: 'month', from: '2026-01-01', to: '2026-09-28' });
+        expect(expensesParams('year', range)).toEqual({ by: 'year', from: '2026-01-01', to: '2026-09-28' });
     });
 
-    it('por años no manda fechas, aunque haya rango', () => {
-        expect(expensesParams('year', range)).toEqual({ by: 'year' });
-        expect(expensesParams('year', null)).toEqual({ by: 'year' });
+    it('por días y por semanas pide los días: las semanas se agrupan en el navegador', () => {
+        expect(expensesParams('day', range)).toEqual({ by: 'day', from: '2026-01-01', to: '2026-09-28' });
+        expect(expensesParams('week', range)).toEqual({ by: 'day', from: '2026-01-01', to: '2026-09-28' });
     });
 
-    it('por meses sin rango no pide nada', () => {
+    it('con Todo no manda fechas', () => {
+        expect(expensesParams('month', { all: true })).toEqual({ by: 'month' });
+        expect(expensesParams('week', { all: true })).toEqual({ by: 'day' });
+    });
+
+    it('sin rango no pide nada', () => {
         expect(expensesParams('month', null)).toBeNull();
+        expect(expensesParams('year', null)).toBeNull();
     });
 });
 
@@ -150,13 +172,14 @@ describe('periodMenu', () => {
             { value: 'year', label: yearText },
             { value: 'campaign', label: 'Una campaña…' },
             { value: 'season', label: 'Una temporada…' },
-            { value: 'dates', label: 'Fechas concretas…' }
+            { value: 'dates', label: 'Fechas concretas…' },
+            { value: 'all', label: 'Todo, desde que hay datos' }
         ]);
     });
 
     it('la opción elegida enseña su propio texto y la primera vuelve a Este año', () => {
         const menu = periodMenu('campaign', 'Rebajas · 1 jul – 31 ago 2026', yearText);
-        expect(menu.map((option) => option.label)).toEqual([yearText, 'Rebajas · 1 jul – 31 ago 2026', 'Una temporada…', 'Fechas concretas…']);
+        expect(menu.map((option) => option.label)).toEqual([yearText, 'Rebajas · 1 jul – 31 ago 2026', 'Una temporada…', 'Fechas concretas…', 'Todo, desde que hay datos']);
     });
 
     it('si aún no hay texto, la opción elegida se queda con su invitación', () => {
@@ -237,6 +260,20 @@ describe('yAxisScale', () => {
         expect(yAxisScale(8000000).ticks.length).toBeLessThanOrEqual(6);
     });
 
+    it('con importes pequeños baja el paso para que las barras llenen la gráfica', () => {
+        expect(yAxisScale(1200)).toEqual({ step: 500, top: 1500, ticks: [0, 500, 1000, 1500] });
+        expect(yAxisScale(800)).toEqual({ step: 200, top: 800, ticks: [0, 200, 400, 600, 800] });
+        expect(yAxisScale(4900).step).toBe(2000);
+        expect(yAxisScale(60).step).toBe(100);
+    });
+
+    it('en días admite hasta seis tramos, para no dejar demasiado aire encima de las barras', () => {
+        expect(yAxisScale(2300)).toEqual({ step: 1000, top: 3000, ticks: [0, 1000, 2000, 3000] });
+        expect(yAxisScale(2300, 'day')).toEqual({ step: 500, top: 2500, ticks: [0, 500, 1000, 1500, 2000, 2500] });
+        expect(yAxisScale(2300, 'week').top).toBe(3000);
+        expect(yAxisScale(30120, 'month').top).toBe(40000);
+    });
+
     it('con todo a cero deja una escala mínima: 0 y el primer paso', () => {
         expect(yAxisScale(0)).toEqual({ step: 5000, top: 5000, ticks: [0, 5000] });
     });
@@ -249,6 +286,13 @@ describe('axisLabel', () => {
         expect(axisLabel(40000)).toBe('40 mil');
         expect(axisLabel(250000)).toBe('250 mil');
         expect(axisLabel(1500000)).toBe('1.500 mil');
+    });
+
+    it('por debajo de mil no lleva «mil» y entre mil y diez mil admite decimales', () => {
+        expect(axisLabel(500)).toBe('500');
+        expect(axisLabel(1000)).toBe('1 mil');
+        expect(axisLabel(1500)).toBe('1,5 mil');
+        expect(axisLabel(2500)).toBe('2,5 mil');
     });
 });
 
@@ -292,23 +336,56 @@ describe('expensesBuckets', () => {
         expect(expensesBuckets('month', data, today)).toHaveLength(1);
     });
 
-    it('en años va del año de la primera venta al año en curso, aunque no haya ventas este año', () => {
-        const data = { range: { from: '2023-02-03', to: '2024-05-01' }, rows: [row('2023', 100, 50), row('2024', 80, 30)] };
+    it('en años va del año del primer día al del último, sin pasar de ahí', () => {
+        const data = { range: { from: '2023-02-03', to: '2025-05-01' }, rows: [row('2023', 100, 50), row('2025', 80, 30)] };
         const buckets = expensesBuckets('year', data, today);
-        expect(buckets.map((bucket) => bucket.key)).toEqual(['2023', '2024', '2025', '2026']);
-        expect(buckets.map((bucket) => bucket.label)).toEqual(['2023', '2024', '2025', '2026']);
-        expect(buckets[3]).toMatchObject({ amount: 0, name: '2026' });
+        expect(buckets.map((bucket) => bucket.key)).toEqual(['2023', '2024', '2025']);
+        expect(buckets.map((bucket) => bucket.label)).toEqual(['2023', '2024', '2025']);
+        expect(buckets[1]).toMatchObject({ amount: 0, name: '2024' });
+    });
+
+    it('en días hay una barra por día, también los que no tienen ventas', () => {
+        const data = { range: { from: '2026-09-28', to: '2026-10-01' }, rows: [row('2026-09-29', 100, 40)] };
+        const buckets = expensesBuckets('day', data, today);
+        expect(buckets.map((bucket) => bucket.key)).toEqual(['2026-09-28', '2026-09-29', '2026-09-30', '2026-10-01']);
+        expect(buckets[1]).toMatchObject({ amount: 100, cost: 40, profit: 60, margin: 60 });
+        expect(buckets[0]).toMatchObject({ amount: 0, margin: null });
+    });
+
+    it('en días, la etiqueta es «28 sep» y el nombre lleva el año', () => {
+        const data = { range: { from: '2026-09-28', to: '2026-09-29' }, rows: [] };
+        const buckets = expensesBuckets('day', data, today);
+        expect(buckets.map((bucket) => bucket.label)).toEqual(['28 sep', '29 sep']);
+        expect(buckets.map((bucket) => bucket.name)).toEqual(['28 sep 2026', '29 sep 2026']);
+    });
+
+    it('en semanas, la primera empieza el primer día y las demás el lunes, y suman sus días', () => {
+        const data = {
+            range: { from: '2026-09-23', to: '2026-10-07' },
+            rows: [row('2026-09-23', 10, 4), row('2026-09-27', 20, 8), row('2026-09-28', 100, 40), row('2026-10-04', 1, 1), row('2026-10-05', 5, 2)]
+        };
+        const buckets = expensesBuckets('week', data, today);
+        expect(buckets.map((bucket) => bucket.key)).toEqual(['2026-09-23', '2026-09-28', '2026-10-05']);
+        expect(buckets[0]).toMatchObject({ amount: 30, cost: 12, profit: 18, name: '23 sep – 27 sep 2026' });
+        expect(buckets[1]).toMatchObject({ amount: 101, cost: 41, name: '28 sep – 4 oct 2026' });
+        expect(buckets[2]).toMatchObject({ amount: 5, cost: 2, name: '5 oct – 7 oct 2026' });
+    });
+
+    it('en semanas, la etiqueta es el día en que empieza', () => {
+        const data = { range: { from: '2026-09-28', to: '2026-10-11' }, rows: [] };
+        expect(expensesBuckets('week', data, today).map((bucket) => bucket.label)).toEqual(['28 sep', '5 oct']);
     });
 
     it('sin datos o sin ventas devuelve una lista vacía', () => {
         expect(expensesBuckets('month', null, today)).toEqual([]);
         expect(expensesBuckets('year', { range: null, rows: [] }, today)).toEqual([]);
+        expect(expensesBuckets('day', { range: null, rows: [] }, today)).toEqual([]);
     });
 });
 
 describe('expensesTable', () => {
     const row = (key, amount, cost) => ({ key, amount, cost, profit: Math.round((amount - cost) * 100) / 100 });
-    const table = (grain, range, rows, now = today) => expensesTable(grain, expensesBuckets(grain, { range, rows }, now), range, now);
+    const table = (grain, range, rows) => expensesTable(grain, expensesBuckets(grain, { range, rows }, today), range);
 
     it('el margen bajo es el 42 %', () => {
         expect(LOW_MARGIN).toBe(42);
@@ -391,21 +468,33 @@ describe('expensesTable', () => {
         expect(table('month', { from: '2025-12-15', to: '2026-01-31' }, []).rows[1].name).toBe('Dic 25*');
     });
 
-    it('en años marca el año en curso y avisa hasta qué día', () => {
-        const result = table('year', { from: '2024-02-03', to: '2026-09-01' }, []);
-        expect(result.rows.map((item) => item.name)).toEqual(['2026*', '2025', '2024']);
-        expect(result.note).toBe('* 2026, hasta el 28 de septiembre.');
+    it('en años marca el primero y el último cuando el periodo no los cubre enteros', () => {
+        const result = table('year', { from: '2024-02-03', to: '2026-09-28' }, []);
+        expect(result.rows.map((item) => item.name)).toEqual(['2026*', '2025', '2024*']);
+        expect(result.note).toBe('* 2024, desde el 3 de febrero. * 2026, hasta el 28 de septiembre.');
     });
 
-    it('en años, a 31 de diciembre el año en curso está completo', () => {
-        const newYearsEve = new Date(2026, 11, 31, 10);
-        const result = table('year', { from: '2025-02-03', to: '2026-09-01' }, [], newYearsEve);
-        expect(result.rows[0].name).toBe('2026');
+    it('en años, un periodo dentro de un solo año dice del día X al Y', () => {
+        const result = table('year', { from: '2026-03-05', to: '2026-05-20' }, []);
+        expect(result.rows[0].name).toBe('2026*');
+        expect(result.note).toBe('* 2026, del 5 de marzo al 20 de mayo.');
+    });
+
+    it('en años, con años completos no hay asterisco ni nota', () => {
+        const result = table('year', { from: '2025-01-01', to: '2026-12-31' }, []);
+        expect(result.rows.map((item) => item.name)).toEqual(['2026', '2025']);
         expect(result.note).toBe('');
     });
 
+    it('en días y semanas la fila lleva el nombre corto y no hay asteriscos', () => {
+        expect(table('day', { from: '2026-09-27', to: '2026-09-28' }, []).rows.map((item) => item.name)).toEqual(['Lunes 28 sep', 'Domingo 27 sep']);
+        const weeks = table('week', { from: '2026-09-23', to: '2026-10-07' }, []);
+        expect(weeks.rows.map((item) => item.name)).toEqual(['5 – 7 oct', '28 sep – 4 oct', '23 – 27 sep']);
+        expect(weeks.note).toBe('');
+    });
+
     it('sin barras no hay filas ni nota', () => {
-        expect(expensesTable('month', [], null, today)).toEqual({ rows: [], note: '' });
+        expect(expensesTable('month', [], null)).toEqual({ rows: [], note: '' });
     });
 });
 
@@ -460,22 +549,61 @@ describe('datesNotice', () => {
     });
 });
 
+describe('tablePage', () => {
+    const rows = Array.from({ length: 16 }, (_, index) => index + 1);
+
+    it('trocea de siete en siete y dice cuántas páginas hay', () => {
+        expect(tablePage(rows, 1)).toEqual({ rows: [1, 2, 3, 4, 5, 6, 7], pages: 3, page: 1 });
+        expect(tablePage(rows, 3)).toEqual({ rows: [15, 16], pages: 3, page: 3 });
+    });
+
+    it('una página fuera de rango se queda en la primera o en la última', () => {
+        expect(tablePage(rows, 9).page).toBe(3);
+        expect(tablePage(rows, 0).page).toBe(1);
+    });
+
+    it('con siete filas o menos hay una sola página, y sin filas también', () => {
+        expect(tablePage(rows.slice(0, 7), 1).pages).toBe(1);
+        expect(tablePage([], 1)).toEqual({ rows: [], pages: 1, page: 1 });
+    });
+});
+
+describe('periodCount', () => {
+    it('cuenta las barras que saldrán en cada control', () => {
+        const period = { from: '2026-09-20', to: '2026-10-04' };
+        expect(periodCount('day', period)).toBe(15);
+        expect(periodCount('week', period)).toBe(3);
+        expect(periodCount('month', period)).toBe(2);
+        expect(periodCount('year', period)).toBe(1);
+    });
+
+    it('con Todo o sin periodo no se sabe de antemano', () => {
+        expect(periodCount('day', { all: true })).toBeNull();
+        expect(periodCount('day', null)).toBeNull();
+    });
+});
+
 describe('skeletonRows', () => {
     it('en meses dibuja una fila por mes del periodo, para que la silueta mida lo que medirá la tabla', () => {
-        expect(skeletonRows('month', { from: '2026-01-01', to: '2026-10-04' })).toBe(10);
+        expect(skeletonRows('month', { from: '2026-05-01', to: '2026-10-04' })).toBe(6);
         expect(skeletonRows('month', { from: '2026-09-05', to: '2026-09-20' })).toBe(1);
         expect(skeletonRows('month', { from: '2025-11-10', to: '2026-02-01' })).toBe(4);
     });
 
-    it('no pasa de 12 filas con periodos largos', () => {
-        expect(skeletonRows('month', { from: '2021-01-01', to: '2026-10-04' })).toBe(12);
+    it('no pasa de siete filas con periodos largos, que es lo que enseña la tabla', () => {
+        expect(skeletonRows('month', { from: '2021-01-01', to: '2026-10-04' })).toBe(7);
+        expect(skeletonRows('day', { from: '2026-01-01', to: '2026-10-04' })).toBe(7);
+        expect(skeletonRows('year', { from: '2018-01-01', to: '2026-10-04' })).toBe(7);
     });
 
-    it('en años dibuja siete', () => {
-        expect(skeletonRows('year', { from: '2026-01-01', to: '2026-10-04' })).toBe(7);
+    it('en años y semanas dibuja una por año o por semana del periodo', () => {
+        expect(skeletonRows('year', { from: '2026-01-01', to: '2026-10-04' })).toBe(1);
+        expect(skeletonRows('week', { from: '2026-09-28', to: '2026-10-04' })).toBe(1);
+        expect(skeletonRows('week', { from: '2026-09-28', to: '2026-10-05' })).toBe(2);
     });
 
-    it('sin periodo dibuja nueve', () => {
-        expect(skeletonRows('month', null)).toBe(9);
+    it('con Todo o sin periodo dibuja siete', () => {
+        expect(skeletonRows('month', { all: true })).toBe(7);
+        expect(skeletonRows('month', null)).toBe(7);
     });
 });

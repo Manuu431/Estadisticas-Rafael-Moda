@@ -6,7 +6,7 @@ import { formatCompactRange } from '../../utils/dates.js';
 const LABELS = { campaign: 'Campaña', season: 'Temporada' };
 
 function ExpensesPick({ kind, items, loading, value, onChange, dates, onDatesChange, notice, large }) {
-    if (kind === 'year') return null;
+    if (kind === 'year' || kind === 'all') return null;
 
     if (kind === 'dates') {
         return (

@@ -4,8 +4,8 @@ import { formatEuros } from '../../utils/format.js';
 
 const TOP_ROOM = 8;
 const SIZES = {
-    desktop: { plot: 300, xAxis: 26, xMargin: 13, yAxis: 64, yMargin: 12, barGap: 4, categoryGap: '10%', maxBar: 30, radius: 5 },
-    mobile: { plot: 220, xAxis: 22, xMargin: 11, yAxis: 52, yMargin: 8, barGap: 2, categoryGap: '7%', maxBar: 22, radius: 4 }
+    desktop: { xAxis: 26, xMargin: 13, yAxis: 64, yMargin: 12, barGap: 4, categoryGap: '10%', maxBar: 30, radius: 5 },
+    mobile: { xAxis: 22, xMargin: 11, yAxis: 52, yMargin: 8, barGap: 2, categoryGap: '7%', maxBar: 22, radius: 4 }
 };
 
 function ChartTooltip({ active, payload }) {
@@ -25,8 +25,8 @@ function ChartTooltip({ active, payload }) {
     );
 }
 
-function ExpensesChart({ buckets, noun, compact }) {
-    const scale = yAxisScale(chartPeak(buckets));
+function ExpensesChart({ buckets, grain, noun, compact }) {
+    const scale = yAxisScale(chartPeak(buckets), grain);
     const title = `Ingresos y gastos por ${noun}`;
     const size = compact ? SIZES.mobile : SIZES.desktop;
     const radius = [size.radius, size.radius, 2, 2];
@@ -41,7 +41,7 @@ function ExpensesChart({ buckets, noun, compact }) {
                 </div>
             </div>
             <div className="expenses-chart" role="img" aria-label={title}>
-                <ResponsiveContainer width="100%" height={TOP_ROOM + size.plot + size.xAxis}>
+                <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={buckets} margin={{ top: TOP_ROOM, right: 0, bottom: 0, left: 0 }} barGap={size.barGap} barCategoryGap={size.categoryGap}>
                         <CartesianGrid vertical={false} stroke="var(--rm-line-soft)" />
                         <XAxis

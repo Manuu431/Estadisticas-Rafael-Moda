@@ -1,14 +1,18 @@
-const FOOT = 'En los meses de rebajas el porcentaje baja porque se vende con descuento.';
-const FOOT_COMPACT = 'En rebajas el porcentaje baja porque se vende con descuento.';
+import { useState } from 'react';
+import Pagination from '../../components/Pagination.jsx';
+import { TABLE_ROWS, tablePage } from '../../utils/expenses.js';
 
-function ExpensesTable({ grain, table, compact }) {
-    const foot = compact ? FOOT_COMPACT : FOOT;
-    const title = grain === 'year' ? 'Año a año' : 'Mes a mes';
+const FOOT = 'En rebajas el porcentaje baja porque se vende con descuento.';
+
+function ExpensesTable({ title, itemLabel, table }) {
+    const [requested, setRequested] = useState(1);
+    const { rows, pages, page } = tablePage(table.rows, requested);
+    const paged = pages > 1;
 
     return (
         <section className="panel-card expenses-card is-table" aria-label={title}>
             <h2 className="panel-card-title m-0">{title}</h2>
-            <div className="expenses-table" role="table" aria-label="Ingresos, gastos y beneficio">
+            <div className={`expenses-table${paged ? ' is-paged' : ''}`} role="table" aria-label="Ingresos, gastos y beneficio">
                 <div role="row" className="expenses-row is-head">
                     <span role="columnheader"><span className="visually-hidden">Periodo</span></span>
                     <span role="columnheader">Ingresos</span>
@@ -16,7 +20,7 @@ function ExpensesTable({ grain, table, compact }) {
                     <span role="columnheader">Beneficio</span>
                     <span role="columnheader">%</span>
                 </div>
-                {table.rows.map((row) => (
+                {rows.map((row) => (
                     <div role="row" className="expenses-row" key={row.key}>
                         <span role="cell" className="expenses-cell-name">{row.name}</span>
                         <span role="cell">{row.amount}</span>
@@ -26,7 +30,19 @@ function ExpensesTable({ grain, table, compact }) {
                     </div>
                 ))}
             </div>
-            <p className="expenses-foot">{table.note ? `${table.note} ${foot}` : foot}</p>
+            <div className="expenses-tail">
+                <p className="expenses-foot">{table.note ? `${table.note} ${FOOT}` : FOOT}</p>
+                {paged && (
+                    <Pagination
+                        currentPage={page}
+                        totalPages={pages}
+                        onPageChange={setRequested}
+                        totalItems={table.rows.length}
+                        pageSize={TABLE_ROWS}
+                        itemLabel={itemLabel}
+                    />
+                )}
+            </div>
         </section>
     );
 }

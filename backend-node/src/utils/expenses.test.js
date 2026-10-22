@@ -6,18 +6,20 @@ test('readBy usa month cuando no se manda nada', () => {
   assert.deepEqual(readBy(undefined), { by: 'month' });
 });
 
-test('readBy acepta month y year', () => {
+test('readBy acepta day, month y year', () => {
+  assert.deepEqual(readBy('day'), { by: 'day' });
   assert.deepEqual(readBy('month'), { by: 'month' });
   assert.deepEqual(readBy('year'), { by: 'year' });
 });
 
 test('readBy rechaza cualquier otro valor', () => {
-  for (const value of ['day', '', 'MONTH', 'constructor', '__proto__', ['month'], { a: 1 }, 1]) {
+  for (const value of ['week', '', 'MONTH', 'constructor', '__proto__', ['month'], { a: 1 }, 1]) {
     assert.ok(readBy(value).error, `debería rechazar ${JSON.stringify(value)}`);
   }
 });
 
 test('groupExpression sale de una lista cerrada', () => {
+  assert.equal(groupExpression('day'), "DATE_FORMAT(v.sold_at, '%Y-%m-%d')");
   assert.equal(groupExpression('month'), "DATE_FORMAT(v.sold_at, '%Y-%m')");
   assert.equal(groupExpression('year'), "DATE_FORMAT(v.sold_at, '%Y')");
 });
