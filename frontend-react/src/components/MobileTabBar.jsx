@@ -9,6 +9,7 @@ function MobileTabBar() {
                     key={tab.path}
                     to={tab.path}
                     end={tab.path === '/'}
+                    aria-label={tab.label}
                     className={({ isActive }) => `m-tab${isActive ? ' is-on' : ''}`}
                 >
                     <span className="m-tab-ico d-flex align-items-center justify-content-center">

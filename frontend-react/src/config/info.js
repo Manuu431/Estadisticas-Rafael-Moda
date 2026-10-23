@@ -13,7 +13,7 @@ export const MOBILE_TABS = [
   { name: 'Ventas', path: '/ventas', icon: 'bi bi-bag' },
   { name: 'Calendario', path: '/calendario', icon: 'bi bi-calendar' },
   { name: 'Campañas', path: '/planificacion', icon: 'bi bi-megaphone' },
-  { name: 'Más', path: '/mas', icon: 'bi bi-three-dots' }
+  { name: 'Más', label: 'Más opciones', path: '/mas', icon: 'bi bi-three-dots' }
 ];
 
 const TAB_PATHS = MOBILE_TABS.map((tab) => tab.path);
