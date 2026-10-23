@@ -157,7 +157,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   992 px, donde el bloque cae bajo la cifra principal.
 - **Botones**: `.btn-brand` (relleno) para la acción principal (máx. uno por vista), `.btn-brand-outline` para la secundaria.
   Alto 50 px en formularios, 600, `text-lg`. Los botones se basan en Bootstrap vía variables `--bs-btn-*`, no se reescriben a mano.
-- **Controles segmentados** (`.panel-segs`): para cambiar periodo/vista dentro de una tarjeta, o la sección
+- **Controles segmentados** (`Segments`, `.panel-segs`; un solo componente con `options`, `value`, `onChange`, `label` y `className`): para cambiar periodo/vista dentro de una tarjeta, o la sección
   (Todo / Mujer / Hombre) desde el encabezado de Inicio. Fondo `--rm-segs-bg`, pastilla activa blanca con
   `--rm-shadow-raised`. En móvil el del encabezado ocupa todo el ancho (`.panel-head-segs`).
 - **Logo** (`.app-logo`): la versión horizontal (`assets/logo/logo-horizontal.svg`), 46 px de alto en la barra
@@ -191,7 +191,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   mínimo 4,25 rem (68 px), padding 0 16 px y 12 px entre columnas; hora en 40 px (`xs-plus`, 600, `ink-3`), nombre en `md-plus` 600
   cortado con «…», debajo «Marca · Sección · T. X · N uds.» (las unidades solo si son más de una) en `xs-plus` `ink-3`, y a la derecha el
   importe en `md-plus` 600 y el beneficio con signo en `text-xs`, 600, `--rm-positive` (una pérdida, «−» y `--rm-negative`). Sin paginación de flechas: 12 ventas y debajo un
-  `.m-btn` a ancho completo «Ver más ventas (N)» con las que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
+  `.m-btn` a ancho completo (`ShowMoreButton`) «Ver más ventas (N)» con las que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
   filtro vuelve a las 12 primeras.
 - **Estados de Ventas** (`TablePlaceholder`, `.sales-state`; lo usan también Clientes, Gastos y Campañas y temporadas, con `TableState`): la cabecera de la tabla se queda y el cuerpo, de unas tres filas de alto
   (10,875 rem), centra el mensaje en `text-md` y `ink-2`. Cargando: `.spinner-border-sm` en `--rm-orange` (sin giro con
@@ -231,7 +231,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   `--rm-nav` en `text-sm` 700, con las iniciales de las dos primeras palabras del nombre (una sola letra si hay una palabra). Nombre en
   `text-lg` 600 con «…» y debajo, en `text-sm` `ink-2`, «Ciudad (Provincia) · CP»: la provincia solo sale si no es Valencia y no se llama
   igual que la ciudad («Pego (Alicante) · 03780», «Oliva · 46780», «Madrid · 28014»). Sin paginación de flechas: 12 clientes y un `.m-btn`
-  a ancho completo «Ver más clientes (N)» con los que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
+  a ancho completo «Ver más clientes (N)» (`ShowMoreButton` y el hook `useShowMore`) con los que faltan, que añade 12 por pulsación y desaparece al llegar al final; al cambiar un
   filtro vuelve a los 12 primeros. Cargando, sin resultados y error: los mensajes del escritorio, sin cabecera de tabla, en una tarjeta blanca.
 - **Desplegable de campo** (`FieldDropdown`, `.panel-select`; en Clientes y en los periodos de Comparativa): sustituye al `<select>` nativo, cuya lista emergente
   la dibuja el navegador, no se puede estilar y solo se abre al pulsar sobre el propio `select`. Todo el campo (`.panel-select-toggle`, con la
@@ -449,7 +449,7 @@ no al último mes cerrado, para que coincida con el «Año» de la tarjeta de ma
   botón de cierre y con el texto de `deleteMessage` (que avisa de las ediciones que se borran con él) en `text-base`, `ink-2`. Pie con «Cancelar»
   y «Eliminar» (`.is-danger`: `--rm-negative`, el único botón relleno que no es naranja, porque la acción no se puede deshacer); se
   desactivan mientras borra. En móvil, la misma `BottomSheet` con los botones en el pie. Si falla, el aviso sale en la página como antes.
-- **Paginación** (`.data-foot`, común a Ventas, Clientes y Campañas y temporadas): pie con padding 14 × 24 px, borde superior
+- **Paginación** (`.data-foot`, común a Ventas, Clientes, Comparativa, Gastos y Campañas y temporadas; `paginate(rows, page, size)` trocea las filas y recorta la página si se pasa del final): pie con padding 14 × 24 px, borde superior
   `--rm-line-soft`, `text-sm-plus` y `ink-2`. A la izquierda «Mostrando 1–12 de 2.165 líneas», con separador de miles en todos
   los números. A la derecha, a 8 px: primera · anterior · «Página **1** de 181» (el número actual en `ink`, 600) · siguiente · última.
   Los botones (`.data-page`) son de 36 × 36 px (44 × 44 en móvil), radio `sm`, borde `--rm-line-strong`, con `bi-chevron-double-left/right` en los
