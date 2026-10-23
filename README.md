@@ -4,6 +4,21 @@ Panel de estadísticas para una tienda de ropa: ventas, gastos, clientes, compar
 
 **Demo:** https://estadisticas-rafael-moda.vercel.app — pulsa «Entrar en modo demo». Todos los datos son inventados y la demo es de solo lectura.
 
+## Capturas
+
+![Inicio en escritorio](docs/capturas/inicio-escritorio.webp)
+
+![Ventas en escritorio](docs/capturas/ventas-escritorio.webp)
+
+![Comparativa en escritorio](docs/capturas/comparativa-escritorio.webp)
+
+![Gastos en escritorio](docs/capturas/gastos-escritorio.webp)
+
+<p>
+  <img src="docs/capturas/inicio-movil.webp" alt="Inicio en móvil" width="280">
+  <img src="docs/capturas/ventas-movil.webp" alt="Ventas en móvil" width="280">
+</p>
+
 ## Qué hace
 
 - **Inicio:** resumen de hoy, de la semana y del mes, con comparación con el año anterior, marca más vendida, campañas y gráfica del año acumulado.
