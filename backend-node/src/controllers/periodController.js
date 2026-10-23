@@ -9,32 +9,6 @@ const SECTION_PROFIT_SUM = `ROUND(COALESCE((SELECT SUM(v.profit) FROM v_sales v 
 const SECTION_SHARE = `COALESCE((SELECT SUM(CASE WHEN v.section = ? THEN v.amount END) / NULLIF(SUM(v.amount), 0) FROM v_sales v WHERE ${WINDOW}), 0)`;
 const round2 = (value) => Math.round(value * 100) / 100;
 
-const matchesFilters = (row, filters) => {
-  for (const key in filters) {
-    const value = filters[key];
-    if (value === undefined || value === null || value === '') continue;
-    const column = key.replace(/_(min|max)$/, '');
-    if (!(column in row)) continue;
-    const cell = row[column];
-    if (key.endsWith('_min')) {
-      if (Number(cell) < Number(value)) return false;
-    } else if (key.endsWith('_max')) {
-      if (Number(cell) > Number(value)) return false;
-    } else if (Array.isArray(value)) {
-      if (!value.map(String).includes(String(cell))) return false;
-    } else if (column === 'start_date') {
-      if (String(cell) < String(value)) return false;
-    } else if (column === 'end_date') {
-      if (String(cell) > String(value)) return false;
-    } else if (typeof cell === 'number') {
-      if (Number(cell) !== Number(value)) return false;
-    } else if (!String(cell).toLowerCase().includes(String(value).toLowerCase())) {
-      return false;
-    }
-  }
-  return true;
-};
-
 const findType = async (id, kind) => {
   const [[type]] = await pool.query('SELECT * FROM period_types WHERE id = ? AND kind = ?', [id, kind]);
   return type;
@@ -90,7 +64,7 @@ const listPeriods = (kind) => async (req, res, next) => {
       const expenses = round2(Number(row.expenses) * Number(row.expense_share));
       return { ...edition, expenses, profits, balance: round2(profits - expenses) };
     });
-    res.json(periods.filter((period) => matchesFilters(period, req.query)));
+    res.json(periods);
   } catch (err) {
     next(err);
   }
@@ -159,7 +133,7 @@ const listTypes = (kind) => async (req, res, next) => {
        ORDER BY t.name`,
       [kind]
     );
-    res.json(rows.filter((row) => matchesFilters(row, req.query)));
+    res.json(rows);
   } catch (err) {
     next(err);
   }
