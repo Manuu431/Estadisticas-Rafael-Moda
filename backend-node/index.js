@@ -22,6 +22,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.disable('x-powered-by');
+app.set('case sensitive routing', true);
 app.use(cors({ origin: parseOrigins(process.env.CORS_ORIGIN) }));
 app.use(express.json());
 

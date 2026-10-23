@@ -6,9 +6,9 @@
 
 1. En Vercel, abre el proyecto **backend** y entra en **Firewall → Custom Rules → New Rule**.
 2. Condición: **Request Path** *equals* `/api/users` **y** **Method** *equals* `POST`.
-3. Acción: **Rate Limit**, ventana fija de 1 minuto, **5 peticiones** por **IP**. Al superarlo, **Deny** (429) durante 1 minuto.
+3. Acción: **Rate Limit**, ventana fija de 1 minuto, **5 peticiones** por **IP**. Al superarlo, **Deny** (403) durante 1 minuto.
 4. Publica la regla (**Review Changes → Publish**).
-5. Comprobación: enviar 6 `POST /api/users` seguidos con una contraseña mala; el sexto debe responder 429 sin llegar a la función.
+5. Comprobación: enviar 6 `POST /api/users` seguidos con una contraseña mala; el sexto debe responder 403 sin llegar a la función.
 
 Mientras no exista la regla, no hay protección contra fuerza bruta en producción.
 
