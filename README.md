@@ -34,9 +34,10 @@ Panel de estadísticas para una tienda de ropa: ventas, gastos, clientes, compar
 
 | Parte | Stack |
 |---|---|
-| Frontend | React 19, Vite, React Bootstrap, Recharts, Formik y Yup, Vitest |
-| Backend | Node.js, Express 5, MySQL (`mysql2`), JWT, bcrypt |
-| Despliegue | Vercel (frontend y API) y Aiven (MySQL) |
+| Frontend | React 19, Vite, React Router, React Bootstrap y Bootstrap Icons, Recharts, Formik y Yup, Axios, date-fns |
+| Backend | Node.js 24, Express 5, MySQL (`mysql2`), JWT, bcrypt |
+| Pruebas y calidad | Vitest y Testing Library, ESLint |
+| Despliegue | Vercel (frontend y API, Cron para la actualización diaria de la demo y Firewall para limitar los intentos de login) y Aiven (MySQL) |
 
 Las estadísticas no se calculan en el navegador: el frontend pide a la API agregados ya sumados (`/api/statistics/...`) y las fechas de los periodos se calculan en el cliente (`frontend-react/src/utils/dates.js`, con tests). El SQL solo suma.
 
